@@ -1,0 +1,36 @@
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Boxland_Content.exe
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Boxland_Content.pdb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_Content\obj\x86\Debug\Boxland_Content.csprojResolveAssemblyReference.cache
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_Content\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_Content\obj\x86\Debug\Boxland_Content.exe
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_Content\obj\x86\Debug\Boxland_Content.pdb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\richard_jump_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\door_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\fire_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\kick_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\pickup_coin_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\pickup_glove_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\pickup_key_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\punch_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\retard_death_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\richard_buttsmash_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\richard_death_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\richard_hurt_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\richard_jump_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\door_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\fire_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\kick_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\pickup_coin_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\pickup_glove_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\pickup_key_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\punch_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\retard_death_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\richard_buttsmash_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\richard_death_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\richard_hurt_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Boxland_Content.exe
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Boxland_Content.pdb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\obj\x86\Debug\Boxland_Content.csprojResolveAssemblyReference.cache
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\obj\x86\Debug\Boxland_Content.exe
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\obj\x86\Debug\Boxland_Content.pdb

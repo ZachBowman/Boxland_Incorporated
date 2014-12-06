@@ -1,0 +1,2 @@
+C:\Nightmare Games\Games\In Production\Boxland\Boxland_Content\Boxland_Content\Boxland_ContentContent\obj\x86\Debug\Boxland_ContentContent.contentprojResolveAssemblyReference.cache
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_ContentContent\obj\x86\Debug\Boxland_ContentContent.contentprojResolveAssemblyReference.cache

@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Pipeline="Microsoft.Xna.Framework.Content.Pipeline">
+  <Asset Type="Pipeline:BuildItemCollection">
+    <Item>
+      <Source>Sounds\richard_jump_test.wav</Source>
+      <Name>Sounds\richard_jump_test</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\richard_jump_test.xnb</Output>
+      <Time>2014-11-18T15:20:06.9397966-08:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\door_test.wav</Source>
+      <Name>Sounds\door_test</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\door_test.xnb</Output>
+      <Time>2014-11-18T15:20:06.8616676-08:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\fire_test.wav</Source>
+      <Name>Sounds\fire_test</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\fire_test.xnb</Output>
+      <Time>2014-11-18T15:20:06.877292-08:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\kick_test.wav</Source>
+      <Name>Sounds\kick_test</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\kick_test.xnb</Output>
+      <Time>2014-11-18T15:20:06.877292-08:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\pickup_coin_test.wav</Source>
+      <Name>Sounds\pickup_coin_test</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\pickup_coin_test.xnb</Output>
+      <Time>2014-11-18T15:20:06.8929207-08:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\pickup_glove_test.wav</Source>
+      <Name>Sounds\pickup_glove_test</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\pickup_glove_test.xnb</Output>
+      <Time>2014-11-18T15:20:06.8929207-08:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\pickup_key_test.wav</Source>
+      <Name>Sounds\pickup_key_test</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\pickup_key_test.xnb</Output>
+      <Time>2014-11-18T15:20:06.908544-08:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\punch_test.wav</Source>
+      <Name>Sounds\punch_test</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\punch_test.xnb</Output>
+      <Time>2014-11-18T15:20:06.908544-08:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\retard_death_test.wav</Source>
+      <Name>Sounds\retard_death_test</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\retard_death_test.xnb</Output>
+      <Time>2014-11-18T15:20:06.908544-08:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\richard_buttsmash_test.wav</Source>
+      <Name>Sounds\richard_buttsmash_test</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\richard_buttsmash_test.xnb</Output>
+      <Time>2014-11-18T15:20:06.92417-08:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\richard_death_test.wav</Source>
+      <Name>Sounds\richard_death_test</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\richard_death_test.xnb</Output>
+      <Time>2014-11-18T15:20:06.92417-08:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\richard_hurt_test.wav</Source>
+      <Name>Sounds\richard_hurt_test</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\Sounds\richard_hurt_test.xnb</Output>
+      <Time>2014-11-18T15:20:06.9397966-08:00</Time>
+    </Item>
+    <BuildSuccessful>true</BuildSuccessful>
+    <Settings>
+      <ContentProjectGUID Null="true" />
+      <TargetPlatform>Windows</TargetPlatform>
+      <TargetProfile>HiDef</TargetProfile>
+      <BuildConfiguration>Debug</BuildConfiguration>
+      <CompressContent>false</CompressContent>
+      <RootDirectory>C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_ContentContent\</RootDirectory>
+      <LoggerRootDirectory>C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_ContentContent\obj\x86\Debug\</IntermediateDirectory>
+      <OutputDirectory>C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland_Content\Boxland_Content\Boxland_Content\bin\x86\Debug\Content\</OutputDirectory>
+    </Settings>
+    <Assemblies>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.XImporter.dll</Key>
+        <Value>2011-09-01T17:22:30-07:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.VideoImporters.dll</Key>
+        <Value>2011-09-01T17:22:30-07:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.TextureImporter.dll</Key>
+        <Value>2011-09-01T17:22:30-07:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.FBXImporter.dll</Key>
+        <Value>2011-09-01T17:22:30-07:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.EffectImporter.dll</Key>
+        <Value>2011-09-01T17:22:30-07:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.AudioImporters.dll</Key>
+        <Value>2011-09-01T17:22:30-07:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\WINDOWS\Microsoft.Net\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
+        <Value>2014-11-16T10:02:48.3191935-08:00</Value>
+      </Assembly>
+    </Assemblies>
+  </Asset>
+</XnaContent>

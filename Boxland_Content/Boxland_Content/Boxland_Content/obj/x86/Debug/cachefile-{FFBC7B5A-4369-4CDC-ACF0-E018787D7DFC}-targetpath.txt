@@ -1,0 +1,12 @@
+Content\Sounds\richard_jump_test.xnb
+Content\Sounds\door_test.xnb
+Content\Sounds\fire_test.xnb
+Content\Sounds\kick_test.xnb
+Content\Sounds\pickup_coin_test.xnb
+Content\Sounds\pickup_glove_test.xnb
+Content\Sounds\pickup_key_test.xnb
+Content\Sounds\punch_test.xnb
+Content\Sounds\retard_death_test.xnb
+Content\Sounds\richard_buttsmash_test.xnb
+Content\Sounds\richard_death_test.xnb
+Content\Sounds\richard_hurt_test.xnb

@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C# Express 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boxland_Content", "Boxland_Content\Boxland_Content\Boxland_Content.csproj", "{479957C7-8CC7-4527-84C8-E03D610C9D06}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "Boxland_ContentContent", "Boxland_Content\Boxland_ContentContent\Boxland_ContentContent.contentproj", "{FFBC7B5A-4369-4CDC-ACF0-E018787D7DFC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{479957C7-8CC7-4527-84C8-E03D610C9D06}.Debug|x86.ActiveCfg = Debug|x86
+		{479957C7-8CC7-4527-84C8-E03D610C9D06}.Debug|x86.Build.0 = Debug|x86
+		{479957C7-8CC7-4527-84C8-E03D610C9D06}.Release|x86.ActiveCfg = Release|x86
+		{479957C7-8CC7-4527-84C8-E03D610C9D06}.Release|x86.Build.0 = Release|x86
+		{FFBC7B5A-4369-4CDC-ACF0-E018787D7DFC}.Debug|x86.ActiveCfg = Debug|x86
+		{FFBC7B5A-4369-4CDC-ACF0-E018787D7DFC}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
