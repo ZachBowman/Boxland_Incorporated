@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -46,56 +47,69 @@ namespace Boxland
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    public int point_collide (int x, int y, int z)
+    public void load_sprites (GraphicsDevice GraphicsDevice)
       {
-      int f = 0;
-      int clip = -1;
+      fixture_sprite[(int) F.CHAIR1_SOUTH_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "fixtures\\chair1_south_test.png", FileMode.Open, FileAccess.Read));
+      fixture_sprite[(int) F.CONVEYOR_NORTH_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "fixtures\\conveyor_north_test.png", FileMode.Open, FileAccess.Read));
+      fixture_sprite[(int) F.CONVEYOR_SOUTH_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "fixtures\\conveyor_south_test.png", FileMode.Open, FileAccess.Read));
+      fixture_sprite[(int) F.CONVEYOR_EAST_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "fixtures\\conveyor_east_test.png", FileMode.Open, FileAccess.Read));
+      fixture_sprite[(int) F.CONVEYOR_WEST_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "fixtures\\conveyor_west_test.png", FileMode.Open, FileAccess.Read));
+      fixture_sprite[(int) F.COUCH_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "fixtures\\couch_test.png", FileMode.Open, FileAccess.Read));
+      fixture_sprite[(int) F.FILING_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "fixtures\\filing_cabinet_test.png", FileMode.Open, FileAccess.Read));
+      fixture_sprite[(int) F.LASER_HORIZONTAL_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "fixtures\\laser_horizontal_test.png", FileMode.Open, FileAccess.Read));
+      fixture_sprite[(int) F.LASER_HORIZONTAL_GREEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "fixtures\\laser_horizontal_green_test.png", FileMode.Open, FileAccess.Read));
+      fixture_sprite[(int) F.PLANT1_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "fixtures\\plant1_test.png", FileMode.Open, FileAccess.Read));
+      fixture_sprite[(int) F.TABLE1_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "fixtures\\table1_test.png", FileMode.Open, FileAccess.Read));
+      fixture_sprite[(int) F.TABLE2_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "fixtures\\table2_test.png", FileMode.Open, FileAccess.Read));
+      fixture_sprite[(int) F.TV1_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "fixtures\\tv1_test.png", FileMode.Open, FileAccess.Read));
+      fixture_sprite[(int) F.VENDING_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "fixtures\\vending_test.png", FileMode.Open, FileAccess.Read));
+      fixture_sprite[(int) F.WIRES_HORIZONTAL_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "fixtures\\wires_horizontal_test.png", FileMode.Open, FileAccess.Read));
+      fixture_sprite[(int) F.WIRES_VERTICAL_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "fixtures\\wires_vertical_test.png", FileMode.Open, FileAccess.Read));
+      fixture_sprite[(int) F.WIRES_SOUTHEAST_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "fixtures\\wires_southeast_test.png", FileMode.Open, FileAccess.Read));
 
-      while (clip == -1 && f < fixture.Count)//total_fixtures)
-        {
-        if (x >= fixture[f].x && x <= fixture[f].x + fixture[f].width &&
-            y >= fixture[f].y && y <= fixture[f].y + fixture[f].length &&
-            z >= fixture[f].z && z <= fixture[f].z + fixture[f].height)
-          clip = f;
-        f += 1;
-        }
-      return clip;
+      ConvertToPremultipliedAlpha (fixture_sprite[(int) F.CHAIR1_SOUTH_TEST], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (fixture_sprite[(int) F.CONVEYOR_EAST_TEST], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (fixture_sprite[(int) F.CONVEYOR_WEST_TEST], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (fixture_sprite[(int) F.COUCH_TEST], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (fixture_sprite[(int) F.LASER_HORIZONTAL_TEST], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (fixture_sprite[(int) F.LASER_HORIZONTAL_GREEN_TEST], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (fixture_sprite[(int) F.PLANT1_TEST], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (fixture_sprite[(int) F.TABLE1_TEST], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (fixture_sprite[(int) F.TABLE2_TEST], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (fixture_sprite[(int) F.TV1_TEST], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (fixture_sprite[(int) F.WIRES_HORIZONTAL_TEST], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (fixture_sprite[(int) F.WIRES_VERTICAL_TEST], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (fixture_sprite[(int) F.WIRES_SOUTHEAST_TEST], new Color (255, 0, 255, 255));
       }
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    public void draw (int f, SpriteBatch spriteBatch, Screen screen)
+    void ConvertToPremultipliedAlpha (Texture2D texture, Color? colorKey)
       {
-      Vector2 v_draw;
-      Rectangle r_source;
-      float opacity;
-      Random rnd = new Random ();
-
-      v_draw.X = fixture[f].x + screen.scroll_x;
-      v_draw.Y = (screen.height - fixture[f].y - fixture[f].length) - (fixture[f].z / 2) - (fixture[f].height / 2) + screen.scroll_y;
-
-      if (fixture[f].total_frames > 1)  // animated fixtures
+      Color[] data = new Color[texture.Width * texture.Height];
+      texture.GetData<Color> (data, 0, data.Length);
+      if (colorKey.HasValue)
         {
-        r_source.X = 1 + ((fixture[f].width + 1) * fixture[f].current_frame);
-        r_source.Y = 1;
-        r_source.Width = fixture[f].sprite_width;
-        r_source.Height = fixture[f].sprite_height;
-        //v_draw.X = fixture[f].x + screen.scroll_x;
-        //v_draw.Y = (screen.height - fixture[f].y - fixture[f].length) - (fixture[f].z / 2) - (fixture[f].height / 2) + screen.scroll_y;
-
-        spriteBatch.Draw (fixture_sprite[fixture[f].type], v_draw, r_source, Color.White);
+        for (int i = 0; i < data.Length; i += 1)
+          {
+          if (data[i] == colorKey)
+            {
+            data[i] = Color.Transparent;
+            }
+          else
+            {
+            data[i] = new Color (new Vector4 (data[i].ToVector3 () * (data[i].A / 255f), (data[i].A / 255f)));
+            }
+          }
         }
-      else  // non-animated
+      else
         {
-        //v_draw.X = fixture[f].x + screen.scroll_x;
-        //v_draw.Y = (screen.height - fixture[f].y - fixture[f].length) - (fixture[f].z / 2) - (fixture[f].height / 2) + screen.scroll_y;
-
-        if (fixture[f].type == (int) F.PLANT1_TEST) v_draw.Y -= 24;
-        if (fixture[f].type == (int) F.LASER_HORIZONTAL_GREEN_TEST) spriteBatch.Draw (fixture_sprite[(int) F.LASER_HORIZONTAL_TEST], v_draw, Color.White);
-        if (fixture[f].type == (int) F.LASER_HORIZONTAL_GREEN_TEST) opacity = Convert.ToSingle (rnd.Next (3, 8)) / 10;
-        else opacity = 1f;
-        spriteBatch.Draw (fixture_sprite[fixture[f].type], v_draw, Color.White * opacity);
+        for (int i = 0; i < data.Length; i += 1)
+          {
+          data[i] = new Color (new Vector4 (data[i].ToVector3 () * (data[i].A / 255f), (data[i].A / 255f)));
+          }
         }
+      texture.SetData<Color> (data, 0, data.Length);
       }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -152,18 +166,18 @@ namespace Boxland
           case (int) F.CONVEYOR_WEST_TEST:
             newfix.total_frames = 8;
             break;
-          
+
           case (int) F.CONVEYOR_EAST_TEST:
             newfix.total_frames = 8;
             break;
-          
+
           case (int) F.FILING_TEST:
             newfix.width = 96;
             newfix.length = 48;
             newfix.height = 96;
             newfix.y = y + (tilesize - newfix.length);
             break;
-          
+
           case (int) F.LASER_HORIZONTAL_GREEN_TEST:
             newfix.length = 32;
             newfix.height = 16;
@@ -171,42 +185,42 @@ namespace Boxland
             newfix.solid = false;
             newfix.electric = true;
             break;
-          
+
           case (int) F.PLANT1_TEST:
             newfix.width = 72;
             newfix.length = 72;
             newfix.height = 96;
             newfix.y = y + (tilesize - newfix.length);
             break;
-          
+
           case (int) F.TABLE1_TEST:
             newfix.width = tilesize;
             newfix.length = tilesize * 2;
             newfix.height = tilesize / 2;
             newfix.y = y + (tilesize - newfix.length);
             break;
-          
+
           case (int) F.TABLE2_TEST:
             newfix.width = 192;
             newfix.length = 96;
             newfix.height = 48;
             newfix.y = y + (tilesize - newfix.length);
             break;
-          
+
           case (int) F.TV1_TEST:
             newfix.width = 96;
             newfix.length = 48;
             newfix.height = 48;
             newfix.y = y + (tilesize - newfix.length);
             break;
-          
+
           case (int) F.VENDING_TEST:
             newfix.width = 58;
             newfix.length = 32;
             newfix.height = 96;
             newfix.x = x + (tilesize / 2) - (newfix.width / 2);
             newfix.y = y + (tilesize - newfix.length);
-            newfix.z = z;
+            //newfix.z = z;
             newfix.electric = true;
             newfix.powered = true;
             break;
@@ -216,10 +230,64 @@ namespace Boxland
             newfix.height = 8;
             newfix.solid = false;
             newfix.electric = true;
-            break;          
+            break;
           }
 
         fixture.Add (newfix);
+        }
+      }
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+    public int point_collide (int x, int y, int z)
+      {
+      int f = 0;
+      int clip = -1;
+
+      while (clip == -1 && f < fixture.Count)
+        {
+        if (x >= fixture[f].x && x <= fixture[f].x + fixture[f].width &&
+            y >= fixture[f].y && y <= fixture[f].y + fixture[f].length &&
+            z >= fixture[f].z && z <= fixture[f].z + fixture[f].height)
+          clip = f;
+        f += 1;
+        }
+      return clip;
+      }
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+    public void draw (int f, SpriteBatch spriteBatch, ScreenInfo screen)
+      {
+      Vector2 v_draw;
+      Rectangle r_source;
+      float opacity;
+      Random rnd = new Random ();
+
+      v_draw.X = fixture[f].x + screen.scroll_x;
+      v_draw.Y = (screen.height - fixture[f].y - fixture[f].length) - (fixture[f].z / 2) - (fixture[f].height / 2) + screen.scroll_y;
+
+      if (fixture[f].total_frames > 1)  // animated fixtures
+        {
+        r_source.X = 1 + ((fixture[f].width + 1) * fixture[f].current_frame);
+        r_source.Y = 1;
+        r_source.Width = fixture[f].sprite_width;
+        r_source.Height = fixture[f].sprite_height;
+        //v_draw.X = fixture[f].x + screen.scroll_x;
+        //v_draw.Y = (screen.height - fixture[f].y - fixture[f].length) - (fixture[f].z / 2) - (fixture[f].height / 2) + screen.scroll_y;
+
+        spriteBatch.Draw (fixture_sprite[fixture[f].type], v_draw, r_source, Color.White);
+        }
+      else  // non-animated
+        {
+        //v_draw.X = fixture[f].x + screen.scroll_x;
+        //v_draw.Y = (screen.height - fixture[f].y - fixture[f].length) - (fixture[f].z / 2) - (fixture[f].height / 2) + screen.scroll_y;
+
+        if (fixture[f].type == (int) F.PLANT1_TEST) v_draw.Y -= 24;
+        if (fixture[f].type == (int) F.LASER_HORIZONTAL_GREEN_TEST) spriteBatch.Draw (fixture_sprite[(int) F.LASER_HORIZONTAL_TEST], v_draw, Color.White);
+        if (fixture[f].type == (int) F.LASER_HORIZONTAL_GREEN_TEST) opacity = Convert.ToSingle (rnd.Next (3, 8)) / 10;
+        else opacity = 1f;
+        spriteBatch.Draw (fixture_sprite[fixture[f].type], v_draw, Color.White * opacity);
         }
       }
 
@@ -277,5 +345,276 @@ namespace Boxland
     //      }
     //    }  // for (int f = 0
     //  }
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+    public int fixture_in_brush (Fixture f, List<Brush> brush)
+      {
+      int b = 0;
+      int clip = -1;
+
+      while (clip == -1 && b < brush.Count)
+        {
+        if (f.x + f.width >= brush[b].x && f.x <= brush[b].x + brush[b].width
+            && f.y + f.length >= brush[b].y && f.y <= brush[b].y + brush[b].length
+            && f.z + f.height >= brush[b].z && f.z <= brush[b].z + brush[b].height - 1)
+          clip = b;
+        b += 1;
+        }
+
+      return clip;
+      }
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+    public int point_in_fixture (int x, int y, int z)
+      {
+      int f = 0;
+      int clip = -1;
+
+      while (clip == -1 && f < fixture.Count)
+        {
+        if (x >= fixture[f].x && x <= fixture[f].x + fixture[f].width &&
+            y >= fixture[f].y && y <= fixture[f].y + fixture[f].length &&
+            z >= fixture[f].z && z <= fixture[f].z + fixture[f].height)
+          {
+          clip = f;
+          break;  // stop looking
+          }
+        f += 1;
+        }
+      return clip;
+      }
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    public int fixture_west_of_brush (Brush check_brush)
+      {
+      int clip;
+
+      clip = point_in_fixture (check_brush.x + 4 - tilesize, check_brush.y + tilesize - 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x - (tilesize / 2), check_brush.y + tilesize - 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x - 4, check_brush.y + tilesize - 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + 4 - tilesize, check_brush.y + (tilesize / 2), check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x - (tilesize / 2), check_brush.y + (tilesize / 2), check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x - 4, check_brush.y + (tilesize / 2), check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + 4 - tilesize, check_brush.y + 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x - (tilesize / 2), check_brush.y + 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x - 4, check_brush.y + 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      return -1;
+      }
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    public int fixture_east_of_brush (Brush check_brush)
+      {
+      int clip;
+
+      clip = point_in_fixture (check_brush.x + 4 + (tilesize * 2), check_brush.y + tilesize - 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + (tilesize * 3 / 2), check_brush.y + tilesize - 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x - 4, check_brush.y + tilesize - 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + 4 + (tilesize * 2), check_brush.y + (tilesize / 2), check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x - (tilesize * 3 / 2), check_brush.y + (tilesize / 2), check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x - 4, check_brush.y + (tilesize / 2), check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + 4 + (tilesize * 2), check_brush.y + 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x - (tilesize * 3 / 2), check_brush.y + 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x - 4, check_brush.y + 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      return -1;
+      }
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    public int fixture_north_of_brush (Brush check_brush)
+      {
+      int clip;
+
+      clip = point_in_fixture (check_brush.x + 4, check_brush.y + (tilesize * 2) - 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + (tilesize / 2), check_brush.y + (tilesize * 2) - 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + tilesize - 4, check_brush.y + (tilesize * 2) - 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + 4, check_brush.y + (tilesize * 3 / 2), check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + (tilesize / 2), check_brush.y + (tilesize * 3 / 2), check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + tilesize - 4, check_brush.y + (tilesize * 3 / 2), check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + 4, check_brush.y + tilesize + 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + (tilesize / 2), check_brush.y + tilesize + 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + tilesize - 4, check_brush.y + tilesize + 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      return -1;
+      }
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    public int fixture_south_of_brush (Brush check_brush)
+      {
+      int clip;
+
+      clip = point_in_fixture (check_brush.x + 4, check_brush.y - 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+      
+      clip = point_in_fixture (check_brush.x + (tilesize / 2), check_brush.y - 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + tilesize - 4, check_brush.y - 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + 4, check_brush.y - (tilesize / 2), check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + (tilesize / 2), check_brush.y - (tilesize / 2), check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + tilesize - 4, check_brush.y - (tilesize / 2), check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + 4, check_brush.y - tilesize + 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + (tilesize / 2), check_brush.y - tilesize + 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + tilesize - 4, check_brush.y - tilesize + 4, check_brush.z + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      return -1;
+      }
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    public int fixture_above_brush (Brush check_brush)
+      {
+      int clip;
+
+      clip = point_in_fixture (check_brush.x + 4, check_brush.y + tilesize - 4, check_brush.z + tilesize + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + (tilesize / 2), check_brush.y + tilesize - 4, check_brush.z + tilesize + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + tilesize - 4, check_brush.y + tilesize - 4, check_brush.z + tilesize + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + 4, check_brush.y + (tilesize / 2), check_brush.z + tilesize + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + (tilesize / 2), check_brush.y + (tilesize / 2), check_brush.z + tilesize + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + tilesize - 4, check_brush.y + (tilesize / 2), check_brush.z + tilesize + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + 4, check_brush.y + 4, check_brush.z + tilesize + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + (tilesize / 2), check_brush.y + 4, check_brush.z + tilesize + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (check_brush.x + tilesize - 4, check_brush.y + 4, check_brush.z + tilesize + (tilesize / 4));
+      if (clip > -1) return clip;
+
+      return -1;
+      }
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    // takes a center point of a grid cube and checks cube for fixtures
+    
+    public int fixture_in_gridspace (int x, int y, int z)
+      {
+      int clip;
+
+      clip = point_in_fixture (x - (tilesize / 2) + 4, y + (tilesize / 2) - 4, z - (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (x, y + (tilesize / 2) - 4, z - (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (x + (tilesize / 2) - 4, y + (tilesize / 2) - 4, z - (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (x - (tilesize / 2) + 4, y, z - (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (x, y, z - (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (x + (tilesize / 2) - 4, y, z - (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (x - (tilesize / 2) + 4, y - (tilesize / 2) + 4, z - (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (x, y - (tilesize / 2) + 4, z - (tilesize / 4));
+      if (clip > -1) return clip;
+
+      clip = point_in_fixture (x + (tilesize / 2) - 4, y - (tilesize / 2) + 4, z - (tilesize / 4));
+      if (clip > -1) return clip;
+
+      return -1;
+      }
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+    public int character_on_fixture (Character c)
+      {
+      int fixture_below = point_collide (c.x + (c.width / 2), c.y + (c.length / 2), c.z - 1);
+      if (fixture_below == -1) fixture_below = point_collide (c.x + 1, c.y + 1, c.z - 1);
+      if (fixture_below == -1) fixture_below = point_collide (c.x + c.width - 1, c.y + 1, c.z - 1);
+      if (fixture_below == -1) fixture_below = point_collide (c.x + 1, c.y + c.length - 1, c.z - 1);
+      if (fixture_below == -1) fixture_below = point_collide (c.x + c.width - 1, c.y + c.length - 1, c.z - 1);
+
+      return fixture_below;
+      }
     }
   }

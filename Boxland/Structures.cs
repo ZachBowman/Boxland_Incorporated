@@ -42,7 +42,7 @@ namespace Boxland
     public bool used;
     }
 
-  public struct Screen  // info about screen size, scrolling, etc. (used for drawing)
+  public struct ScreenInfo  // info about screen size, scrolling, etc. (used for drawing)
     {
     public int width;
     public int height;
@@ -54,5 +54,6 @@ namespace Boxland
     public int bg1_scroll_y;
     public int bg2_scroll_x;
     public int bg2_scroll_y;
+    public bool fullscreen;
     }
   }

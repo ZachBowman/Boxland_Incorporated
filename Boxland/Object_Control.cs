@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -36,6 +37,83 @@ namespace Boxland
       COIN,
       SCRAP_METAL,
       ENERGY
+      }
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+    public void load_sprites (GraphicsDevice GraphicsDevice)
+      {
+      object_sprite[(int) O.SHIRT_YELLOW, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\shirt_power0_ink.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.SHIRT_YELLOW, 1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\shirt_power1_ink.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.SHIRT_RED, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\shirt_fire0_ink.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.SHIRT_WHITE, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\shirt_ice0_ink.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.SHIRT_WHITE, 1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\shirt_ice1_ink.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.SHIRT_PURPLE, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\shirt_magnet0_ink.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.SHIRT_PURPLE, 1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\shirt_magnet1_ink.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.SHIRT_BLUE, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\shirt_electric.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.ROCK, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\food_hotdog_ink.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.ROCK_BROWN, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\food_hamburger_ink.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.ROCK_RED, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\food_pizza_ink.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.ROCK_WHITE, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\rock_white_test.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.KEYCARD, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\key1_ink.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.HEALTH, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\health0_ink.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.HEALTH, 1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\health1_ink.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.HEALTH, 2] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\health2_ink.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.HEALTH, 3] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\health3_ink.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.COIN, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\coin0_ink.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.SCRAP_METAL, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\scrap_metal_ink.png", FileMode.Open, FileAccess.Read));
+      object_sprite[(int) O.ENERGY, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\energy0_ink.png", FileMode.Open, FileAccess.Read));
+
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.SHIRT_YELLOW, 0], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.SHIRT_YELLOW, 1], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.SHIRT_RED, 0], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.SHIRT_WHITE, 0], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.SHIRT_WHITE, 1], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.SHIRT_PURPLE, 0], new Color (0, 255, 0, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.SHIRT_PURPLE, 1], new Color (0, 255, 0, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.SHIRT_BLUE, 0], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.ROCK, 0], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.ROCK_BROWN, 0], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.ROCK_RED, 0], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.ROCK_WHITE, 0], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.KEYCARD, 0], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.HEALTH, 0], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.HEALTH, 1], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.HEALTH, 2], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.HEALTH, 3], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.COIN, 0], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.SCRAP_METAL, 0], new Color (255, 0, 255, 255));
+      ConvertToPremultipliedAlpha (object_sprite[(int) O.ENERGY, 0], new Color (255, 0, 255, 255));
+      }
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+    void ConvertToPremultipliedAlpha (Texture2D texture, Color? colorKey)
+      {
+      Color[] data = new Color[texture.Width * texture.Height];
+      texture.GetData<Color> (data, 0, data.Length);
+      if (colorKey.HasValue)
+        {
+        for (int i = 0; i < data.Length; i += 1)
+          {
+          if (data[i] == colorKey)
+            {
+            data[i] = Color.Transparent;
+            }
+          else
+            {
+            data[i] = new Color (new Vector4 (data[i].ToVector3 () * (data[i].A / 255f), (data[i].A / 255f)));
+            }
+          }
+        }
+      else
+        {
+        for (int i = 0; i < data.Length; i += 1)
+          {
+          data[i] = new Color (new Vector4 (data[i].ToVector3 () * (data[i].A / 255f), (data[i].A / 255f)));
+          }
+        }
+      texture.SetData<Color> (data, 0, data.Length);
       }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -116,7 +194,7 @@ namespace Boxland
     //    endloop2 = false;
     //    b = 0;
     //    f = 0;
-    //    while (endloop2 == false && b < total_brushes)
+    //    while (endloop2 == false && b < brush.Count)
     //      {
     //      if (tx >= brush[b].x && tx <= brush[b].x + brush[b].width &&
     //          ty >= brush[b].y && ty <= brush[b].y + brush[b].length &&

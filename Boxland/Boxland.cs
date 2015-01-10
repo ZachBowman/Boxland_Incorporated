@@ -5,9 +5,14 @@
 //Cricketheads
 
 #region Using Statements
+
 using System;
-using System.IO;
 using System.Collections.Generic;
+//using System.Diagnostics;
+using drawing = System.Drawing;
+using System.IO;
+//using System.Runtime.InteropServices;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -16,6 +21,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Storage;
+
+using Forms = System.Windows.Forms;
+
 #endregion
 
 namespace Boxland
@@ -25,8 +33,6 @@ namespace Boxland
     GraphicsDeviceManager graphics;
     SpriteBatch spriteBatch;
     RenderTarget2D light_buffer;
-
-    const string Texture_Path = @"c:\boxland_images\";
 
     public Random rnd = new Random ();
 
@@ -60,7 +66,7 @@ namespace Boxland
     bool blue_switch_down = false;
 
     // levels / areas
-    int player_level = 0;
+    int player_level = 6;
     int player_last_level = -1;   // map area the player was in just before this (-1 = new game)
     const int max_levels = 9;
 
@@ -77,7 +83,7 @@ namespace Boxland
     int creation_mode = 0;  // 1 = tunnelling, 2 = shuffling
 
     // screen
-    Screen screen = new Screen ()
+    ScreenInfo screen = new ScreenInfo ()
       {
       //width = 1950,             // xbox high (does not show correctly on pc)
       //height = 1080,
@@ -85,12 +91,14 @@ namespace Boxland
       //height = 720,
       //width = 1024,             // pc normal
       //height = 768,
-      //width = 1280,             // pc wide
-      //height = 768,
-      //width = 1440,             // pc wide high
+      width = 1280,             // pc wide
+      height = 768,
+      //width = 1440,             // pc wide high res
       //height = 900,
-      width = 1024,             // pc small
-      height = 600,
+      //width = 1024,             // pc small window
+      //height = 600,
+      //width = 800,              // pc low res
+      //height = 600,
       scroll_x = 0,             // screen scroll offset
       scroll_y = 0,
       bg1_scroll_speed = .5,    // % of scroll offset used for background scrolling
@@ -98,16 +106,18 @@ namespace Boxland
       bg1_scroll_x = 0,
       bg1_scroll_y = 0,
       bg2_scroll_x = 0,
-      bg2_scroll_y = 0
+      bg2_scroll_y = 0,
+      fullscreen = true
       };
 
     // map
+    Map map = new Map ();
+    public const int tilesize = 96;
+    public const double parallax = .75;
     int map_tile_width;                       // total tile size of current map area
     int map_tile_length;
     int map_tile_height;
     int map_char_width;                       // width of map in string characters
-    public const int tilesize = 96;
-    public const double reach_distance = tilesize * .6;  // minimum distance for 2 objects/characters to reach each other
     int map_width = 0;                        // total pixel size of current map area
     int map_length = 0;
     int map_height = 0;
@@ -148,7 +158,7 @@ namespace Boxland
     int fps_counter;                 // adds one each time game is drawn between seconds
     int fps;                         // shows how many times fps_counter was added to the last second
     int cycle_counter;               // increases by one each frame
-    int cycle_delay = 2;             // the number of frames in between certain scripts running, like ai
+    int cycle_delay = 30;             // the number of frames in between certain scripts running, like ai
 
     // controls
     string player_control = "none";  // waits for input from keyboard or gamepad on title screen.
@@ -221,7 +231,7 @@ namespace Boxland
     //public enum thing_type
     //  {
     //  character,
-    //  brush,
+    //  brush_control.brush,
     //  obj,
     //  fixture
     //  }
@@ -253,124 +263,13 @@ namespace Boxland
     const int PULSING    = 1;
     const int FLICKERING = 2;
 
-    // TEXTURES
-    public enum T
-      {
-      ZERO,
-      ASPHALT_TEST,
-      BOX_ICE_TEST,
-      BOX_METAL_TEST,
-      BOX_WOOD_TEST,
-      BRICK_GREY_TEST,
-      BRICK_RED_TEST,
-      BRICK_WHITE_TEST,
-      CARPET_GREY_TEST,
-      CARPET_PURPLE_TEST,
-      DOOR_RED_V_TOP_CLOSED_TEST,
-      DOOR_RED_V_TOP_OPEN_TEST,
-      DOOR_RED_V_FRONT_CLOSED_TEST,
-      DOOR_RED_V_FRONT_OPEN_TEST,
-      DOOR_RED_H_TOP_CLOSED_TEST,
-      DOOR_RED_H_TOP_OPEN_TEST,
-      DOOR_RED_H_FRONT_CLOSED_TEST,
-      DOOR_RED_H_FRONT_OPEN_TEST,
-      DOOR_GREEN_V_TOP_CLOSED_TEST,
-      DOOR_GREEN_V_TOP_OPEN_TEST,
-      DOOR_GREEN_V_FRONT_CLOSED_TEST,
-      DOOR_GREEN_V_FRONT_OPEN_TEST,
-      DOOR_GREEN_H_TOP_CLOSED_TEST,
-      DOOR_GREEN_H_TOP_OPEN_TEST,
-      DOOR_GREEN_H_FRONT_CLOSED_TEST,
-      DOOR_GREEN_H_FRONT_OPEN_TEST,
-      DOOR_YELLOW_V_TOP_CLOSED_TEST,
-      DOOR_YELLOW_V_TOP_OPEN_TEST,
-      DOOR_YELLOW_V_FRONT_CLOSED_TEST,
-      DOOR_YELLOW_V_FRONT_OPEN_TEST,
-      DOOR_YELLOW_H_TOP_CLOSED_TEST,
-      DOOR_YELLOW_H_TOP_OPEN_TEST,
-      DOOR_YELLOW_H_FRONT_CLOSED_TEST,
-      DOOR_YELLOW_H_FRONT_OPEN_TEST,
-      DOOR_BLUE_V_TOP_CLOSED_TEST,
-      DOOR_BLUE_V_TOP_OPEN_TEST,
-      DOOR_BLUE_V_FRONT_CLOSED_TEST,
-      DOOR_BLUE_V_FRONT_OPEN_TEST,
-      DOOR_BLUE_H_TOP_CLOSED_TEST,
-      DOOR_BLUE_H_TOP_OPEN_TEST,
-      DOOR_BLUE_H_FRONT_CLOSED_TEST,
-      DOOR_BLUE_H_FRONT_OPEN_TEST,
-      DRYWALL_MINT_FRONT_TEST,
-      DRYWALL_MINT_TOP_TEST,
-      DRYWALL_PURPLE_FRONT_TEST,
-      DRYWALL_PURPLE_TOP_TEST,
-      DRYWALL_TAN_TOP_TEST,
-      DRYWALL_TAN_FRONT_TEST,
-      DRYWALL_YELLOW_FRONT_TEST,
-      DRYWALL_YELLOW_TOP_TEST,
-      EXIT_RED_V_TOP_CLOSED_TEST,
-      EXIT_RED_V_TOP_OPEN_TEST,
-      EXIT_RED_V_FRONT_CLOSED_TEST,
-      EXIT_RED_V_FRONT_OPEN_TEST,
-      EXIT_RED_H_TOP_CLOSED_TEST,
-      EXIT_RED_H_TOP_OPEN_TEST,
-      EXIT_RED_H_FRONT_CLOSED_TEST,
-      EXIT_RED_H_FRONT_OPEN_TEST,
-      FLOOR_GRATE_TEST,
-      FLOOR_METAL_TEST,
-      FLOOR_ZONE_YELLOW_TEST,
-      FLOOR_ZONE_RED_TEST,
-      FLOOR_ZONE_GREEN_TEST,
-      GATEWAY_V_TOP_TEST,
-      GATEWAY_V_FRONT_CLOSED_TEST,
-      GATEWAY_V_FRONT_OPEN_TEST,
-      GATEWAY_H_TOP_TEST,
-      GATEWAY_H_FRONT_TEST,
-      GRASS_TEST,
-      METAL_BLACK_TEST,
-      METAL_BLUE_FRONT_TEST,
-      METAL_BLUE_TOP_TEST,
-      METAL_MINT_FRONT_TEST,
-      METAL_MINT_TOP_TEST,
-      SIDEWALK_TEST,
-      SWITCH_GREEN_TEST,
-      SWITCH_GREEN_DOWN_TEST,
-      SWITCH_BLUE_TEST,
-      SWITCH_BLUE_DOWN_TEST,
-      SWITCH_RED_TEST,
-      SWITCH_RED_DOWN_TEST,
-      SWITCH_YELLOW_TEST,
-      SWITCH_YELLOW_DOWN_TEST,
-      TEXTURE_HIGHLIGHT_RED,
-      TILE_BLACK_TEST,
-      TILE_BLUE_TEST,
-      TILE_BROWN_TEST,
-      INCINERATOR_TEST_UP,
-      INCINERATOR_TEST_DOWN,
-      INCINERATOR_TEST_DOWN_FRONT,
-      INCINERATOR_TEST_LEFT,
-      INCINERATOR_TEST_RIGHT,
-      /////////////////////////////////////
-      SINGLE_PIECE,                      // everything below here is a single piece that does not tile
-      /////////////////////////////////////
-      BOX_BANDED_TEST,
-      //WARNING_SIGN_TEST1,
-      //WARNING_SIGN_TEST2,
-      //WARNING_SIGN_TEST3,
-      //WARNING_SIGN_TEST4,
-      BIG_MACHINE_TEST,
-      FLOOR_LOGO_TEST,
-      INVISIBLE_WALL
-      }
-
-    const int max_textures = 96;
-    Texture2D[] texture = new Texture2D[max_textures];
-
     // effects
     Texture2D solid_black;
     Texture2D wall_shadow_center, wall_shadow_west, wall_shadow_south_west, wall_shadow_south, wall_shadow_south_east, wall_shadow_east;
     Texture2D shading_wall, shading_door_test_closed, shading_door_test_open;//, shading_exit_test_closed, shading_exit_test_open;
     Texture2D shading_gateway_test, shading_box_test_ice;
     Texture2D pow_sprite;
-    Texture2D test_background, test_background1, test_background2, test_background3, test_background4, test_background5;
+    Texture2D test_background1, test_background2, test_background3, test_background4, test_background5;
     Texture2D effect_snowflake, effect_cold_energy, effect_dollars;
     Texture2D effect_flame_white, effect_flame_yellow, effect_flame_orange, effect_flame_red, effect_smoke, effect_sparkle_white;
     Texture2D color_flash_sprite, solid_white, solid_red, effect_pain;
@@ -391,35 +290,18 @@ namespace Boxland
     Texture2D[] sticker_factory_floor = new Texture2D[total_factory_floor_stickers];
 
     // BRUSHES
-    const int max_brushes = 625;
-    public int total_brushes = 0;
-    Brush[] brush = new Brush[max_brushes];
+    Brush_Control brush_control = new Brush_Control (tilesize);
 
     // FIXTURES (furniture & machines)
-    Fixture_Control fixture_control = new Fixture_Control(tilesize);
+    Fixture_Control fixture_control = new Fixture_Control (tilesize);
 
     // OBJECTS
     Object_Control object_control = new Object_Control ();
     int rock_color = 0;
 
-    int pow_sprite_width = 80;
-    int pow_sprite_height = 80;
-
     // CHARACTERS
-    public enum C
-      {
-      // NONE = -1;
-      RICHARD,
-      RICHARDS_DAD,
-      RETARD,
-      THROWING_RETARD
-      }
-
-    Character_Control character_control = new Character_Control ();
-    const int max_character_list = 4;
-    const int max_character_skins = 7;
-    Texture2D[,] character_sprite = new Texture2D[max_character_list, max_character_skins];
-    Texture2D[] character_shadow = new Texture2D[max_character_list];
+    Character_Control character_control = new Character_Control (tilesize);
+    Texture2D[] character_shadow = new Texture2D[Character_Control.max_character_list];
     Texture2D arrow_sprite, target_sprite;
     const int max_characters = 30;
     //public List<Character> character = new List<Character> ();
@@ -472,25 +354,30 @@ namespace Boxland
       base.Initialize ();
       this.IsMouseVisible = true;
 
+      if (screen.fullscreen)
+        {
+        screen.width = Forms.Screen.PrimaryScreen.Bounds.Width;
+        screen.height = Forms.Screen.PrimaryScreen.Bounds.Height;
+        graphics.IsFullScreen = true;
+        Window.IsBorderless = true;
+        }
       graphics.PreferredBackBufferWidth = screen.width;
       graphics.PreferredBackBufferHeight = screen.height;
-      graphics.IsFullScreen = false;//true;
       graphics.ApplyChanges ();
+      Window.Position = new Point (0, 0);
 
       light_buffer = new RenderTarget2D (GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
       // initialize class arrays
       for (int i = 0; i < max_effects; i += 1) particle_effect[i] = new Particle_Effect ();
-      for (int b = 0; b < max_brushes; b += 1) brush[b] = new Brush ();
-      //for (int c = 0; c < max_characters; c += 1) character_control.character[c] = new Character ();
 
-      player_level = 2;  // starting level, default 0
+      //player_level = 6;  // starting level, default 0
 
       load_map ();
 
       if (player_added_to_map == false)
         {
-        add_character ("Richard", (int) C.RICHARD, 64, 64, 256);
+        add_character ("Richard", (int) Character_Control.C.RICHARD, 64, 64, 256);
         }
 
       // scroll border is inside box of screen (non-scrolling part)
@@ -520,13 +407,12 @@ namespace Boxland
         file = Texture2D.FromStream (GraphicsDevice, titleStream);
         }
 
-      //Setup a render target to hold our final texture which will have premulitplied alpha values
+      //Setup a render target to hold our final brush_control.texture which will have premulitplied alpha values
       result = new RenderTarget2D (GraphicsDevice, file.Width, file.Height);
 
       GraphicsDevice.SetRenderTarget (result);
-      //GraphicsDevice.Clear (Color.Black);
 
-      //Multiply each color by the source alpha, and write in just the color values into the final texture
+      //Multiply each color by the source alpha, and write in just the color values into the final brush_control.texture
       BlendState blendColor = new BlendState ();
       blendColor.ColorWriteChannels = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue;
 
@@ -541,7 +427,7 @@ namespace Boxland
       spriteBatch.Draw (file, file.Bounds, Color.White);
       spriteBatch.End ();
 
-      //Now copy over the alpha values from the PNG source texture to the final one, without multiplying them
+      //Now copy over the alpha values from the PNG source brush_control.texture to the final one, without multiplying them
       BlendState blendAlpha = new BlendState ();
       blendAlpha.ColorWriteChannels = ColorWriteChannels.Alpha;
 
@@ -596,449 +482,210 @@ namespace Boxland
 
     void load_graphics ()
       {
-      solid_black = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\solid_black.png", FileMode.Open, FileAccess.Read));
-      pixel_yellow = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\pixel_yellow.png", FileMode.Open, FileAccess.Read));
-      //light_effect_darkness = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\light_effect_darkness.png", FileMode.Open, FileAccess.Read));
+      solid_black = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\solid_black.png", FileMode.Open, FileAccess.Read));
+      pixel_yellow = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\pixel_yellow.png", FileMode.Open, FileAccess.Read));
+      //light_effect_darkness = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\light_effect_darkness.png", FileMode.Open, FileAccess.Read));
 
       // background
-      title_screen_test = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\test_background1a.png", FileMode.Open, FileAccess.Read));
+      title_screen_test = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\test_background1a.png", FileMode.Open, FileAccess.Read));
 
-      test_background1 = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\test_background1a.png", FileMode.Open, FileAccess.Read));
-      test_background2 = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\test_background2a.png", FileMode.Open, FileAccess.Read));
-      test_background3 = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\test_background3.png", FileMode.Open, FileAccess.Read));
-      test_background4 = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\test_background4a.png", FileMode.Open, FileAccess.Read));
-      test_background5 = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\test_background5.png", FileMode.Open, FileAccess.Read));
-      test_background = test_background4;
+      test_background1 = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\test_background1a.png", FileMode.Open, FileAccess.Read));
+      test_background2 = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\test_background2a.png", FileMode.Open, FileAccess.Read));
+      test_background3 = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\test_background3.png", FileMode.Open, FileAccess.Read));
+      test_background4 = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\test_background4a.png", FileMode.Open, FileAccess.Read));
+      test_background5 = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\test_background5.png", FileMode.Open, FileAccess.Read));
+      map.background = test_background4;
 
       // effects
-      wall_shadow_center = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\shadow_center.png", FileMode.Open, FileAccess.Read));
+      wall_shadow_center = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\shadow_center.png", FileMode.Open, FileAccess.Read));
+      wall_shadow_west = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\shadow_left3.png", FileMode.Open, FileAccess.Read));
+      wall_shadow_south_west = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\shadow_lower_left3.png", FileMode.Open, FileAccess.Read));
+      wall_shadow_south = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\shadow_lower3.png", FileMode.Open, FileAccess.Read));
+      wall_shadow_south_east = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\shadow_lower_right3.png", FileMode.Open, FileAccess.Read));
+      wall_shadow_east = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\shadow_right3.png", FileMode.Open, FileAccess.Read));
 
-      wall_shadow_west = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\shadow_left3.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (wall_shadow_west, new Color (255, 0, 255, 255));
-
-      wall_shadow_south_west = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\shadow_lower_left3.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (wall_shadow_south_west, new Color (255, 0, 255, 255));
-
-      wall_shadow_south = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\shadow_lower3.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (wall_shadow_south, new Color (255, 0, 255, 255));
-
-      wall_shadow_south_east = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\shadow_lower_right3.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (wall_shadow_south_east, new Color (255, 0, 255, 255));
-
-      wall_shadow_east = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\shadow_right3.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (wall_shadow_east, new Color (255, 0, 255, 255));
-
-      shading_wall = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\shading_wall.png", FileMode.Open, FileAccess.Read));
+      shading_wall = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\shading_wall.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (shading_wall, new Color (255, 0, 255, 255));
 
-      shading_door_test_closed = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\shading_door_test_closed.png", FileMode.Open, FileAccess.Read));
+      shading_door_test_closed = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\shading_door_test_closed.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (shading_door_test_closed, new Color (255, 0, 255, 255));
 
-      shading_door_test_open = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\shading_door_test_open.png", FileMode.Open, FileAccess.Read));
+      shading_door_test_open = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\shading_door_test_open.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (shading_door_test_open, new Color (255, 0, 255, 255));
 
-      shading_gateway_test = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\shading_gateway_test.png", FileMode.Open, FileAccess.Read));
+      shading_gateway_test = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\shading_gateway_test.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (shading_gateway_test, new Color (255, 0, 255, 255));
 
-      shading_box_test_ice = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\shading_box_test_ice3.png", FileMode.Open, FileAccess.Read));
+      shading_box_test_ice = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\shading_box_test_ice3.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (shading_box_test_ice, new Color (255, 0, 255, 255));
 
-      light_sprite[(int) L.blue] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\light_blue.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (light_sprite[(int) L.blue], new Color (255, 0, 255, 255));
+      light_sprite[(int) L.blue] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\light_blue.png", FileMode.Open, FileAccess.Read));
+      light_sprite[(int) L.blue_pale] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\light_blue_pale.png", FileMode.Open, FileAccess.Read));
+      light_sprite[(int) L.dark] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\light_dark.png", FileMode.Open, FileAccess.Read));
+      light_sprite[(int) L.fushia] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\light_fushia.png", FileMode.Open, FileAccess.Read));
+      light_sprite[(int) L.green] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\light_green.png", FileMode.Open, FileAccess.Read));
+      light_sprite[(int) L.red] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\light_red.png", FileMode.Open, FileAccess.Read));
+      light_sprite[(int) L.white] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\light_white.png", FileMode.Open, FileAccess.Read));
+      light_sprite[(int) L.yellow] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\light_yellow.png", FileMode.Open, FileAccess.Read));
+      light_sprite[(int) L.yellow_pale] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\light_yellow_pale.png", FileMode.Open, FileAccess.Read));
+      effect_snowflake = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\snowflake.png", FileMode.Open, FileAccess.Read));
+      effect_cold_energy = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\cold_energy.png", FileMode.Open, FileAccess.Read));
+      effect_flame_white = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\flame_white.png", FileMode.Open, FileAccess.Read));
+      effect_flame_yellow = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\flame_yellow.png", FileMode.Open, FileAccess.Read));
+      effect_flame_orange = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\flame_orange.png", FileMode.Open, FileAccess.Read));
+      effect_flame_red = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\flame_red.png", FileMode.Open, FileAccess.Read));
+      effect_smoke = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\smoke.png", FileMode.Open, FileAccess.Read));
+      effect_dollars = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\dollars.png", FileMode.Open, FileAccess.Read));
+      effect_sparkle_white = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\sparkle_white.png", FileMode.Open, FileAccess.Read));
+      solid_white = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\solid_white.png", FileMode.Open, FileAccess.Read));
+      solid_red = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\solid_red.png", FileMode.Open, FileAccess.Read));
+      effect_pain = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\pain.png", FileMode.Open, FileAccess.Read));
+      pixel_green = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\pixel_green.png", FileMode.Open, FileAccess.Read));
 
-      light_sprite[(int) L.blue_pale] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\light_blue_pale.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (light_sprite[(int) L.blue_pale], new Color (255, 0, 255, 255));
-
-      light_sprite[(int) L.dark] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\light_dark.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (light_sprite[(int) L.dark], new Color (255, 0, 255, 255));
-
-      light_sprite[(int) L.fushia] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\light_fushia.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (light_sprite[(int) L.fushia], new Color (0, 255, 0, 255));
-
-      light_sprite[(int) L.green] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\light_green.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (light_sprite[(int) L.green], new Color (255, 0, 255, 255));
-
-      light_sprite[(int) L.red] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\light_red.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (light_sprite[(int) L.red], new Color (255, 0, 255, 255));
-
-      light_sprite[(int) L.white] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\light_white.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (light_sprite[(int) L.white], new Color (255, 0, 255, 255));
-
-      light_sprite[(int) L.yellow] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\light_yellow.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (light_sprite[(int) L.yellow], new Color (255, 0, 255, 255));
-
-      light_sprite[(int) L.yellow_pale] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\light_yellow_pale.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (light_sprite[(int) L.yellow_pale], new Color (255, 0, 255, 255));
-
-      effect_snowflake = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\snowflake.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (effect_snowflake, new Color (255, 0, 255, 255));
-
-      effect_cold_energy = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\cold_energy.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (effect_cold_energy, new Color (255, 0, 255, 255));
-
-      effect_flame_white = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\flame_white.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (effect_flame_white, new Color (255, 0, 255, 255));
-
-      effect_flame_yellow = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\flame_yellow.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (effect_flame_yellow, new Color (255, 0, 255, 255));
-
-      effect_flame_orange = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\flame_orange.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (effect_flame_orange, new Color (255, 0, 255, 255));
-
-      effect_flame_red = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\flame_red.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (effect_flame_red, new Color (255, 0, 255, 255));
-
-      effect_smoke = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\smoke.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (effect_smoke, new Color (255, 0, 255, 255));
-
-      effect_dollars = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\dollars.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (effect_dollars, new Color (255, 0, 255, 255));
-
-      effect_sparkle_white = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\sparkle_white.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (effect_sparkle_white, new Color (255, 0, 255, 255));
-
-      solid_white = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\solid_white.png", FileMode.Open, FileAccess.Read));
-      solid_red = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\solid_red.png", FileMode.Open, FileAccess.Read));
-
-      effect_pain = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\pain.png", FileMode.Open, FileAccess.Read));
-      //ConvertToPremultipliedAlpha (effect_pain, new Color (255, 0, 255, 255));
-
-      pixel_green = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\pixel_green.png", FileMode.Open, FileAccess.Read));
-
-      wires_southeast_powered_test = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\wires_southeast_powered_test2.png", FileMode.Open, FileAccess.Read));
+      wires_southeast_powered_test = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\wires_southeast_powered_test2.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (wires_southeast_powered_test, new Color (255, 0, 255, 255));
 
-      shadow_character_generic = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "effects\\shadow_character_generic.png", FileMode.Open, FileAccess.Read));
+      shadow_character_generic = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "effects\\shadow_character_generic.png", FileMode.Open, FileAccess.Read));
 
       color_flash_sprite = solid_white;
 
       // textures
-      texture[(int) T.ASPHALT_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\asphalt_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.BOX_ICE_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\box_ice4.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.BOX_ICE_TEST], new Color (255, 0, 255, 255));
-      texture[(int) T.BOX_METAL_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\box_metal_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.BOX_WOOD_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\box_wood_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.BRICK_GREY_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\brick_grey_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.BRICK_RED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\brick_red.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.BRICK_WHITE_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\brick_white_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.CARPET_GREY_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\carpet_grey_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.CARPET_PURPLE_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\carpet_purple_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_RED_V_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_red_vertical_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_RED_V_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_red_vertical_top_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_RED_V_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_red_vertical_front_closed.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.DOOR_RED_V_FRONT_CLOSED_TEST], new Color (255, 0, 255, 255));
-      texture[(int) T.DOOR_RED_V_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_red_vertical_front_open.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.DOOR_RED_V_FRONT_OPEN_TEST], new Color (255, 0, 255, 255));
-      texture[(int) T.DOOR_RED_H_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_red_horizontal_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_RED_H_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_red_horizontal_top_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_RED_H_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_red_horizontal_front_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_RED_H_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_red_horizontal_front_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_YELLOW_V_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_yellow_vertical_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_YELLOW_V_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_yellow_vertical_top_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_YELLOW_V_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_yellow_vertical_front_closed.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.DOOR_YELLOW_V_FRONT_CLOSED_TEST], new Color (255, 0, 255, 255));
-      texture[(int) T.DOOR_YELLOW_V_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_yellow_vertical_front_open.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.DOOR_YELLOW_V_FRONT_OPEN_TEST], new Color (255, 0, 255, 255));
-      texture[(int) T.DOOR_YELLOW_H_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_yellow_horizontal_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_YELLOW_H_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_yellow_horizontal_top_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_YELLOW_H_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_yellow_horizontal_front_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_YELLOW_H_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_yellow_horizontal_front_open.png", FileMode.Open, FileAccess.Read));
-
-      texture[(int) T.DOOR_GREEN_V_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_green_vertical_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_GREEN_V_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_green_vertical_top_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_GREEN_V_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_green_vertical_front_closed.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.DOOR_GREEN_V_FRONT_CLOSED_TEST], new Color (255, 0, 255, 255));
-      texture[(int) T.DOOR_GREEN_V_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_green_vertical_front_open.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.DOOR_GREEN_V_FRONT_OPEN_TEST], new Color (255, 0, 255, 255));
-      texture[(int) T.DOOR_GREEN_H_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_green_horizontal_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_GREEN_H_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_green_horizontal_top_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_GREEN_H_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_green_horizontal_front_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_GREEN_H_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_green_horizontal_front_open.png", FileMode.Open, FileAccess.Read));
-
-      texture[(int) T.DOOR_BLUE_V_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_blue_vertical_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_BLUE_V_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_blue_vertical_top_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_BLUE_V_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_blue_vertical_front_closed.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.DOOR_BLUE_V_FRONT_CLOSED_TEST], new Color (255, 0, 255, 255));
-      texture[(int) T.DOOR_BLUE_V_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_blue_vertical_front_open.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.DOOR_BLUE_V_FRONT_OPEN_TEST], new Color (255, 0, 255, 255));
-      texture[(int) T.DOOR_BLUE_H_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_blue_horizontal_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_BLUE_H_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_blue_horizontal_top_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_BLUE_H_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_blue_horizontal_front_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_BLUE_H_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_blue_horizontal_front_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DRYWALL_MINT_TOP_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\drywall_mint_top_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DRYWALL_MINT_FRONT_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\drywall_mint_front_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DRYWALL_PURPLE_TOP_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\drywall_purple_top_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DRYWALL_PURPLE_FRONT_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\drywall_purple_front_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DRYWALL_TAN_TOP_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\drywall_tan_top_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DRYWALL_TAN_FRONT_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\drywall_tan_front_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DRYWALL_YELLOW_FRONT_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\drywall_yellow_front_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DRYWALL_YELLOW_TOP_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\drywall_yellow_top_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.EXIT_RED_V_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\exit_test_red_vertical_top_closed.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.EXIT_RED_V_TOP_CLOSED_TEST], new Color (255, 0, 255, 255));
-      texture[(int) T.EXIT_RED_V_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\exit_test_red_vertical_top_open.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.EXIT_RED_V_TOP_OPEN_TEST], new Color (255, 0, 255, 255));
-      texture[(int) T.EXIT_RED_V_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\exit_test_red_vertical_front_closed.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.EXIT_RED_V_FRONT_CLOSED_TEST], new Color (255, 0, 255, 255));
-      texture[(int) T.EXIT_RED_V_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\exit_test_red_vertical_front_open.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.EXIT_RED_V_FRONT_OPEN_TEST], new Color (255, 0, 255, 255));
-      texture[(int) T.EXIT_RED_H_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\exit_test_red_horizontal_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.EXIT_RED_H_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\exit_test_red_horizontal_top_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.EXIT_RED_H_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\exit_test_red_horizontal_front_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.EXIT_RED_H_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\exit_test_red_horizontal_front_open.png", FileMode.Open, FileAccess.Read));
-
-      texture[(int) T.FLOOR_GRATE_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\floor_grate_test.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.FLOOR_GRATE_TEST], new Color (255, 0, 255, 255));
-      texture[(int) T.FLOOR_LOGO_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\floor_test_logo.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.FLOOR_METAL_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\floor_metal_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.FLOOR_ZONE_GREEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\loading_zone_green_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.FLOOR_ZONE_RED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\loading_zone_red_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.FLOOR_ZONE_YELLOW_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\loading_zone_yellow_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.GATEWAY_V_TOP_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\gateway_test_vertical_top.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.GATEWAY_V_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\gateway_test_vertical_front_closed.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.GATEWAY_V_FRONT_CLOSED_TEST], new Color (255, 0, 255, 255));
-      texture[(int) T.GATEWAY_V_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\gateway_test_vertical_front_open.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.GATEWAY_V_FRONT_OPEN_TEST], new Color (255, 0, 255, 255));
-      texture[(int) T.GATEWAY_H_TOP_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\gateway_test_horizontal_top.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.GATEWAY_H_FRONT_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\gateway_test_horizontal_front.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.GRASS_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\grass.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.METAL_BLUE_FRONT_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\metal_blue_front_test2.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.METAL_BLUE_TOP_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\metal_blue_top_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.METAL_MINT_FRONT_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\metal_mint_front_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.METAL_MINT_TOP_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\metal_mint_top_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.SIDEWALK_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sidewalk_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.SWITCH_GREEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\switch_test_green.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.SWITCH_GREEN_DOWN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\switch_test_green_down.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.SWITCH_RED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\switch_test_red.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.SWITCH_RED_DOWN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\switch_test_red_down.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.SWITCH_BLUE_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\switch_test_blue.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.SWITCH_BLUE_DOWN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\switch_test_blue_down.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.SWITCH_YELLOW_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\switch_test_yellow.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.SWITCH_YELLOW_TEST], new Color (255, 0, 255, 255));
-      texture[(int) T.SWITCH_YELLOW_DOWN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\switch_test_yellow_down.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.SWITCH_YELLOW_DOWN_TEST], new Color (255, 0, 255, 255));
-      texture[(int) T.TEXTURE_HIGHLIGHT_RED] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\texture_highlight_red.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.TILE_BLACK_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\tile_black_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.TILE_BLUE_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\tile_blue_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.TILE_BROWN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\tile_brown_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.METAL_BLACK_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\metal_black_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.INCINERATOR_TEST_UP] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\incinerator_test_up.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.INCINERATOR_TEST_DOWN] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\incinerator_test_down.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.INCINERATOR_TEST_DOWN_FRONT] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\incinerator_test_down_front.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.INCINERATOR_TEST_LEFT] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\incinerator_test_left.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.INCINERATOR_TEST_RIGHT] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\incinerator_test_right.png", FileMode.Open, FileAccess.Read));
-      //texture[(int) T.WARNING_SIGN_TEST1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\warning_sign1.png", FileMode.Open, FileAccess.Read));
-      //texture[(int) T.WARNING_SIGN_TEST2] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\warning_sign2.png", FileMode.Open, FileAccess.Read));
-      //texture[(int) T.WARNING_SIGN_TEST3] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\warning_sign3.png", FileMode.Open, FileAccess.Read));
-      //texture[(int) T.WARNING_SIGN_TEST4] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\warning_sign4.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.BIG_MACHINE_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\big_machine_test.png", FileMode.Open, FileAccess.Read));
-
-      texture[(int) T.BOX_BANDED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\box_banded_test.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.BOX_BANDED_TEST], new Color (255, 0, 255, 255));
+      brush_control.load_textures (GraphicsDevice);
 
       // stickers
-      sticker_office[0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office0_test2.png", FileMode.Open, FileAccess.Read));
-      sticker_office[1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office1_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[2] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office2_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[3] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office3_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[4] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office4_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[5] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office5_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[6] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office6_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[7] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office7_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[8] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office8_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[9] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office9_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[10] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office10_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[11] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office11_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[12] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office12_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[13] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office13_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[14] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office14_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[15] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office15_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[16] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office16_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[17] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office17_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[18] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office18_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[19] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office19_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[20] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office20_2_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[21] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office21_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[22] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office22_double_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[23] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office23_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[24] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office24_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[25] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office25_double_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[26] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office26_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[27] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office27_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[28] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office28_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[29] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office29_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[30] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office30_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[31] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office31_test.png", FileMode.Open, FileAccess.Read));
-      sticker_office[32] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office32_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office0_test2.png", FileMode.Open, FileAccess.Read));
+      sticker_office[1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office1_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[2] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office2_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[3] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office3_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[4] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office4_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[5] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office5_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[6] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office6_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[7] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office7_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[8] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office8_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[9] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office9_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[10] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office10_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[11] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office11_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[12] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office12_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[13] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office13_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[14] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office14_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[15] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office15_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[16] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office16_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[17] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office17_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[18] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office18_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[19] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office19_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[20] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office20_2_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[21] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office21_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[22] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office22_double_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[23] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office23_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[24] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office24_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[25] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office25_double_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[26] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office26_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[27] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office27_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[28] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office28_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[29] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office29_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[30] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office30_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[31] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office31_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office[32] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office32_test.png", FileMode.Open, FileAccess.Read));
       for (int q = 0; q < total_office_stickers; q += 1) ConvertToPremultipliedAlpha (sticker_office[q], new Color (255, 0, 255, 255));
 
-      sticker_office_floor[0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_office_floor0_test.png", FileMode.Open, FileAccess.Read));
+      sticker_office_floor[0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_office_floor0_test.png", FileMode.Open, FileAccess.Read));
       for (int q = 0; q < total_office_floor_stickers; q += 1) ConvertToPremultipliedAlpha (sticker_office_floor[q], new Color (255, 0, 255, 255));
 
-      sticker_factory[0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_factory0_test.png", FileMode.Open, FileAccess.Read));
-      sticker_factory[1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_factory1_test.png", FileMode.Open, FileAccess.Read));
-      sticker_factory[2] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_factory2_test.png", FileMode.Open, FileAccess.Read));
-      sticker_factory[3] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_factory3_test.png", FileMode.Open, FileAccess.Read));
-      sticker_factory[4] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_factory4_test.png", FileMode.Open, FileAccess.Read));
-      sticker_factory[5] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_factory5_test.png", FileMode.Open, FileAccess.Read));
-      sticker_factory[6] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_factory6_test.png", FileMode.Open, FileAccess.Read));
-      sticker_factory[7] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_factory7_test.png", FileMode.Open, FileAccess.Read));
-      sticker_factory[8] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_factory8_test.png", FileMode.Open, FileAccess.Read));
-      sticker_factory[9] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_factory9_test.png", FileMode.Open, FileAccess.Read));
-      sticker_factory[10] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_factory10_test.png", FileMode.Open, FileAccess.Read));
+      sticker_factory[0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_factory0_test.png", FileMode.Open, FileAccess.Read));
+      sticker_factory[1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_factory1_test.png", FileMode.Open, FileAccess.Read));
+      sticker_factory[2] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_factory2_test.png", FileMode.Open, FileAccess.Read));
+      sticker_factory[3] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_factory3_test.png", FileMode.Open, FileAccess.Read));
+      sticker_factory[4] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_factory4_test.png", FileMode.Open, FileAccess.Read));
+      sticker_factory[5] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_factory5_test.png", FileMode.Open, FileAccess.Read));
+      sticker_factory[6] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_factory6_test.png", FileMode.Open, FileAccess.Read));
+      sticker_factory[7] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_factory7_test.png", FileMode.Open, FileAccess.Read));
+      sticker_factory[8] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_factory8_test.png", FileMode.Open, FileAccess.Read));
+      sticker_factory[9] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_factory9_test.png", FileMode.Open, FileAccess.Read));
+      sticker_factory[10] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_factory10_test.png", FileMode.Open, FileAccess.Read));
       for (int q = 0; q < 11; q += 1) ConvertToPremultipliedAlpha (sticker_factory[q], new Color (255, 0, 255, 255));
 
-      sticker_factory_floor[0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_factory_floor0a_test.png", FileMode.Open, FileAccess.Read));
-      sticker_factory_floor[1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sticker_factory_floor1_test.png", FileMode.Open, FileAccess.Read));
+      sticker_factory_floor[0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_factory_floor0a_test.png", FileMode.Open, FileAccess.Read));
+      sticker_factory_floor[1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\sticker_factory_floor1_test.png", FileMode.Open, FileAccess.Read));
       //for (int q = 0; q < 1; q += 1) ConvertToPremultipliedAlpha (sticker_factory[q], new Color (255, 0, 255, 255));
 
       // fixtures
-      fixture_control.fixture_sprite[(int) Fixture_Control.F.CHAIR1_SOUTH_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "fixtures\\chair1_south_test.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (fixture_control.fixture_sprite[(int) Fixture_Control.F.CHAIR1_SOUTH_TEST], new Color (255, 0, 255, 255));
-      
-      fixture_control.fixture_sprite[(int) Fixture_Control.F.CONVEYOR_NORTH_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "fixtures\\conveyor_north_test.png", FileMode.Open, FileAccess.Read));
-      fixture_control.fixture_sprite[(int) Fixture_Control.F.CONVEYOR_SOUTH_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "fixtures\\conveyor_south_test.png", FileMode.Open, FileAccess.Read));
-
-      fixture_control.fixture_sprite[(int) Fixture_Control.F.CONVEYOR_EAST_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "fixtures\\conveyor_east_test.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (fixture_control.fixture_sprite[(int) Fixture_Control.F.CONVEYOR_EAST_TEST], new Color (255, 0, 255, 255));
-
-      fixture_control.fixture_sprite[(int) Fixture_Control.F.CONVEYOR_WEST_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "fixtures\\conveyor_west_test.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (fixture_control.fixture_sprite[(int) Fixture_Control.F.CONVEYOR_WEST_TEST], new Color (255, 0, 255, 255));
-
-      fixture_control.fixture_sprite[(int) Fixture_Control.F.COUCH_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "fixtures\\couch_test.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (fixture_control.fixture_sprite[(int) Fixture_Control.F.COUCH_TEST], new Color (255, 0, 255, 255));
-
-      fixture_control.fixture_sprite[(int) Fixture_Control.F.FILING_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "fixtures\\filing_cabinet_test.png", FileMode.Open, FileAccess.Read));
-
-      fixture_control.fixture_sprite[(int) Fixture_Control.F.LASER_HORIZONTAL_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "fixtures\\laser_horizontal_test.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (fixture_control.fixture_sprite[(int) Fixture_Control.F.LASER_HORIZONTAL_TEST], new Color (255, 0, 255, 255));
-
-      fixture_control.fixture_sprite[(int) Fixture_Control.F.LASER_HORIZONTAL_GREEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "fixtures\\laser_horizontal_green_test.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (fixture_control.fixture_sprite[(int) Fixture_Control.F.LASER_HORIZONTAL_GREEN_TEST], new Color (255, 0, 255, 255));
-
-      fixture_control.fixture_sprite[(int) Fixture_Control.F.PLANT1_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "fixtures\\plant1_test.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (fixture_control.fixture_sprite[(int) Fixture_Control.F.PLANT1_TEST], new Color (255, 0, 255, 255));
-
-      fixture_control.fixture_sprite[(int) Fixture_Control.F.TABLE1_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "fixtures\\table1_test.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (fixture_control.fixture_sprite[(int) Fixture_Control.F.TABLE1_TEST], new Color (255, 0, 255, 255));
-
-      fixture_control.fixture_sprite[(int) Fixture_Control.F.TABLE2_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "fixtures\\table2_test.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (fixture_control.fixture_sprite[(int) Fixture_Control.F.TABLE2_TEST], new Color (255, 0, 255, 255));
-
-      fixture_control.fixture_sprite[(int) Fixture_Control.F.TV1_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "fixtures\\tv1_test.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (fixture_control.fixture_sprite[(int) Fixture_Control.F.TV1_TEST], new Color (255, 0, 255, 255));
-
-      fixture_control.fixture_sprite[(int) Fixture_Control.F.VENDING_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "fixtures\\vending_test.png", FileMode.Open, FileAccess.Read));
-
-      fixture_control.fixture_sprite[(int) Fixture_Control.F.WIRES_HORIZONTAL_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "fixtures\\wires_horizontal_test.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (fixture_control.fixture_sprite[(int) Fixture_Control.F.WIRES_HORIZONTAL_TEST], new Color (255, 0, 255, 255));
-
-      fixture_control.fixture_sprite[(int) Fixture_Control.F.WIRES_VERTICAL_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "fixtures\\wires_vertical_test.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (fixture_control.fixture_sprite[(int) Fixture_Control.F.WIRES_VERTICAL_TEST], new Color (255, 0, 255, 255));
-
-      fixture_control.fixture_sprite[(int) Fixture_Control.F.WIRES_SOUTHEAST_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "fixtures\\wires_southeast_test.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (fixture_control.fixture_sprite[(int) Fixture_Control.F.WIRES_SOUTHEAST_TEST], new Color (255, 0, 255, 255));
+      fixture_control.load_sprites (GraphicsDevice);
 
       // objects
-      object_control.object_sprite[(int) Object_Control.O.SHIRT_YELLOW, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\shirt_power0_ink.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.SHIRT_YELLOW, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\shirt_power0_ink.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.SHIRT_YELLOW, 0], new Color (255, 0, 255, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.SHIRT_YELLOW, 1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\shirt_power1_ink.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.SHIRT_YELLOW, 1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\shirt_power1_ink.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.SHIRT_YELLOW, 1], new Color (255, 0, 255, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.SHIRT_RED, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\shirt_fire0_ink.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.SHIRT_RED, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\shirt_fire0_ink.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.SHIRT_RED, 0], new Color (255, 0, 255, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.SHIRT_WHITE, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\shirt_ice0_ink.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.SHIRT_WHITE, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\shirt_ice0_ink.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.SHIRT_WHITE, 0], new Color (255, 0, 255, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.SHIRT_WHITE, 1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\shirt_ice1_ink.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.SHIRT_WHITE, 1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\shirt_ice1_ink.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.SHIRT_WHITE, 1], new Color (255, 0, 255, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.SHIRT_PURPLE, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\shirt_magnet0_ink.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.SHIRT_PURPLE, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\shirt_magnet0_ink.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.SHIRT_PURPLE, 0], new Color (0, 255, 0, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.SHIRT_PURPLE, 1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\shirt_magnet1_ink.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.SHIRT_PURPLE, 1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\shirt_magnet1_ink.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.SHIRT_PURPLE, 1], new Color (0, 255, 0, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.SHIRT_BLUE, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\shirt_electric.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.SHIRT_BLUE, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\shirt_electric.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.SHIRT_BLUE, 0], new Color (255, 0, 255, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.ROCK, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\food_hotdog_ink.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.ROCK, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\food_hotdog_ink.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.ROCK, 0], new Color (255, 0, 255, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.ROCK_BROWN, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\food_hamburger_ink.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.ROCK_BROWN, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\food_hamburger_ink.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.ROCK_BROWN, 0], new Color (255, 0, 255, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.ROCK_RED, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\food_pizza_ink.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.ROCK_RED, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\food_pizza_ink.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.ROCK_RED, 0], new Color (255, 0, 255, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.ROCK_WHITE, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\rock_white_test.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.ROCK_WHITE, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\rock_white_test.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.ROCK_WHITE, 0], new Color (255, 0, 255, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.KEYCARD, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\key1_ink.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.KEYCARD, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\key1_ink.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.KEYCARD, 0], new Color (255, 0, 255, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.HEALTH, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\health0_ink.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.HEALTH, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\health0_ink.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.HEALTH, 0], new Color (255, 0, 255, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.HEALTH, 1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\health1_ink.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.HEALTH, 1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\health1_ink.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.HEALTH, 1], new Color (255, 0, 255, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.HEALTH, 2] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\health2_ink.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.HEALTH, 2] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\health2_ink.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.HEALTH, 2], new Color (255, 0, 255, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.HEALTH, 3] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\health3_ink.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.HEALTH, 3] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\health3_ink.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.HEALTH, 3], new Color (255, 0, 255, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.COIN, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\coin0_ink.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.COIN, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\coin0_ink.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.COIN, 0], new Color (255, 0, 255, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.SCRAP_METAL, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\scrap_metal_ink.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.SCRAP_METAL, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\scrap_metal_ink.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.SCRAP_METAL, 0], new Color (255, 0, 255, 255));
 
-      object_control.object_sprite[(int) Object_Control.O.ENERGY, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "objects\\energy0_ink.png", FileMode.Open, FileAccess.Read));
+      object_control.object_sprite[(int) Object_Control.O.ENERGY, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "objects\\energy0_ink.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (object_control.object_sprite[(int) Object_Control.O.ENERGY, 0], new Color (255, 0, 255, 255));
 
       // characters
-      pow_sprite = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "characters\\pow.png", FileMode.Open, FileAccess.Read));
+      character_control.load_sprites (GraphicsDevice);
+
+      pow_sprite = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "characters\\pow.png", FileMode.Open, FileAccess.Read));
+      arrow_sprite = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "characters\\arrow.png", FileMode.Open, FileAccess.Read));
+      target_sprite = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "characters\\target.png", FileMode.Open, FileAccess.Read));
+
       ConvertToPremultipliedAlpha (pow_sprite, new Color (255, 0, 255, 255));
-
-      arrow_sprite = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "characters\\arrow.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (arrow_sprite, new Color (255, 0, 255, 255));
-
-      target_sprite = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "characters\\target.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (target_sprite, new Color (255, 0, 255, 255));
 
-      character_sprite[(int) C.RICHARD, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "characters\\richard_green.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (character_sprite[(int) C.RICHARD, 0], new Color (255, 0, 255, 255));
-
-      character_sprite[(int) C.RICHARD, (int) Object_Control.O.SHIRT_YELLOW] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "characters\\richard_yellow.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (character_sprite[(int) C.RICHARD, (int) Object_Control.O.SHIRT_YELLOW], new Color (255, 0, 255, 255));
-
-      character_sprite[(int) C.RICHARD, (int) Object_Control.O.SHIRT_RED] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "characters\\richard_red.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (character_sprite[(int) C.RICHARD, (int) Object_Control.O.SHIRT_RED], new Color (255, 0, 255, 255));
-
-      character_sprite[(int) C.RICHARD, (int) Object_Control.O.SHIRT_WHITE] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "characters\\richard_white.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (character_sprite[(int) C.RICHARD, (int) Object_Control.O.SHIRT_WHITE], new Color (255, 0, 255, 255));
-
-      character_sprite[(int) C.RICHARD, (int) Object_Control.O.SHIRT_BLUE] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "characters\\richard_teal.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (character_sprite[(int) C.RICHARD, (int) Object_Control.O.SHIRT_BLUE], new Color (255, 0, 255, 255));
-
-      character_sprite[(int) C.RICHARD, (int) Object_Control.O.SHIRT_PURPLE] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "characters\\richard_fushia.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (character_sprite[(int) C.RICHARD, (int) Object_Control.O.SHIRT_PURPLE], new Color (0, 255, 0, 255));
-
-      character_sprite[(int) C.RICHARDS_DAD, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "characters\\richards_dad_test.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (character_sprite[(int) C.RICHARDS_DAD, 0], new Color (255, 0, 255, 255));
-
-      character_sprite[(int) C.RETARD, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "characters\\retard_tall_test.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (character_sprite[(int) C.RETARD, 0], new Color (255, 255, 255, 255));
-
-      character_sprite[(int) C.THROWING_RETARD, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "characters\\hitler_new1.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (character_sprite[(int) C.THROWING_RETARD, 0], new Color (255, 0, 255, 255));
-
       // menu
-      title_screen_test = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "menu\\title_screen_test2.png", FileMode.Open, FileAccess.Read));
-      menu_exit_test = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "menu\\menu_exit.png", FileMode.Open, FileAccess.Read));
+      title_screen_test = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "menu\\title_screen_test2.png", FileMode.Open, FileAccess.Read));
+      menu_exit_test = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "menu\\menu_exit.png", FileMode.Open, FileAccess.Read));
       ConvertToPremultipliedAlpha (menu_exit_test, new Color (0, 0, 0, 255));
       }
 
@@ -1081,9 +728,9 @@ namespace Boxland
     public void Update_Characters ()
       {
       int b, f, c;
-      int b_clip;   // character clips world brush
+      int b_clip;   // character clips world brush_control.brush
       int c_clip;   // character clips another character
-      int b_clip2;  // box clips brush
+      int b_clip2;  // box clips brush_control.brush
       int f_clip;   // character clips fixture
 
       Random rnd = new Random ();
@@ -1091,17 +738,7 @@ namespace Boxland
       // SKINS
       for (c = 0; c < character_control.character.Count; c += 1)
         {
-        if (c == PLAYER)
-          {
-          //if (character_control.character[c].shirt == "none") character_control.character[c].skin = 0;
-          //else if (character_control.character[c].shirt == (int) Object_Control.O.SHIRT_YELLOW) character_control.character[c].skin = (int) Object_Control.O.SHIRT_YELLOW;
-          //else if (character_control.character[c].shirt == "fire") character_control.character[c].skin = (int) Object_Control.O.SHIRT_RED;
-          //else if (character_control.character[c].shirt == "ice") character_control.character[c].skin = (int) Object_Control.O.SHIRT_WHITE;
-          //else if (character_control.character[c].shirt == "electric") character_control.character[c].skin = (int) Object_Control.O.SHIRT_BLUE;
-          //else if (character_control.character[c].shirt == "magnet") character_control.character[c].skin = (int) Object_Control.O.SHIRT_PURPLE;
-          //else character_control.character[c].skin = 0;
-          character_control.character[c].skin = character_control.character[c].shirt;
-          }
+        if (c == PLAYER) character_control.character[c].skin = character_control.character[c].shirt;
         }
 
       // PHYSICAL EFFECTS
@@ -1127,8 +764,8 @@ namespace Boxland
             }
           }
 
-        // fix for box pushing glitch
-        if (character_control.character[c].action == "pushing" && character_control.character[c].brush_grab > -1 && brush[character_control.character[c].brush_grab].moving == false) character_control.character[c].stop_pushing ();
+        // stop richard from pushing if his box hits a wall
+        if (character_control.character[c].action == "pushing" && character_control.character[c].brush_grab > -1 && brush_control.brush[character_control.character[c].brush_grab].moving == false) character_control.character[c].stop_pushing ();
         }
 
       // IDLE COLLISIONS
@@ -1136,20 +773,20 @@ namespace Boxland
       for (c = 0; c < character_control.character.Count; c += 1)
         {
         b_clip = character_in_brush (character_control.character[c]);
-        if (b_clip > -1)// && brush[b_clip].moving == true)
+        if (b_clip > -1)// && brush_control.brush[b_clip].moving == true)
           {
           // box going west
-          if (character_control.character[c].dx - (character_control.character[c].width / 2) < brush[b_clip].x
-              && character_control.character[c].dx + (character_control.character[c].width / 2) > brush[b_clip].x) character_control.character[c].dx = brush[b_clip].x - (character_control.character[c].width / 2);
+          if (character_control.character[c].dx - (character_control.character[c].width / 2) < brush_control.brush[b_clip].x
+              && character_control.character[c].dx + (character_control.character[c].width / 2) > brush_control.brush[b_clip].x) character_control.character[c].dx = brush_control.brush[b_clip].x - (character_control.character[c].width / 2);
           // box going east
-          if (character_control.character[c].dx - (character_control.character[c].width / 2) < brush[b_clip].x + brush[b_clip].width
-              && character_control.character[c].dx + (character_control.character[c].width / 2) > brush[b_clip].x + brush[b_clip].width) character_control.character[c].dx = brush[b_clip].x + brush[b_clip].width + (character_control.character[c].width / 2);
+          if (character_control.character[c].dx - (character_control.character[c].width / 2) < brush_control.brush[b_clip].x + brush_control.brush[b_clip].width
+              && character_control.character[c].dx + (character_control.character[c].width / 2) > brush_control.brush[b_clip].x + brush_control.brush[b_clip].width) character_control.character[c].dx = brush_control.brush[b_clip].x + brush_control.brush[b_clip].width + (character_control.character[c].width / 2);
           // box going north
-          if (character_control.character[c].dy - (character_control.character[c].length / 2) < brush[b_clip].y + brush[b_clip].length
-              && character_control.character[c].dy + (character_control.character[c].length / 2) > brush[b_clip].y + brush[b_clip].length) character_control.character[c].dy = brush[b_clip].y + brush[b_clip].length + (character_control.character[c].length / 2);
+          if (character_control.character[c].dy - (character_control.character[c].length / 2) < brush_control.brush[b_clip].y + brush_control.brush[b_clip].length
+              && character_control.character[c].dy + (character_control.character[c].length / 2) > brush_control.brush[b_clip].y + brush_control.brush[b_clip].length) character_control.character[c].dy = brush_control.brush[b_clip].y + brush_control.brush[b_clip].length + (character_control.character[c].length / 2);
           // box going south
-          if (character_control.character[c].dy - (character_control.character[c].length / 2) < brush[b_clip].y
-              && character_control.character[c].dy + (character_control.character[c].length / 2) > brush[b_clip].y) character_control.character[c].dy = brush[b_clip].y - (character_control.character[c].length / 2);
+          if (character_control.character[c].dy - (character_control.character[c].length / 2) < brush_control.brush[b_clip].y
+              && character_control.character[c].dy + (character_control.character[c].length / 2) > brush_control.brush[b_clip].y) character_control.character[c].dy = brush_control.brush[b_clip].y - (character_control.character[c].length / 2);
           }
         }
 
@@ -1172,11 +809,6 @@ namespace Boxland
             // stop moving horizontally if destination hit
             if (character_control.character[c].x >= character_control.character[c].push_x)
               {
-              //character_control.character[c].self_x_velocity = 0;
-              //character_control.character[c].x = character_control.character[c].push_x;
-              //character_control.character[c].dx = character_control.character[c].push_x;
-              //character_control.character[c].action = "grabbing";
-              //character_control.character[c].push_dir = "none";
               character_control.character[c].stop_pushing ();
               }
             }
@@ -1187,11 +819,6 @@ namespace Boxland
             // stop moving horizontally if destination hit
             if (character_control.character[c].x <= character_control.character[c].push_x)
               {
-              //character_control.character[c].self_x_velocity = 0;
-              //character_control.character[c].x = character_control.character[c].push_x;
-              //character_control.character[c].dx = character_control.character[c].push_x;
-              //character_control.character[c].action = "grabbing";
-              //character_control.character[c].push_dir = "none";
               character_control.character[c].stop_pushing ();
               }
             }
@@ -1222,25 +849,23 @@ namespace Boxland
         b_clip = character_in_brush (character_control.character[c]);
         c_clip = character_in_character (c);
         f_clip = character_in_fixture (character_control.character[c], true);
-        if (character_control.character[c].brush_grab > -1) b_clip2 = brush_in_brush (character_control.character[c].brush_grab);
+        if (character_control.character[c].brush_grab > -1) b_clip2 = brush_control.brush_in_brush (character_control.character[c].brush_grab);
         else b_clip2 = -1;
 
         // gateways
-        if (c == PLAYER && b_clip > -1 && brush[b_clip].gateway > -1)
+        if (c == PLAYER && b_clip > -1 && brush_control.brush[b_clip].gateway > -1)
           {
           player_last_level = player_level;
-          player_level = brush[b_clip].gateway;
+          player_level = brush_control.brush[b_clip].gateway;
           enter_level ();
           b_clip = -1;
           }
 
         // level exits
-        else if (c == PLAYER && b_clip > -1 && brush[b_clip].top_texture_number == (int) T.EXIT_RED_V_TOP_CLOSED_TEST && red_doors_open == true) skip_area ();
-        else if (c == PLAYER && b_clip > -1 && brush[b_clip].top_texture_number == (int) T.EXIT_RED_H_TOP_CLOSED_TEST && red_doors_open == true) skip_area ();
-        //else if (c == PLAYER && b_clip > -1 && brush[b_clip].top_texture_number == EXIT_TEST_YELLOW && yellow_doors_open == true) skip_area ();
-        //else if (c == PLAYER && b_clip > -1 && brush[b_clip].top_texture_number == EXIT_TEST_YELLOW_H && yellow_doors_open == true) skip_area ();
-        //else if (c == PLAYER && b_clip > -1 && brush[b_clip].top_texture_number == EXIT_TEST_GREEN && green_doors_open == true) skip_area ();
-        //else if (c == PLAYER && b_clip > -1 && brush[b_clip].top_texture_number == EXIT_TEST_GREEN_H && green_doors_open == true) skip_area ();
+        //else if (c == PLAYER && b_clip > -1 && brush_control.brush[b_clip].top_texture_number == (int) Brush_Control.T.EXIT_RED_V_TOP_CLOSED_TEST && red_doors_open == true) skip_area ();
+        //else if (c == PLAYER && b_clip > -1 && brush_control.brush[b_clip].top_texture_number == (int) Brush_Control.T.EXIT_RED_H_TOP_CLOSED_TEST && red_doors_open == true) skip_area ();
+        //else if (c == PLAYER && b_clip > -1 && brush_control.brush[b_clip].top_texture_number == EXIT_TEST_YELLOW && yellow_doors_open == true) skip_area ();
+        //else if (c == PLAYER && b_clip > -1 && brush_control.brush[b_clip].top_texture_number == EXIT_TEST_YELLOW_H && yellow_doors_open == true) skip_area ();
 
         // walking into jump kick
         if (c_clip > -1)
@@ -1261,13 +886,6 @@ namespace Boxland
           //if (c == PLAYER)
           character_control.character[c].dx -= character_control.character[c].net_x_velocity;
           character_control.character[c].x = Convert.ToInt32 (character_control.character[c].dx);
-          //if (character_control.character[c].brush_grab > -1)
-          //  {
-          //  b = character_control.character[c].brush_grab;
-          //  brush[b].dx -= character_control.character[c].net_x_velocity;
-          //  brush[b].x = Convert.ToInt32 (brush[b].dx);
-          //  if (character_control.character[c].action == "pushing") character_control.character[c].action = "grabbing";
-          //  }
           }
 
         // Y MOVEMENT
@@ -1278,35 +896,21 @@ namespace Boxland
           // move toward box destination
           if (character_control.character[PLAYER].push_dir == "up")//character_control.character[c].y < character_control.character[c].push_y)  // going up
             {
-            //if (Math.Abs (character_control.character[c].push_y - character_control.character[c].y) < character_control.character[c].speed * .45) character_control.character[c].y = character_control.character[c].push_y;
-            //else 
             character_control.character[c].self_y_velocity = character_control.character[c].speed * .45;
 
             // stop moving vertically if destination hit
             if (character_control.character[c].y >= character_control.character[c].push_y)
               {
-              //character_control.character[c].self_y_velocity = 0;
-              //character_control.character[c].y = character_control.character[c].push_y;
-              //character_control.character[c].dy = character_control.character[c].push_y;
-              //character_control.character[c].action = "grabbing";
-              //character_control.character[c].push_dir = "none";
               character_control.character[c].stop_pushing ();
               }
             }
           else if (character_control.character[PLAYER].push_dir == "down")//character_control.character[c].y > character_control.character[c].push_y)  // going down
             {
-            //if (Math.Abs (character_control.character[c].y - character_control.character[c].push_y) < character_control.character[c].speed * .45) character_control.character[c].y = character_control.character[c].push_y;
-            //else 
             character_control.character[c].self_y_velocity = character_control.character[c].speed * -.45;
 
             // stop moving vertically if destination hit
             if (character_control.character[c].y <= character_control.character[c].push_y)
               {
-              //character_control.character[c].self_y_velocity = 0;
-              //character_control.character[c].y = character_control.character[c].push_y;
-              //character_control.character[c].dy = character_control.character[c].push_y;
-              //character_control.character[c].action = "grabbing";
-              //character_control.character[c].push_dir = "none";
               character_control.character[c].stop_pushing ();
               }
             }
@@ -1318,10 +922,7 @@ namespace Boxland
           character_control.character[c].self_y_velocity = character_control.character[c].self_velocity * Math.Sin (character_control.character[c].dir);
           }
         // factor in external forces on player unless anchored by holding onto something
-        //if (character_control.character[c].brush_grab == -1)
         character_control.character[c].net_y_velocity = character_control.character[c].self_y_velocity + character_control.character[c].ext_y_velocity;  // combine self-locomotion and external forces
-        //else character_control.character[c].net_y_velocity = character_control.character[c].self_y_velocity;
-        //}
 
         // slow external force speed to zero
         if (character_control.character[c].ext_y_velocity > 0 && character_control.character[c].ext_y_velocity < .1) character_control.character[c].ext_y_velocity = 0;  // slow external force speed to zero
@@ -1337,21 +938,21 @@ namespace Boxland
         b_clip = character_in_brush (character_control.character[c]);
         f_clip = character_in_fixture (character_control.character[c], true);
         c_clip = character_in_character (c);
-        if (character_control.character[c].brush_grab > -1) b_clip2 = brush_in_brush (character_control.character[c].brush_grab);
+        if (character_control.character[c].brush_grab > -1) b_clip2 = brush_control.brush_in_brush (character_control.character[c].brush_grab);
         else b_clip2 = -1;
 
         // gateways
-        if (c == PLAYER && b_clip > -1 && brush[b_clip].gateway > -1)
+        if (c == PLAYER && b_clip > -1 && brush_control.brush[b_clip].gateway > -1)
           {
           player_last_level = player_level;
-          player_level = brush[b_clip].gateway;
+          player_level = brush_control.brush[b_clip].gateway;
           enter_level ();
           b_clip = -1;
           }
 
         // level exits
-        else if (c == PLAYER && b_clip > -1 && brush[b_clip].top_texture_number == (int) T.EXIT_RED_V_TOP_CLOSED_TEST && red_doors_open == true) skip_area ();
-        else if (c == PLAYER && b_clip > -1 && brush[b_clip].top_texture_number == (int) T.EXIT_RED_H_TOP_CLOSED_TEST && red_doors_open == true) skip_area ();
+        else if (c == PLAYER && b_clip > -1 && brush_control.brush[b_clip].top_texture_number == (int) Brush_Control.T.EXIT_RED_V_TOP_CLOSED_TEST && red_doors_open == true) skip_area ();
+        else if (c == PLAYER && b_clip > -1 && brush_control.brush[b_clip].top_texture_number == (int) Brush_Control.T.EXIT_RED_H_TOP_CLOSED_TEST && red_doors_open == true) skip_area ();
 
         else if (b_clip > -1 || c_clip > -1 || b_clip2 > -1 || f_clip > -1)
           {
@@ -1381,7 +982,7 @@ namespace Boxland
           {
           if (character_control.character[c].net_z_velocity <= 0)
             {
-            character_control.character[c].dz = brush[b_clip].z + brush[b_clip].height + 1;
+            character_control.character[c].dz = brush_control.brush[b_clip].z + brush_control.brush[b_clip].height + 1;
             character_control.character[c].z = Convert.ToInt32 (character_control.character[c].dz);
             }
           else
@@ -1420,7 +1021,7 @@ namespace Boxland
         // conveyor belts
         if (character_on_ground (c) && character_control.character[c].action != "grabbing" && character_control.character[c].action != "pushing")
           {
-          f = character_on_fixture (character_control.character[c]);
+          f = fixture_control.character_on_fixture (character_control.character[c]);
           if (f > -1)
             {
             if (fixture_control.fixture[f].type == (int) Fixture_Control.F.CONVEYOR_NORTH_TEST && fixture_control.fixture[f].on == true)
@@ -1450,7 +1051,7 @@ namespace Boxland
               character_control.character[c].subtarget_y = -1;
               }
 
-            if (character_active (c))
+            if (character_control.active (c))
               {
               // GOALS
 
@@ -1458,8 +1059,8 @@ namespace Boxland
               if (character_control.character[c].goal == "none")
                 {
                 // if hostile, attack player if visible
-                if (character_control.character[c].hostile == true && character_control.character[c].action != "knocked out" && character_active (PLAYER)
-                    && character_sees_character (c, PLAYER))
+                if (character_control.character[c].hostile == true && character_control.character[c].action != "knocked out" && character_control.active (PLAYER)
+                    && character_control.sees_character (c, PLAYER, brush_control.brush))
                   character_control.character[c].attack_character (character_control.character[PLAYER], PLAYER);
                 }
 
@@ -1468,14 +1069,14 @@ namespace Boxland
                 {
 
                 // if target's unconscious, do nothing
-                if (!character_active (character_control.character[c].target)) character_control.character[c].goal = "none";
-                else if (character_sees_character (c, character_control.character[c].target))
+                if (!character_control.active (character_control.character[c].target)) character_control.character[c].goal = "none";
+                else if (character_control.sees_character (c, character_control.character[c].target, brush_control.brush))
                   {
                   if (character_control.character[c].action == "none" || character_control.character[c].action == "walking")
                     {
 
                     // close enough to punch
-                    if (character_reach_character (c, character_control.character[c].target))
+                    if (character_control.reach_character (c, character_control.character[c].target, brush_control.brush))
                       {
                       if (character_control.character[c].action != "punching" && rnd.Next (0, 50) == 0) character_punch (c);
                       }
@@ -1485,7 +1086,7 @@ namespace Boxland
                       {
 
                       // if he throws stuff & nothing's in the way
-                      if (character_control.character[c].projectiles == true && character_sees_character (c, character_control.character[c].target))
+                      if (character_control.character[c].projectiles == true && character_control.sees_character (c, character_control.character[c].target, brush_control.brush))
                         {
                         if (rnd.Next (0, 300) == 0) character_throw_food (c, get_direction (character_control.character[c].x, character_control.character[c].y, character_control.character[character_control.character[c].target].x, character_control.character[character_control.character[c].target].y));
                         else
@@ -1530,7 +1131,7 @@ namespace Boxland
                   }
                 else if (character_control.character[c].target_type == "character")
                   {
-                  if (character_reach_character (c, character_control.character[c].target))
+                  if (character_control.reach_character (c, character_control.character[c].target, brush_control.brush))
                     {
                     character_control.character[c].action = "none";
                     character_control.character[c].self_velocity = 0;
@@ -1590,13 +1191,13 @@ namespace Boxland
             {
             character_control.character[c].anim_frame = 0;
             character_control.character[c].combo = -1;
-            character_blink (c);
+            character_control.blink (c);
             }
           else if (character_control.character[c].action == "walking")
             {
             if (character_control.character[c].anim_frame >= 2 && character_control.character[c].anim_frame < 9) character_control.character[c].anim_frame += 1;
             else character_control.character[c].anim_frame = 2;
-            character_blink (c);
+            character_control.blink (c);
             }
           else if (character_control.character[c].action == "running")
             {
@@ -1656,13 +1257,15 @@ namespace Boxland
             else if (character_control.character[c].name == "Richard's Dad") character_control.character[c].anim_frame = 10;
             else if (character_control.character[c].name == "retard")
               {
-              if (character_control.character[c].anim_frame_sequence < punch_rest_delay)
-                {
-                if (character_control.character[c].combo == 1) character_control.character[c].anim_frame = 17;
-                else if (character_control.character[c].combo == 2) character_control.character[c].anim_frame = 18;
-                else character_control.character[c].anim_frame = 16;
-                }
-              else if (character_control.character[c].anim_frame_sequence >= punch_rest_delay) character_control.character[c].anim_frame = 35;
+              if (character_control.character[c].anim_frame < 16 || character_control.character[c].anim_frame > 19) character_control.character[c].anim_frame = 16;
+              else character_control.character[c].anim_frame += 1;
+              //if (character_control.character[c].anim_frame_sequence < punch_rest_delay)
+              //  {
+              //  if (character_control.character[c].combo == 1) character_control.character[c].anim_frame = 17;
+              //  else if (character_control.character[c].combo == 2) character_control.character[c].anim_frame = 18;
+              //  else character_control.character[c].anim_frame = 16;
+              //  }
+              //else if (character_control.character[c].anim_frame_sequence >= punch_rest_delay) character_control.character[c].anim_frame = 35;
               }
             else if (character_control.character[c].name == "throwing retard")
               {
@@ -1931,57 +1534,28 @@ namespace Boxland
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    int brush_in_brush (int b1)
-      {
-      int b2 = 0;
-      int clip = -1;
-
-      while (clip == -1 && b2 < total_brushes)
-        {
-        if (brush[b1].x + brush[b1].width > brush[b2].x && brush[b1].x < brush[b2].x + brush[b2].width &&
-            brush[b1].y + brush[b1].length > brush[b2].y && brush[b1].y < brush[b2].y + brush[b2].length &&
-            brush[b1].z + brush[b1].height > brush[b2].z && brush[b1].z < brush[b2].z + brush[b2].height &&
-            b1 != b2)
-            {
-          if (brush[b2].top_texture_number == (int) T.DOOR_RED_V_TOP_CLOSED_TEST && red_doors_open == true) clip = -1;
-          else if (brush[b2].top_texture_number == (int) T.DOOR_RED_H_TOP_CLOSED_TEST && red_doors_open == true) clip = -1;
-          else if (brush[b2].top_texture_number == (int) T.DOOR_YELLOW_V_TOP_CLOSED_TEST && yellow_doors_open == true) clip = -1;
-          else if (brush[b2].top_texture_number == (int) T.DOOR_YELLOW_H_TOP_CLOSED_TEST && yellow_doors_open == true) clip = -1;
-          else if (brush[b2].top_texture_number == (int) T.DOOR_GREEN_V_TOP_CLOSED_TEST && green_doors_open == true) clip = -1;
-          else if (brush[b2].top_texture_number == (int) T.DOOR_GREEN_H_TOP_CLOSED_TEST && green_doors_open == true) clip = -1;
-          else if (brush[b2].top_texture_number == (int) T.DOOR_BLUE_V_TOP_CLOSED_TEST && blue_doors_open == true) clip = -1;
-          else if (brush[b2].top_texture_number == (int) T.DOOR_BLUE_H_TOP_CLOSED_TEST && blue_doors_open == true) clip = -1;
-          else clip = b2;
-          }
-        b2 += 1;
-        }
-      return clip;
-      }
-
-    ////////////////////////////////////////////////////////////////////////////////
-
     int character_in_brush (Character c)
       {
       int b = 0;
       int clip = -1;
 
-      while (clip == -1 && b < total_brushes)
+      while (clip == -1 && b < brush_control.brush.Count)
         {
-        if (c.x + (c.width / 2) >= brush[b].x
-            && c.x - (c.width / 2) <= brush[b].x + brush[b].width
-            && c.y + (c.length / 2) >= brush[b].y
-            && c.y - (c.length / 2) <= brush[b].y + brush[b].length
-            && c.z + c.height >= brush[b].z
-            && c.z <= brush[b].z + brush[b].height)
+        if (c.x + (c.width / 2) >= brush_control.brush[b].x
+            && c.x - (c.width / 2) <= brush_control.brush[b].x + brush_control.brush[b].width
+            && c.y + (c.length / 2) >= brush_control.brush[b].y
+            && c.y - (c.length / 2) <= brush_control.brush[b].y + brush_control.brush[b].length
+            && c.z + c.height >= brush_control.brush[b].z
+            && c.z <= brush_control.brush[b].z + brush_control.brush[b].height)
           {
-          if (brush[b].top_texture_number == (int) T.DOOR_RED_V_TOP_CLOSED_TEST && red_doors_open == true) clip = -1;
-          else if (brush[b].top_texture_number == (int) T.DOOR_RED_H_TOP_CLOSED_TEST && red_doors_open == true) clip = -1;
-          else if (brush[b].top_texture_number == (int) T.DOOR_YELLOW_V_TOP_CLOSED_TEST && yellow_doors_open == true) clip = -1;
-          else if (brush[b].top_texture_number == (int) T.DOOR_YELLOW_H_TOP_CLOSED_TEST && yellow_doors_open == true) clip = -1;
-          else if (brush[b].top_texture_number == (int) T.DOOR_GREEN_V_TOP_CLOSED_TEST && green_doors_open == true) clip = -1;
-          else if (brush[b].top_texture_number == (int) T.DOOR_GREEN_H_TOP_CLOSED_TEST && green_doors_open == true) clip = -1;
-          else if (brush[b].top_texture_number == (int) T.DOOR_BLUE_V_TOP_CLOSED_TEST && blue_doors_open == true) clip = -1;
-          else if (brush[b].top_texture_number == (int) T.DOOR_BLUE_H_TOP_CLOSED_TEST && blue_doors_open == true) clip = -1;
+          if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_RED_V_TOP_CLOSED_TEST && red_doors_open == true) clip = -1;
+          else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_RED_H_TOP_CLOSED_TEST && red_doors_open == true) clip = -1;
+          else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_YELLOW_V_TOP_CLOSED_TEST && yellow_doors_open == true) clip = -1;
+          else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_YELLOW_H_TOP_CLOSED_TEST && yellow_doors_open == true) clip = -1;
+          else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_GREEN_V_TOP_CLOSED_TEST && green_doors_open == true) clip = -1;
+          else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_GREEN_H_TOP_CLOSED_TEST && green_doors_open == true) clip = -1;
+          else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_BLUE_V_TOP_CLOSED_TEST && blue_doors_open == true) clip = -1;
+          else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_BLUE_H_TOP_CLOSED_TEST && blue_doors_open == true) clip = -1;
           else clip = b;
           }
         b += 1;
@@ -1999,7 +1573,7 @@ namespace Boxland
 
       while (clip == -1 && c2 < character_control.character.Count)
         {
-        if (c2 != c && character_active (c2)
+        if (c2 != c && character_control.active (c2)
             && character_control.character[c].x + (character_control.character[c].width / 2) >= character_control.character[c2].x && character_control.character[c].x - (character_control.character[c].width / 2) <= character_control.character[c2].x + (character_control.character[c2].width / 2)
             && character_control.character[c].y + (character_control.character[c].length / 2) >= character_control.character[c2].y && character_control.character[c].y - (character_control.character[c].length / 2) <= character_control.character[c2].y + (character_control.character[c2].length / 2)
             && character_control.character[c].z + character_control.character[c].height >= character_control.character[c2].z && character_control.character[c].z <= character_control.character[c2].z + character_control.character[c2].height)
@@ -2018,231 +1592,231 @@ namespace Boxland
             int f;
             int b_clip, f_clip;
 
-            for (int b = 0; b < max_brushes; b += 1)
+            for (int b = 0; b < brush_control.brush.Count; b += 1)
               {
-              if (brush[b].moving_north == true || brush[b].moving_south == true
-                  || brush[b].moving_east == true || brush[b].moving_west == true)
-                brush[b].moving = true;
-              else brush[b].moving = false;
+              if (brush_control.brush[b].moving_north == true || brush_control.brush[b].moving_south == true
+                  || brush_control.brush[b].moving_east == true || brush_control.brush[b].moving_west == true)
+                brush_control.brush[b].moving = true;
+              else brush_control.brush[b].moving = false;
 
               // move north
-              if (brush[b].moving_north == true)
+              if (brush_control.brush[b].moving_north == true)
                 {
-                brush[b].dy += brush[b].ext_y_velocity;
-                brush[b].y = Convert.ToInt32 (brush[b].dy);
-                b_clip = brush_in_brush (b);
-                f_clip = brush_in_fixture (brush[b], true);
+                brush_control.brush[b].dy += brush_control.brush[b].ext_y_velocity;
+                brush_control.brush[b].y = Convert.ToInt32 (brush_control.brush[b].dy);
+                b_clip = brush_control.brush_in_brush (b);
+                f_clip = brush_control.brush_in_fixture (brush_control.brush[b], fixture_control.fixture, true);
                 //if (b_clip > -1 || f_clip > -1)  // hit another wall or fixture
                   //{
-                  //brush[b].dy -= brush[b].ext_y_velocity;
-                  //brush[b].y = Convert.ToInt32 (brush[b].dy);
+                  //brush_control.brush[b].dy -= brush_control.brush[b].ext_y_velocity;
+                  //brush_control.brush[b].y = Convert.ToInt32 (brush_control.brush[b].dy);
                   //}
                 if (b_clip > -1)  // hit another wall
                   {
-                  brush[b].dy = brush[b_clip].y - brush[b_clip].length;
-                  brush[b].y = Convert.ToInt32 (brush[b].dy);
+                  brush_control.brush[b].dy = brush_control.brush[b_clip].y - brush_control.brush[b_clip].length;
+                  brush_control.brush[b].y = Convert.ToInt32 (brush_control.brush[b].dy);
                   }
                 if (f_clip > -1)  // hit a fixture
                   {
-                  brush[b].dy = fixture_control.fixture[f_clip].y - fixture_control.fixture[f_clip].length;
-                  brush[b].y = Convert.ToInt32 (brush[b].dy);
+                  brush_control.brush[b].dy = fixture_control.fixture[f_clip].y - fixture_control.fixture[f_clip].length;
+                  brush_control.brush[b].y = Convert.ToInt32 (brush_control.brush[b].dy);
                   }
-                if (brush[b].dy >= brush[b].destination_y)  // hit or went past destination
+                if (brush_control.brush[b].dy >= brush_control.brush[b].destination_y && character_control.character[PLAYER].brush_grab != b)  // hit or went past destination
                   {
-                  brush[b].moving_north = false;
-                  brush[b].ext_y_velocity = 0;
-                  brush[b].y = brush[b].destination_y;
-                  brush[b].dy = brush[b].destination_y;
+                  brush_control.brush[b].moving_north = false;
+                  brush_control.brush[b].ext_y_velocity = 0;
+                  brush_control.brush[b].y = brush_control.brush[b].destination_y;
+                  brush_control.brush[b].dy = brush_control.brush[b].destination_y;
                   }
                 }
 
               // move south
-              else if (brush[b].moving_south == true)
+              else if (brush_control.brush[b].moving_south == true)
                 {
-                brush[b].dy -= brush[b].ext_y_velocity;
-                brush[b].y = Convert.ToInt32 (brush[b].dy);
-                b_clip = brush_in_brush (b);
-                f_clip = brush_in_fixture (brush[b], true);
+                brush_control.brush[b].dy -= brush_control.brush[b].ext_y_velocity;
+                brush_control.brush[b].y = Convert.ToInt32 (brush_control.brush[b].dy);
+                b_clip = brush_control.brush_in_brush (b);
+                f_clip = brush_control.brush_in_fixture (brush_control.brush[b], fixture_control.fixture, true);
                 //if (b_clip > -1 || f_clip > -1)  // hit another wall
                 //{
-                //brush[b].dy += brush[b].ext_y_velocity;
-                //brush[b].y = Convert.ToInt32 (brush[b].dy);
+                //brush_control.brush[b].dy += brush_control.brush[b].ext_y_velocity;
+                //brush_control.brush[b].y = Convert.ToInt32 (brush_control.brush[b].dy);
                 //}
                 if (b_clip > -1)  // hit another wall
                   {
-                  brush[b].dy = brush[b_clip].y + brush[b_clip].length;
-                  brush[b].y = Convert.ToInt32 (brush[b].dy);
+                  brush_control.brush[b].dy = brush_control.brush[b_clip].y + brush_control.brush[b_clip].length;
+                  brush_control.brush[b].y = Convert.ToInt32 (brush_control.brush[b].dy);
                   }
                 if (f_clip > -1)  // hit another wall
                   {
-                  brush[b].dy = fixture_control.fixture[f_clip].y + fixture_control.fixture[f_clip].length;
-                  brush[b].y = Convert.ToInt32 (brush[b].dy);
+                  brush_control.brush[b].dy = fixture_control.fixture[f_clip].y + fixture_control.fixture[f_clip].length;
+                  brush_control.brush[b].y = Convert.ToInt32 (brush_control.brush[b].dy);
                   }
-                if (brush[b].dy <= brush[b].destination_y)  // hit or went past destination
+                if (brush_control.brush[b].dy <= brush_control.brush[b].destination_y && character_control.character[PLAYER].brush_grab != b)  // hit or went past destination
                   {
-                  brush[b].moving_south = false;
-                  brush[b].ext_y_velocity = 0;
-                  brush[b].y = brush[b].destination_y;
-                  brush[b].dy = brush[b].destination_y;
+                  brush_control.brush[b].moving_south = false;
+                  brush_control.brush[b].ext_y_velocity = 0;
+                  brush_control.brush[b].y = brush_control.brush[b].destination_y;
+                  brush_control.brush[b].dy = brush_control.brush[b].destination_y;
                   }
                 }
 
               // move east
-              if (brush[b].moving_east == true)
+              if (brush_control.brush[b].moving_east == true)
                 {
-                brush[b].dx += brush[b].ext_x_velocity;
-                brush[b].x = Convert.ToInt32 (brush[b].dx);
-                b_clip = brush_in_brush (b);
-                f_clip = brush_in_fixture (brush[b], true);
+                brush_control.brush[b].dx += brush_control.brush[b].ext_x_velocity;
+                brush_control.brush[b].x = Convert.ToInt32 (brush_control.brush[b].dx);
+                b_clip = brush_control.brush_in_brush (b);
+                f_clip = brush_control.brush_in_fixture (brush_control.brush[b], fixture_control.fixture, true);
                 //if (b_clip > -1 || f_clip > -1)  // hit another wall
                 //{
-                //brush[b].dx -= brush[b].ext_x_velocity;
-                //brush[b].x = Convert.ToInt32 (brush[b].dx);
+                //brush_control.brush[b].dx -= brush_control.brush[b].ext_x_velocity;
+                //brush_control.brush[b].x = Convert.ToInt32 (brush_control.brush[b].dx);
                 //}
                 if (b_clip > -1)  // hit another wall
                   {
-                  brush[b].dx = brush[b_clip].x - brush[b_clip].width;
-                  brush[b].x = Convert.ToInt32 (brush[b].dx);
+                  brush_control.brush[b].dx = brush_control.brush[b_clip].x - brush_control.brush[b_clip].width;
+                  brush_control.brush[b].x = Convert.ToInt32 (brush_control.brush[b].dx);
                   }
                 if (f_clip > -1)  // hit a fixture
                   {
-                  brush[b].dx = fixture_control.fixture[f_clip].x - fixture_control.fixture[f_clip].width;
-                  brush[b].x = Convert.ToInt32 (brush[b].dx);
+                  brush_control.brush[b].dx = fixture_control.fixture[f_clip].x - fixture_control.fixture[f_clip].width;
+                  brush_control.brush[b].x = Convert.ToInt32 (brush_control.brush[b].dx);
                   }
-                if (brush[b].dx >= brush[b].destination_x)  // hit or went past destination
+                if (brush_control.brush[b].dx >= brush_control.brush[b].destination_x && character_control.character[PLAYER].brush_grab != b)  // hit or went past destination
                   {
-                  brush[b].moving_east = false;
-                  brush[b].ext_x_velocity = 0;
-                  brush[b].x = brush[b].destination_x;
-                  brush[b].dx = brush[b].destination_x;
+                  brush_control.brush[b].moving_east = false;
+                  brush_control.brush[b].ext_x_velocity = 0;
+                  brush_control.brush[b].x = brush_control.brush[b].destination_x;
+                  brush_control.brush[b].dx = brush_control.brush[b].destination_x;
                   }
                 }
 
               // move west
-              else if (brush[b].moving_west == true)
+              else if (brush_control.brush[b].moving_west == true)
                 {
-                brush[b].dx -= brush[b].ext_x_velocity;
-                brush[b].x = Convert.ToInt32 (brush[b].dx);
-                b_clip = brush_in_brush (b);
-                f_clip = brush_in_fixture (brush[b], true);
+                brush_control.brush[b].dx -= brush_control.brush[b].ext_x_velocity;
+                brush_control.brush[b].x = Convert.ToInt32 (brush_control.brush[b].dx);
+                b_clip = brush_control.brush_in_brush (b);
+                f_clip = brush_control.brush_in_fixture (brush_control.brush[b], fixture_control.fixture, true);
                 //if (b_clip > -1 || f_clip > -1)  // hit another wall
                 //{
-                //brush[b].dx += brush[b].ext_x_velocity;
-                //brush[b].x = Convert.ToInt32 (brush[b].dx);
+                //brush_control.brush[b].dx += brush_control.brush[b].ext_x_velocity;
+                //brush_control.brush[b].x = Convert.ToInt32 (brush_control.brush[b].dx);
                 //}
                 if (b_clip > -1)  // hit another wall
                   {
-                  brush[b].dx = brush[b_clip].x + brush[b_clip].width;
-                  brush[b].x = Convert.ToInt32 (brush[b].dx);
+                  brush_control.brush[b].dx = brush_control.brush[b_clip].x + brush_control.brush[b_clip].width;
+                  brush_control.brush[b].x = Convert.ToInt32 (brush_control.brush[b].dx);
                   }
                 if (f_clip > -1)  // hit a fixture
                   {
-                  brush[b].dx = fixture_control.fixture[f_clip].x + fixture_control.fixture[f_clip].width;
-                  brush[b].x = Convert.ToInt32 (brush[b].dx);
+                  brush_control.brush[b].dx = fixture_control.fixture[f_clip].x + fixture_control.fixture[f_clip].width;
+                  brush_control.brush[b].x = Convert.ToInt32 (brush_control.brush[b].dx);
                   }
-                if (brush[b].dx <= brush[b].destination_x)  // hit or went past destination
+                if (brush_control.brush[b].dx <= brush_control.brush[b].destination_x && character_control.character[PLAYER].brush_grab != b)  // hit or went past destination
                   {
-                  brush[b].moving_west = false;
-                  brush[b].ext_x_velocity = 0;
-                  brush[b].x = brush[b].destination_x;
-                  brush[b].dx = brush[b].destination_x;
+                  brush_control.brush[b].moving_west = false;
+                  brush_control.brush[b].ext_x_velocity = 0;
+                  brush_control.brush[b].x = brush_control.brush[b].destination_x;
+                  brush_control.brush[b].dx = brush_control.brush[b].destination_x;
                   }
                 }
 
-              // snap brush x and y to grid if not being moved
+              // snap brush_control.brush x and y to grid if not being moved
               // NEEDS TO BE ENHANCED WITH SMOOTH SNAPPING
-              if (character_control.character[PLAYER].action != "grabbing" && character_control.character[PLAYER].action != "pushing" && brush[b].moving == false)
+              if (character_control.character[PLAYER].action != "grabbing" && character_control.character[PLAYER].action != "pushing" && brush_control.brush[b].moving == false)
                 {
                 // snap x
                 x = 0;
                 distance = box_move;
 
-                while (x < brush[b].dx)
+                while (x < brush_control.brush[b].dx)
                   {
-                  distance = Convert.ToInt32 (brush[b].dx - x);
+                  distance = Convert.ToInt32 (brush_control.brush[b].dx - x);
                   if (distance < 0) distance = distance * -1;
 
                   x += box_move;
                   }
 
-                if (x - brush[b].dx < (box_move / 2)) brush[b].dx = x;
+                if (x - brush_control.brush[b].dx < (box_move / 2)) brush_control.brush[b].dx = x;
                 else
-                  brush[b].dx = x - box_move;
-                brush[b].x = Convert.ToInt32 (brush[b].dx);
+                  brush_control.brush[b].dx = x - box_move;
+                brush_control.brush[b].x = Convert.ToInt32 (brush_control.brush[b].dx);
 
                 // snap y
                 y = 0;
                 distance = box_move;
 
-                while (y < brush[b].dy)
+                while (y < brush_control.brush[b].dy)
                   {
-                  distance = Convert.ToInt32 (brush[b].dy - y);
+                  distance = Convert.ToInt32 (brush_control.brush[b].dy - y);
                   if (distance < 0) distance = distance * -1;
 
                   y += box_move;
                   }
 
-                if (y - brush[b].dy < (box_move / 2)) brush[b].dy = y;
+                if (y - brush_control.brush[b].dy < (box_move / 2)) brush_control.brush[b].dy = y;
                 else
-                  brush[b].dy = y - box_move;
-                brush[b].y = Convert.ToInt32 (brush[b].dy);
+                  brush_control.brush[b].dy = y - box_move;
+                brush_control.brush[b].y = Convert.ToInt32 (brush_control.brush[b].dy);
                 }
 
               // laser tripwires
-              f_clip = brush_in_fixture (brush[b], false);
+              f_clip = brush_control.brush_in_fixture (brush_control.brush[b], fixture_control.fixture, false);
 
               // conveyor belts
-              if (brush[b].moveable == true && brush[b].moving == false && character_control.character[PLAYER].brush_grab != b)
+              if (brush_control.brush[b].moveable == true && brush_control.brush[b].moving == false && character_control.character[PLAYER].brush_grab != b)
                 {
-                f = brush_on_fixture (brush[b]);
+                f = brush_on_fixture (brush_control.brush[b]);
                 if (f > -1)
                   {
                   if (fixture_control.fixture[f].type == (int) Fixture_Control.F.CONVEYOR_NORTH_TEST && fixture_control.fixture[f].on == true)
                     {
-                    brush[b].destination_y = brush[b].y + tilesize;
-                    brush[b].moving = true;
-                    brush[b].moving_north = true;
-                    brush[b].ext_y_velocity = conveyor_speed;
+                    brush_control.brush[b].destination_y = brush_control.brush[b].y + tilesize;
+                    brush_control.brush[b].moving = true;
+                    brush_control.brush[b].moving_north = true;
+                    brush_control.brush[b].ext_y_velocity = conveyor_speed;
                     }
                   else if (fixture_control.fixture[f].type == (int) Fixture_Control.F.CONVEYOR_SOUTH_TEST && fixture_control.fixture[f].on == true)
                     {
-                    brush[b].destination_y = brush[b].y - tilesize;
-                    brush[b].moving = true;
-                    brush[b].moving_south = true;
-                    brush[b].ext_y_velocity = conveyor_speed;
+                    brush_control.brush[b].destination_y = brush_control.brush[b].y - tilesize;
+                    brush_control.brush[b].moving = true;
+                    brush_control.brush[b].moving_south = true;
+                    brush_control.brush[b].ext_y_velocity = conveyor_speed;
                     }
                   else if (fixture_control.fixture[f].type == (int) Fixture_Control.F.CONVEYOR_WEST_TEST && fixture_control.fixture[f].on == true)
                     {
-                    brush[b].destination_x = brush[b].x - tilesize;
-                    brush[b].moving = true;
-                    brush[b].moving_west = true;
-                    brush[b].ext_x_velocity = conveyor_speed;
+                    brush_control.brush[b].destination_x = brush_control.brush[b].x - tilesize;
+                    brush_control.brush[b].moving = true;
+                    brush_control.brush[b].moving_west = true;
+                    brush_control.brush[b].ext_x_velocity = conveyor_speed;
                     }
                   else if (fixture_control.fixture[f].type == (int) Fixture_Control.F.CONVEYOR_EAST_TEST && fixture_control.fixture[f].on == true)
                     {
-                    brush[b].destination_x = brush[b].x + tilesize;
-                    brush[b].moving = true;
-                    brush[b].moving_east = true;
-                    brush[b].ext_x_velocity = conveyor_speed;
+                    brush_control.brush[b].destination_x = brush_control.brush[b].x + tilesize;
+                    brush_control.brush[b].moving = true;
+                    brush_control.brush[b].moving_east = true;
+                    brush_control.brush[b].ext_x_velocity = conveyor_speed;
                     }
                   }
                 }
 
         // hot metal cooldown
-        if (brush[b].temperature > 70 && rnd.Next (0, 8) == 0) brush[b].temperature -= 1;
+        if (brush_control.brush[b].temperature > 70 && rnd.Next (0, 8) == 0) brush_control.brush[b].temperature -= 1;
 
         // particles
-        if (brush[b].top_texture_number == (int) T.BOX_ICE_TEST)  // cold steam
+        if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.BOX_ICE_TEST)  // cold steam
           {
-          if (rnd.Next (0, 100) == 0) particle_steam (brush[b].x + rnd.Next (0, tilesize), brush[b].y + rnd.Next (0, tilesize), brush[b].z + brush[b].height + 1, 270);
+          if (rnd.Next (0, 100) == 0) particle_steam (brush_control.brush[b].x + rnd.Next (0, tilesize), brush_control.brush[b].y + rnd.Next (0, tilesize), brush_control.brush[b].z + brush_control.brush[b].height + 1, 270);
           }
-        if (brush[b].top_texture_number == (int) T.INCINERATOR_TEST_DOWN)  // incinerator flames
+        if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.INCINERATOR_TEST_DOWN)  // incinerator flames
           {
-          particle_incinerator (brush[b].x + (brush[b].width / 2), brush[b].y - 1, brush[b].z + brush[b].height - (tilesize / 4), 270, "brush", b);
+          particle_incinerator (brush_control.brush[b].x + (brush_control.brush[b].width / 2), brush_control.brush[b].y - 1, brush_control.brush[b].z + brush_control.brush[b].height - (tilesize / 4), 270, "brush_control.brush", b);
           }
 
         // door collisions
-        //if (brush[b].top_texture_number == T.DOOR_
+        //if (brush_control.brush[b].top_texture_number == Brush_Control.T.DOOR_
         }
       }
 
@@ -2656,53 +2230,54 @@ namespace Boxland
         textmap = new List<List<string>> ();
         for (int layer = 0; layer < 3; layer += 1) textmap.Add (new List<string> ());
 
-        test_background = test_background4;
+        map.background = test_background4;
 
         // RICHARD'S HOUSE
         if (player_level == 0)
           {
-          textmap[0].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[0].Add(".  cp cp cp cp tn tn tn tn tn tn tn tn tn tn tn tn tn .  ");
-          textmap[0].Add(".  cp cp cp cp tn tn tn tn tn tn tn tn tn tn tn tn tn .  ");
-          textmap[0].Add(".  cp cp cp cp tn tn tn tn tn tn tn tn tn tn tn tn tn .  ");
-          textmap[0].Add(".  cp cp cp cp tn tn tn tn tn tn tn tn tn tn tn tn tn .  ");
-          textmap[0].Add(".  cp cp cp cp tn tn tn tn tn tn tn tn tn tn tn tn tn .  ");
-          textmap[0].Add(".  cp cp cp cp cp cp cp cp cp cp cp cp cp cp cp cp cp .  ");
-          textmap[0].Add(".  cp cp cp cp cp cp cp cp cp cp cp cp cp cp cp cp cp .  ");
-          textmap[0].Add(".  cp cp cp cp cp cp cp cp cp cp cp cp cp cp cp cp cp .  ");
-          textmap[0].Add(".  cp cp cp cp cp cp cp cp cp cp cp cp cp cp cp cp cp .  ");
-          textmap[0].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[0].Add(".   cp  cp  cp  cp  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  .   ");
+          textmap[0].Add(".   cp  cp  cp  cp  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  .   ");
+          textmap[0].Add(".   cp  cp  cp  cp  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  .   ");
+          textmap[0].Add(".   cp  cp  cp  cp  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  .   ");
+          textmap[0].Add(".   cp  cp  cp  cp  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  tn  .   ");
+          textmap[0].Add(".   cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  .   ");
+          textmap[0].Add(".   cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  .   ");
+          textmap[0].Add(".   cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  .   ");
+          textmap[0].Add(".   cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  cp  .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
 
-          textmap[1].Add("DT DT DT DT DT DT DT DT DT DT DT DT DT DT DT DT DT DT DT ");
-          textmap[1].Add("DT .  .  .  .  DT .  .  .  .  .  .  .  .  .  DT .  .  DT ");
-          textmap[1].Add("DT .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  DT ");
-          textmap[1].Add("DT .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  DT ");
-          textmap[1].Add("DT .  .  .  .  DT .  .  .  .  .  .  .  .  .  DT .  c  DT ");
-          textmap[1].Add("DT .  .  .  .  DT DT DT DT DT DT DT .  .  DT DT DT DT DT ");
-          textmap[1].Add("DT .  .  .  .  DT pl1c  co .  .  rd .  .  .  DT .  .  DT ");
-          textmap[1].Add("DT .  .  .  .  .  .  .  pn .  .  .  .  .  .  DT .  .  DT ");
-          textmap[1].Add("DT .  .  .  .  .  .  .  .  tv .  .  .  .  .  .  .  .  DT ");
-          textmap[1].Add("DT .  .  .  .  DT .  p1 .  .  .  .  .  .  .  .  .  .  DT ");
-          textmap[1].Add("BW BW BW BW BW BW BW G1 BW BW BW BW BW BW BW BW BW BW BW ");
+          textmap[1].Add("DT  DT  DT  DT  DT  DT  DT  DT  DT  DT  DT  DT  DT  DT  DT  DT  DT  DT  DT  ");
+          textmap[1].Add("DT  .   .   .   .   DT  .   .   .   .   .   .   .   .   .   DT  .   .   DT  ");
+          textmap[1].Add("DT  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   DT  ");
+          textmap[1].Add("DT  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   DT  ");
+          textmap[1].Add("DT  .   .   .   .   DT  .   .   .   .   .   .   .   .   .   DT  .   c   DT  ");
+          textmap[1].Add("DT  .   .   .   .   DT  DT  DT  DT  DT  DT  DT  .   .   DT  DT  DT  DT  DT  ");
+          textmap[1].Add("DT  .   .   .   .   DT  pl1 c   co  .   .   rd  .   .   .   DT  .   .   DT  ");
+          textmap[1].Add("DT  .   .   .   .   .   .   .   pn  .   .   .   .   .   .   DT  .   .   DT  ");
+          textmap[1].Add("DT  .   .   .   .   .   .   .   .   tv  .   .   .   .   .   .   .   .   DT  ");
+          textmap[1].Add("DT  .   .   .   .   DT  .   p1  .   .   .   .   .   .   .   .   .   .   DT  ");
+          textmap[1].Add("BW  BW  BW  BW  BW  BW  BW  G1  BW  BW  BW  BW  BW  BW  BW  BW  BW  BW  BW  ");
 
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  lw .  lw .  lw .  lw .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  ly .  ly .  .  .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  lw .  lw .  lw .  lw .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   lw  .   lw  .   lw  .   lw  .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   ly  .   ly  .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   lw  .   lw  .   lw  .   lw  .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
 
           //map_tile_width = textmap[0][0].Length / 3;//19;
           //map_tile_length = 11;
           //map_tile_height = 4;
           ambient_dark = .2f;
           ambient_light = new Color (96, 96, 64);
-          test_background = test_background5;
+          map.background = test_background5;
+          map.bg_scroll = true;
           random_retard1 = 0;
           random_retard2 = 0;
           }
@@ -2715,45 +2290,46 @@ namespace Boxland
           //map_tile_height = 3;
           ambient_dark = .2f;
           ambient_light = new Color (112, 112, 112);
-          test_background = test_background5;
+          map.background = test_background5;
+          map.bg_scroll = true;
           random_retard1 = 0;
           random_retard2 = 0;
 
-          textmap[0].Add("as sw gr gr gr gr gr gr gr gr gr gr gr gr gr gr gr gr gr ");
-          textmap[0].Add("as sw gr gr gr gr gr gr gr gr gr gr gr gr gr gr gr gr gr ");
-          textmap[0].Add("as sw gr gr gr gr gr gr gr gr gr gr gr gr gr gr gr gr gr ");
-          textmap[0].Add("as sw gr gr gr gr gr gr gr gr gr gr gr gr gr gr gr gr gr ");
-          textmap[0].Add("as sw gr gr gr gr gr gr gr gr gr as as as as gr gr gr gr ");
-          textmap[0].Add("as sw gr gr gr gr gr gr gr gr gr as as as as gr gr gr gr ");
-          textmap[0].Add("as sw gr gr gr gr gr gr gr gr gr as as as as gr gr gr gr ");
-          textmap[0].Add("as sw gr gr gr gr gr gr gr gr gr as as as as gr gr gr gr ");
-          textmap[0].Add("as sw gr gr gr gr gr gr gr gr gr as as as as gr gr gr gr ");
-          textmap[0].Add("as sw gr gr gr gr gr gr gr gr gr as as as as gr gr gr gr ");
-          textmap[0].Add("as sw sw sw sw sw sw sw sw sw sw sw sw sw sw sw sw sw sw ");
+          textmap[0].Add("as  sw  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  ");
+          textmap[0].Add("as  sw  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  ");
+          textmap[0].Add("as  sw  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  ");
+          textmap[0].Add("as  sw  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  gr  ");
+          textmap[0].Add("as  sw  gr  gr  gr  gr  gr  gr  gr  gr  gr  as  as  as  as  gr  gr  gr  gr  ");
+          textmap[0].Add("as  sw  gr  gr  gr  gr  gr  gr  gr  gr  gr  as  as  as  as  gr  gr  gr  gr  ");
+          textmap[0].Add("as  sw  gr  gr  gr  gr  gr  gr  gr  gr  gr  as  as  as  as  gr  gr  gr  gr  ");
+          textmap[0].Add("as  sw  gr  gr  gr  gr  gr  gr  gr  gr  gr  as  as  as  as  gr  gr  gr  gr  ");
+          textmap[0].Add("as  sw  gr  gr  gr  gr  gr  gr  gr  gr  gr  as  as  as  as  gr  gr  gr  gr  ");
+          textmap[0].Add("as  sw  gr  gr  gr  gr  gr  gr  gr  gr  gr  as  as  as  as  gr  gr  gr  gr  ");
+          textmap[0].Add("as  sw  sw  sw  sw  sw  sw  sw  sw  sw  sw  sw  sw  sw  sw  sw  sw  sw  sw  ");
 
-          textmap[1].Add(".  .  .  .  BW BW BW BW BW BW BW BW BW BW BW .  .  .  .  ");
-          textmap[1].Add(".  .  .  .  BW BW BW BW BW BW BW BW BW BW BW .  .  .  .  ");
-          textmap[1].Add(".  .  .  .  BW BW BW BW BW BW BW BW BW BW BW .  .  .  .  ");
-          textmap[1].Add(".  .  .  .  BW BW BW G0 BW BW BW BW BW BW BW .  .  .  .  ");
-          textmap[1].Add(".  .  .  .  .  .  .  p0 .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[1].Add(".  .  .  .  .  .  .  pn .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[1].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[1].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[1].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[1].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[1].Add(".  .  .  .  .  .  .  G2 .  .  .  .  .  .  .  .  .  .  .  ");
+          textmap[1].Add(".   .   .   .   BW  BW  BW  BW  BW  BW  BW  BW  BW  BW  BW  .   .   .   .   ");
+          textmap[1].Add(".   .   .   .   BW  BW  BW  BW  BW  BW  BW  BW  BW  BW  BW  .   .   .   .   ");
+          textmap[1].Add(".   .   .   .   BW  BW  BW  BW  BW  BW  BW  BW  BW  BW  BW  .   .   .   .   ");
+          textmap[1].Add(".   .   .   .   BW  BW  BW  G0  BW  BW  BW  BW  BW  BW  BW  .   .   .   .   ");
+          textmap[1].Add(".   .   .   .   .   .   .   p0  .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[1].Add(".   .   .   .   .   .   .   pn  .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[1].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[1].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[1].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[1].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[1].Add(".   .   .   .   .   .   .   G2  .   .   .   .   .   .   .   .   .   .   .   ");
 
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  lw .  lw .  lw .  lw .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  ly .  ly .  .  .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  lw .  lw .  lw .  lw .  .  .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   lw  .   lw  .   lw  .   lw  .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   ly  .   ly  .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   lw  .   lw  .   lw  .   lw  .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
           }
 
         // LOBBY
@@ -2795,7 +2371,7 @@ namespace Boxland
           textmap[1].Add("DT  .   .   DT  .   .   t2  .   .   .   .   .   .   DT  .   .   .   .   ");
           textmap[1].Add("DT  .   .   .   .   .   .   .   .   .   .   .   .   DT  .   .   .   .   ");
           textmap[1].Add("DT  DT  DT  DT  .   .   .   .   .   .   .   .   BR  DT  .   .   .   .   ");
-          textmap[1].Add("DT  .   .   .   .   .   .   .   BR  .   .   .   BR  .   .   .   .   .   ");
+          textmap[1].Add("DT  .   .  .    .   .   .   .   BR  .   .   .   BR  .   .   .   .   .   ");
           textmap[1].Add("DT  .   .   .   .   .   .   .   BR  .   .   .   BR  .   .   .   .   .   ");
           textmap[1].Add("DT  .   .   .   .   .   .   .   BR  .   .   b   BR  .   .   .   .   .   ");
           textmap[1].Add("DT  DT  DT  DT  pl1 .   pn  .   BR  .   b   b   BR  .   .   .   .   .   ");
@@ -2810,8 +2386,8 @@ namespace Boxland
           textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
           textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
           textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
-          textmap[2].Add(".   .   lw  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
-          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   lw  .   .   .   .   .   00  .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   00  00  .   .   .   .   .   .   .   .   .   ");
           textmap[2].Add(".   .   .   .   .   ly  .   ly  .   ly  .   .   .   .   .   .   .   .   ");
           textmap[2].Add(".   .   lw  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
           textmap[2].Add(".   .   .   .   .   ly  .   ly  .   ly  .   .   .   .   .   .   .   .   ");
@@ -2825,9 +2401,10 @@ namespace Boxland
           map_tile_width = textmap[0][0].Length / 4;// 18;
           map_tile_length = textmap.Count;// 20;
           map_tile_height = 3;
-          ambient_dark = .3f;
+          ambient_dark = .35f;
           ambient_light = new Color (80, 80, 72);
-          test_background = test_background5;
+          map.background = brush_control.texture[(int) Brush_Control.T.GRASS];
+          map.bg_scroll = false;
           random_retard1 = 0;
           random_retard2 = 0;
           }
@@ -2840,7 +2417,8 @@ namespace Boxland
           //map_tile_height = 3;
           ambient_dark = .3f;
           ambient_light = new Color (72, 72, 72);
-          test_background = test_background1;
+          map.background = test_background1;
+          map.bg_scroll = true;
           random_retard1 = 1;
           random_retard2 = 0;
 
@@ -2919,7 +2497,8 @@ namespace Boxland
           //map_tile_height = 3;
           ambient_dark = .3f;
           ambient_light = new Color (72, 72, 72);
-          test_background = test_background1;
+          map.background = test_background1;
+          map.bg_scroll = true;
           random_retard1 = 0;
           random_retard2 = 0;
 
@@ -2961,24 +2540,24 @@ namespace Boxland
           textmap[1].Add(".   .   .   .   .   .   .   .   DY  .   .   p5  .   .   DY  DY  DY  DY  DY  DY  DY  DY  ");
           textmap[1].Add(".   .   .   .   .   .   .   .   DY  DY  DY  G5  DY  DY  DY  .   .   .   .   .   .   .   ");
 
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  lw  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  lw  ..  lw  ..  lw  ..  ..  ..  ..  ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  lw  ..  lw  ..  lw  ..  ..  ..  ..  ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  lw  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  lw  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   lw  .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   lw  .   lw  .   lw  .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   lw  .   lw  .   lw  .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   lw  .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   lw  .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
           }
 
         // metal zone 1
@@ -2989,7 +2568,8 @@ namespace Boxland
           //map_tile_height = 3;
           ambient_dark = .3f;
           ambient_light = new Color (72, 72, 72);
-          test_background = test_background1;
+          map.background = test_background1;
+          map.bg_scroll = true;
           random_retard1 = 0;
           random_retard2 = 0;
 
@@ -3021,7 +2601,8 @@ namespace Boxland
           //map_tile_height = 3;
           ambient_dark = .3f;
           ambient_light = new Color (72, 72, 72);
-          test_background = test_background1;
+          map.background = test_background1;
+          map.bg_scroll = true;
           random_retard1 = 4;
           random_retard2 = 0;
 
@@ -3086,42 +2667,43 @@ namespace Boxland
           //map_tile_height = 3;
           ambient_dark = .4f;
           ambient_light = new Color (64, 64, 64);
-          test_background = test_background5;
+          map.background = test_background5;
+          map.bg_scroll = true;
           random_retard1 = 6;
-          random_retard2 = 2;
+          random_retard2 = 0;// 2;
 
-          textmap[0].Add(".   ..  ..  ..  ..  ..  ..  ..  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
-          textmap[0].Add(".   ..  ..  ..  ..  ..  ..  ..  .   .   .   .   .   .   .   .   .   .   ce  ce  ce  ce  ce  ce  .   .   .   .   .   ");
-          textmap[0].Add(".   ..  ..  ..  ..  ..  ..  ..  .   .   .   .   .   .   .   .   .   .   ce  ce  ce  ce  ce  ce  .   .   .   .   .   ");
-          textmap[0].Add(".   ..  ..  ..  ..  ..  ..  ..  .   .   .   .   .   .   .   .   .   .   ce  ce  ce  ce  ce  ce  .   .   .   .   .   ");
-          textmap[0].Add(".   ..  ..  ..  ..  ..  ..  ..  .   .   .   .   .   .   .   .   .   .   ce  ce  ce  ce  ce  ce  .   .   .   .   .   ");
-          textmap[0].Add(".   ..  ..  ..  ..  ..  ..  ..  .   .   .   .   .   .   .   .   .   .   ce  ce  ce  ce  ce  ce  .   .   .   .   .   ");
-          textmap[0].Add(".   ..  ..  ..  ..  ..  ..  ..  .   .   .   .   .   .   .   .   .   ce  ce  ce  ce  ce  ce  psg .   .   .   .   .   ");
-          textmap[0].Add(".   ..  ..  ..  ..  ..  ..  ..  .   tk  tk  tk  tk  psy tk  tk  tk  ce  ce  ce  ce  ce  ce  ce  .   .   .   .   .   ");
-          textmap[0].Add(".   ..  ..  ..  ..  ..  ..  ..  .   tk  tk  tk  tk  tk  tk  tk  tk  ce  ce  ce  ce  ce  ce  ce  tk  tk  tk  tk  .   ");
-          textmap[0].Add(".   ..  ..  ..  ..  ..  ..  ..  .   tk  tk  tk  tk  tk  tk  tk  tk  ce  ce  ce  ce  ce  ce  ce  tk  tk  tk  tk  .   ");
-          textmap[0].Add(".   ..  ..  ..  ..  ..  ..  ..  .   tk  WR  WR  tk  tk  tk  tk  tk  ce  ce  ce  ce  ce  ce  ce  tk  tk  tk  tk  .   ");
-          textmap[0].Add(".   ..  ..  ..  ..  ..  tk  tk  tk  tk  tk  tk  tk  WR  PSB tk  tk  ce  ce  ce  ce  ce  ce  ce  .   .   .   .   .   ");
-          textmap[0].Add(".   ..  ..  ..  ..  ..  tk  fm  fm  fm  fm  fm  tk  WR  tk  .   .   ce  ce  ce  ce  ce  ce  ce  .   .   .   .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   psy ce  ce  ce  ce  ce  .   .   .   .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ce  ce  ce  ce  ce  ce  .   .   .   .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ce  ce  ce  ce  ce  ce  .   .   .   .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ce  ce  ce  ce  ce  ce  .   .   .   .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ce  ce  ce  ce  ce  ce  .   .   .   .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ce  ce  ce  ce  ce  ce  psg .   .   .   .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   tk  tk  tk  tk  tk  tk  tk  tk  ce  ce  ce  ce  ce  ce  ce  .   .   .   .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   tk  tk  tk  tk  tk  tk  tk  tk  ce  ce  ce  ce  ce  ce  ce  tk  tk  tk  tk  .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   tk  tk  tk  tk  tk  tk  tk  tk  ce  ce  ce  ce  ce  ce  ce  tk  tk  tk  tk  .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   tk  WR  WR  tk  tk  tk  tk  tk  ce  ce  ce  ce  ce  ce  ce  tk  tk  tk  tk  .   ");
+          textmap[0].Add(".   .   .   .   .   .   tk  tk  tk  tk  tk  tk  tk  WR  PSB tk  tk  ce  ce  ce  ce  ce  ce  ce  .   .   .   .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   tk  fm  fm  fm  fm  fm  tk  WR  tk  .   .   ce  ce  ce  ce  ce  ce  ce  .   .   .   .   .   ");
           textmap[0].Add(".   tk  tk  tk  tk  tk  tk  fm  fm  fm  fm  fm  tk  tk  tk  .   .   .   .   ce  ce  ce  .   .   .   .   .   .   .   ");
           textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  fm  fm  fm  fm  fm  tk  tk  tk  .   .   .   .   tk  tk  tk  .   .   .   .   .   .   .   ");
           textmap[0].Add(".   tk  tk  tk  tk  tk  tk  fm  fm  fm  fm  fm  tk  tk  tk  .   .   .   .   tk  tk  tk  .   .   .   .   .   .   .   ");
-          textmap[0].Add(".   ..  ..  ..  ..  ..  tk  fm  fm  fm  fm  fm  tk  tk  tk  .   .   .   .   PSR tk  tk  .   .   .   .   .   .   .   ");
-          textmap[0].Add(".   ..  ..  ..  ..  ..  tk  tk  tk  tk  tk  tk  tk  tk  tk  .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
-          textmap[0].Add(".   ..  ..  ..  ..  ..  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   tk  fm  fm  fm  fm  fm  tk  tk  tk  .   .   .   .   PSR tk  tk  .   .   .   .   .   .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   tk  tk  tk  tk  tk  tk  tk  tk  tk  .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
 
           textmap[1].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   DY  DY  DY  DY  DY  DY  DY  DY  .   .   .   .   ");
-          textmap[1].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   DY  c   .   .   .   .   fc  DY  .   .   .   .   ");
+          textmap[1].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   DY  .   c   .   .   .   fc  DY  .   .   .   .   ");
           textmap[1].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   DY  ,,  t2  .   .   b   .   DY  .   .   .   .   ");
           textmap[1].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   DY  .   ,,  ,,  .   .   .   DY  .   .   .   .   ");
           textmap[1].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   DY  .   .   .   .   .   .   DY  .   .   .   .   ");
           textmap[1].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   DP  DP  DP  DGV DP  DP  DP  DP  DP  .   .   .   .   ");
           textmap[1].Add(".   .   .   .   .   .   .   .   DP  DP  DP  DP  DP  DP  DP  DP  DP  .   .   .   t2  .   b   .   DP  .   .   .   .   ");
-          textmap[1].Add(".   .   .   .   .   .   .   .   DP  .   k   .   DP  .   .   .   .   .   ,,  .   ,,  .   .   .   DP  WR  WR  WR  WR  ");
-          textmap[1].Add(".   .   .   .   .   .   .   .   DP  .   .   .   .   .   .   b   .   .   .   .   .   .   .   .   DP  .   .   .   WR  ");
-          textmap[1].Add(".   .   .   .   .   .   .   .   DP  ,,  .   h   DP  DP  DP  DP  DP  .   .   .   m   .   .   .   DRH ,,  k   ,,  WR  ");
-          textmap[1].Add(".   .   .   .   .   BR  BR  BR  BR  DBV BR  BR  BR  BR  BR  BR  DP  t1  ,,  .   .   .   .   .   DP  .   .   .   WR  ");
-          textmap[1].Add(".   .   .   .   .   BR  b   .   .   .   ,,  .   .   BR  .   BR  DP  .   m   .   .   .   .   .   DP  WR  WR  WR  WR  ");
+          textmap[1].Add(".   .   .   .   .   .   .   .   DP  .   k   .   DP  .   .   .   .   .   ,,  .   ,,  .   .   .   DP  BR  BR  BR  BR  ");
+          textmap[1].Add(".   .   .   .   .   .   .   .   DP  .   .   .   .   .   .   b   .   .   .   .   .   .   .   .   DP  .   .   .   BR  ");
+          textmap[1].Add(".   .   .   .   .   .   .   .   DP  ,,  .   h   DP  DP  DP  DP  DP  .   .   .   m   .   .   .   DRH ,,  k   ,,  BR  ");
+          textmap[1].Add(".   .   .   .   .   BR  BR  BR  BR  DBV BR  BR  BR  BR  BR  BR  DP  t1  ,,  .   .   .   .   .   DP  .   .   .   BR  ");
+          textmap[1].Add(".   .   .   .   .   BR  b   .   .   .   ,,  .   .   BR  .   BR  DP  .   m   .   .   .   .   .   DP  BR  BR  BR  BR  ");
           textmap[1].Add("BR  BR  BR  BR  BR  BR  ,,  .   .   .   .   .   .   BR  .   BR  DP  t2  .   .   .   .   .   pl1 DP  .   .   .   .   ");
           textmap[1].Add("BR  .   .   b   b   BR  .   .   .   .   .   .   .   .   .   BR  DP  DP  DP  DP  DYV DP  DP  DP  DP  .   .   .   .   ");
           textmap[1].Add("g4  p4  pn  .   b   .   .   .   .   .   ,,  .   .   .   ,,  BR  .   .   DY  b   ,,  .   DY  .   .   .   .   .   .   ");
@@ -3130,25 +2712,25 @@ namespace Boxland
           textmap[1].Add(".   .   .   .   .   BR  c   .   .   .   ,,  .   .   b   b   BR  .   .   DY  DY  DY  DY  DY  .   .   .   .   .   .   ");
           textmap[1].Add(".   .   .   .   .   BR  BR  BR  BR  BR  BR  BR  BR  BR  BR  BR  .   .   .   .   .   .   .   .   .   .   .   .   .   ");
 
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  .   DY  DY  DY  DY  DY  DY  DY  DY  .   .   .   .   ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  .   DY  .   .   .   .   .   .   DY  .   .   .   .   ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  .   DY  .   .   .   .   .   .   DY  .   .   .   .   ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  .   DY  .   .   .   .   .   .   DY  .   .   .   .   ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  .   DY  .   .   .   .   .   .   DY  .   .   .   .   ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  .   DP  DP  lG  DP  DP  DP  DP  DP  .   .   .   .   ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  .   .   .   .   .   .   .   .   .   .   .   .   .   ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  lw  ..  lw  ..  lw  ..  lw  .   lw  .   lw  .   .   .   .   .   .   .   .   .   ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  .   .   .   .   .   .   .   .   .   .   .   .   .   ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  lF  ..  lw  ..  ..  ..  ..  .   .   .   lw  .   lw  .   lR  .   lR  .   .   .   ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  .   .   .   .   .   .   .   .   .   .   .   .   .   ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  lw  ..  lw  ..  lw  ..  lF  ..  lF  .   .   .   lw  .   .   .   .   .   .   .   .   .   ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  .   .   .   .   .   .   .   .   .   .   .   .   .   ");
-          textmap[2].Add(".   lw  .   lw  ..  ..  ..  lw  ..  lw  ..  lw  ..  lw  ..  ..  .   .   .   lY  .   lY  .   .   .   .   .   .   .   ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  .   .   .   .   .   .   .   .   .   .   .   .   .   ");
-          textmap[2].Add(".   lw  .   lw  ..  ..  ..  lw  ..  lw  ..  lw  ..  ..  ..  ..  .   .   .   lY  .   lY  .   .   .   .   .   .   .   ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  .   .   .   .   .   .   .   .   .   .   .   .   .   ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  .   .   .   .   .   .   .   .   .   .   .   .   .   ");
-          textmap[2].Add(".   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   lg  .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   lw  .   lw  .   lw  .   lw  .   lw  .   lw  .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   lF  .   lw  .   .   .   .   .   .   .   lw  .   lw  .   lR  .   lR  .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   lw  .   lw  .   lw  .   lF  .   lF  .   .   .   lw  .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   lw  .   lw  .   .   .   lw  .   lw  .   lw  .   lw  .   .   .   .   .   lY  .   lY  .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   lw  .   lw  .   .   .   lw  .   lw  .   lw  .   .   .   .   .   .   .   lY  .   lY  .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
           }
 
         // metal zone 3
@@ -3159,7 +2741,8 @@ namespace Boxland
           //map_tile_height = 3;
           ambient_dark = .3f;
           ambient_light = new Color (64, 64, 64);
-          test_background = test_background4;
+          map.background = test_background4;
+          map.bg_scroll = true;
           random_retard1 = 2;
           random_retard2 = 0;
 
@@ -3185,16 +2768,16 @@ namespace Boxland
           textmap[1].Add(".   BE  .   .   BE  k   BE  .   .   BE  BE  BE  G4  BE  BE  ");
           textmap[1].Add(".   BE  BE  BE  BE  BE  BE  .   .   .   .   .   .   .   .   ");
 
-          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   ..  ..  ..  ..  ");
-          textmap[2].Add(".   lR  .   .   .   .   .   .   .   .   .   .   ..  .   ..  ");
-          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   ..  ..  ..  ..  ");
-          textmap[2].Add(".   lR  .   .   .   .   .   .   .   .   .   .   ..  .   ..  ");
-          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   ..  .   ..  ");
-          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   .   .   lR  .   .   .   .   .   .   ..  .   ..  ");
-          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   ..  ..  ..  ..  ");
-          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   ..  ..  ..  ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   lR  .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   lR  .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   lR  .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
           }
 
         // ICE ZONE MAIN
@@ -3209,69 +2792,70 @@ namespace Boxland
           //map_tile_height = 3;
           ambient_dark = .2f;
           ambient_light = new Color (64, 64, 64);
-          test_background = test_background2;
+          map.background = test_background2;
+          map.bg_scroll = true;
           random_retard1 = 0;
           random_retard2 = 2;
 
-          textmap[0].Add("..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  .   .   .   .   ..  ");
-          textmap[0].Add("..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  .   fm  fm  .   ..  ");
-          textmap[0].Add("..  ..  ..  ..  .   .   .   .   .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  .   fm  fm  .   ..  ");
-          textmap[0].Add("..  ..  ..  ..  .   ..  ..  ..  .   .   .   .   .   .   ..  ..  ..  ..  ..  .   fm  fm  .   ..  ");
-          textmap[0].Add(".   .   .   .   .   ..  ..  ..  .   .   .   fm  fm  .   .   .   .   .   .   .   .   PSR .   .   ");
-          textmap[0].Add(".   fm  fm  fm  .   ..  ..  ..  .   fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  zy  .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   fm  fm  .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   fm  fm  .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   fm  fm  .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   fm  fm  .   .   .   .   .   .   .   .   PSR .   .   ");
+          textmap[0].Add(".   fm  fm  fm  .   .   .   .   .   fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  zy  .   ");
           textmap[0].Add(".   fm  fm  fm  fg  fg  fg  fg  fg  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  zy  .   ");
-          textmap[0].Add(".   fm  fm  fm  .   ..  ..  ..  .   fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  zy  .   ");
-          textmap[0].Add(".   .   .   .   .   ..  ..  ..  .   .   fg  .   fg  .   .   .   .   .   .   .   .   fg  .   .   ");
-          textmap[0].Add("..  ..  .   ..  ..  ..  ..  ..  ..  ..  fg  fg  fg  fg  fg  fg  fg  fg  fg  fg  fg  fg  .   ..  ");
-          textmap[0].Add("..  ..  .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  fg  fg  .   ..  ");
-          textmap[0].Add("..  ..  .   ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  fg  .   ..  ");
-          textmap[0].Add("..  ..  .   ..  ..  ..  ..  ..  ..  ..  ..  fm  fm  fm  ..  ..  ..  ..  ..  ..  ..  fg  .   ..  ");
-          textmap[0].Add("..  ..  .   .   ..  ..  ..  ..  ..  ..  ..  fm  fm  fm  ..  ..  ..  ..  ..  ..  ..  fg  .   ..  ");
-          textmap[0].Add("..  ..  ..  .   .   ..  ..  ..  ..  ..  ..  fm  fm  fm  ..  ..  ..  ..  ..  ..  ..  fg  .   ..  ");
-          textmap[0].Add("..  ..  ..  ..  .   .   ..  ..  ..  ..  ..  .   fg  .   ..  ..  ..  ..  ..  ..  ..  fg  .   ..  ");
-          textmap[0].Add("..  ..  ..  ..  ..  .   .   ..  ..  ..  ..  ..  fg  ..  ..  ..  ..  ..  ..  ..  fg  fg  .   ..  ");
-          textmap[0].Add("..  ..  ..  ..  ..  ..  .   .   ..  ..  ..  ..  fg  fg  fg  fg  fg  fg  fg  fg  fg  fg  .   ..  ");
-          textmap[0].Add("..  ..  ..  ..  ..  ..  ..  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ..  ");
+          textmap[0].Add(".   fm  fm  fm  .   .   .   .   .   fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  zy  .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   fg  .   fg  .   .   .   .   .   .   .   .   fg  .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   fg  fg  fg  fg  fg  fg  fg  fg  fg  fg  fg  fg  .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   fg  fg  .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   fg  .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   fm  fm  fm  .   .   .   .   .   .   .   fg  .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   fm  fm  fm  .   .   .   .   .   .   .   fg  .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   fm  fm  fm  .   .   .   .   .   .   .   fg  .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   fg  .   .   .   .   .   .   .   .   fg  .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   fg  .   .   .   .   .   .   .   fg  fg  .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   fg  fg  fg  fg  fg  fg  fg  fg  fg  fg  .   .   ");
+          textmap[0].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
 
-          textmap[1].Add("..  ..  ..  ..  ..  .. .. .. .. .. .. .. .. .. .. .. .. .. .. MK MK MK MK .. ");
-          textmap[1].Add("..  ..  ..  ..  ..  .. .. .. .. .. .. .. .. .. .. .. .. .. .. MK .. .. XY .. ");
-          textmap[1].Add("..  ..  ..  ..  MK  MK MK MK MK .. .. .. .. .. .. .. .. .. .. MK .. .. MK .. ");
-          textmap[1].Add("..  ..  ..  ..  MK  .. .. .. MK .. MK MK MK MK .. .. .. .. .. MK .. .. MK .. ");
-          textmap[1].Add("MK  MK  MK  MK  MK  .. .. .. MK MK MK .. .. MK MK MK MK MK MK MK MK .. WY WY ");
-          textmap[1].Add("MK  ..  ..  ..  MK  .. .. .. MK .. .. .. m  .. .. MK .. ,, .. .. .. .. .. WY ");
-          textmap[1].Add("MK  .   pn  ..  ..  .. .. .. .. .. .. .. m  m  .. DRH.. .. .. .. .. ,, .. WY ");
-          textmap[1].Add("MK  ..  ..  ..  MK  .. .. .. MK .. .. .. .. .. .. MK .. ,, .. .. .. .. .. WY ");
-          textmap[1].Add("MK  MK  MK  MK  MK  .. .. .. MK MK .. MK .. MK MK MK MK MK MK MK MK .. WY WY ");
-          textmap[1].Add("..  ..  MK  ..  ..  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. MK .. ");
-          textmap[1].Add("..  ..  MK  ..  ..  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. MK .. ");
-          textmap[1].Add("..  ..  MK  ..  ..  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. MK .. ");
-          textmap[1].Add("..  ..  MK  ..  ..  .. .. .. .. .. .. .. c  ,, .. .. .. .. .. .. .. .. MK .. ");
-          textmap[1].Add("..  ..  MK  MK  ..  .. .. .. .. .. .. c  h  c  .. .. .. .. .. .. .. .. MK .. ");
-          textmap[1].Add("..  ..  ..  MK  MK  .. .. .. .. .. .. .. c  .. .. .. .. .. .. .. .. .. MK .. ");
-          textmap[1].Add("..  ..  ..  ..  MK  MK .. .. .. .. .. MK DY MK .. .. .. .. .. .. .. .. MK .. ");
-          textmap[1].Add("..  ..  ..  ..  ..  MK MK .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. MK .. ");
-          textmap[1].Add("..  ..  ..  ..  ..  .. MK MK .. .. .. .. .. .. .. .. .. .. .. .. .. .. MK .. ");
-          textmap[1].Add("..  ..  ..  ..  ..  .. .. MK MK MK MK MK MK MK MK MK MK MK MK MK MK MK MK .. ");
+          textmap[1].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   MK  MK  MK  MK  .   ");
+          textmap[1].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   MK  .   .   XY  .   ");
+          textmap[1].Add(".   .   .   .   MK  MK  MK  MK  MK  .   .   .   .   .   .   .   .   .   .   MK  .   .   MK  .   ");
+          textmap[1].Add(".   .   .   .   MK  .   .   .   MK  .   MK  MK  MK  MK  .   .   .   .   .   MK  .   .   MK  .   ");
+          textmap[1].Add("MK  MK  MK  MK  MK  .   .   .   MK  MK  MK  .   .   MK  MK  MK  MK  MK  MK  MK  MK  .   WY  WY  ");
+          textmap[1].Add("MK  .   .   .   MK  .   .   .   MK  .   .   .   m   .   .   MK  .   ,,  .   .   .   .   .   WY  ");
+          textmap[1].Add("MK  .   pn  .   .   .   .   .   .   .   .   .   m   m   .   DRH .   .   .   .   .   ,,  .   WY  ");
+          textmap[1].Add("MK  .   .   .   MK  .   .   .   MK  .   .   .   .   .   .   MK  .   ,,  .   .   .   .   .   WY  ");
+          textmap[1].Add("MK  MK  MK  MK  MK  .   .   .   MK  MK  .   MK  .   MK  MK  MK  MK  MK  MK  MK  MK  .   WY  WY  ");
+          textmap[1].Add(".   .   MK  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   MK  .   ");
+          textmap[1].Add(".   .   MK  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   MK  .   ");
+          textmap[1].Add(".   .   MK  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   MK  .   ");
+          textmap[1].Add(".   .   MK  .   .   .   .   .   .   .   .   .   c   ,,  .   .   .   .   .   .   .   .   MK  .   ");
+          textmap[1].Add(".   .   MK  MK  .   .   .   .   .   .   .   c   h   c   .   .   .   .   .   .   .   .   MK  .   ");
+          textmap[1].Add(".   .   .   MK  MK  .   .   .   .   .   .   .   c   .   .   .   .   .   .   .   .   .   MK  .   ");
+          textmap[1].Add(".   .   .   .   MK  MK  .   .   .   .   .   MK  DY  MK  .   .   .   .   .   .   .   .   MK  .   ");
+          textmap[1].Add(".   .   .   .   .   MK  MK  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   MK  .   ");
+          textmap[1].Add(".   .   .   .   .   .   MK  MK  .   .   .   .   .   .   .   .   .   .   .   .   .   .   MK  .   ");
+          textmap[1].Add(".   .   .   .   .   .   .   MK  MK  MK  MK  MK  MK  MK  MK  MK  MK  MK  MK  MK  MK  MK  MK  .   ");
 
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. lY .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. lR .. lR .. .. .. .. .. lR .. lR .. .. .. .. .. lY .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. lR .. lR .. .. .. .. .. lR .. lR .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. lR .. lR .. lR .. lR .. lR .. lR .. lR .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. lR .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. lR .. lR .. .. .. .. .. .. .. lR .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. lR .. lR .. .. .. .. .. .. .. lR .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. lR .. lR .. lR .. lR .. lR .. lR .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   lY  .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   lR  .   lR  .   .   .   .   .   lR  .   lR  .   .   .   .   .   lY  .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   lR  .   lR  .   .   .   .   .   lR  .   lR  .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   lR  .   lR  .   lR  .   lR  .   lR  .   lR  .   lR  .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   lR  .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   lR  .   lR  .   .   .   .   .   .   .   lR  .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   lR  .   lR  .   .   .   .   .   .   .   lR  .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   lR  .   lR  .   lR  .   lR  .   lR  .   lR  .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
           }
 
         else if (player_level == 9)
@@ -3281,39 +2865,40 @@ namespace Boxland
           //map_tile_height = 3;
           ambient_dark = .3f;
           ambient_light = new Color (64, 64, 64);
-          test_background = test_background4;
+          map.background = test_background4;
+          map.bg_scroll = true;
           random_retard1 = 0;
           random_retard2 = 0;
 
-          textmap[0].Add("ce ce ce ce ce ce ce ce ce ce ce ");
-          textmap[0].Add("ce ce ce ce ce ce ce ce ce ce ce ");
-          textmap[0].Add("ce ce ce tk tk tk tk tk ce ce ce ");
-          textmap[0].Add("ce ce tk tk tk tk tk zy tk ce ce ");
-          textmap[0].Add("ce ce tk tk tk tk tk zy tk ce ce ");
-          textmap[0].Add("ce ce tk tk tk tk tk zy tk ce ce ");
-          textmap[0].Add("ce ce ce tk tk tk tk tk ce ce ce ");
-          textmap[0].Add("ce ce ce ce ce ce ce ce ce ce ce ");
-          textmap[0].Add("ce ce ce ce ce ce ce ce ce ce ce ");
+          textmap[0].Add("ce  ce  ce  ce  ce  ce  ce  ce  ce  ce  ce  ");
+          textmap[0].Add("ce  ce  ce  ce  ce  ce  ce  ce  ce  ce  ce  ");
+          textmap[0].Add("ce  ce  ce  tk  tk  tk  tk  tk  ce  ce  ce  ");
+          textmap[0].Add("ce  ce  tk  tk  tk  tk  tk  zy  tk  ce  ce  ");
+          textmap[0].Add("ce  ce  tk  tk  tk  tk  tk  zy  tk  ce  ce  ");
+          textmap[0].Add("ce  ce  tk  tk  tk  tk  tk  zy  tk  ce  ce  ");
+          textmap[0].Add("ce  ce  ce  tk  tk  tk  tk  tk  ce  ce  ce  ");
+          textmap[0].Add("ce  ce  ce  ce  ce  ce  ce  ce  ce  ce  ce  ");
+          textmap[0].Add("ce  ce  ce  ce  ce  ce  ce  ce  ce  ce  ce  ");
 
-          textmap[1].Add("MB MB MB MB MB XY MB MB MB MB MB ");
-          textmap[1].Add("MB .. .. .. .. .. .. .. .. .. MB ");
-          textmap[1].Add("MB pn .. .. .. .. .. DY .. .. MB ");
-          textmap[1].Add("MB .  .. b  .. MB .. .. DY .. MB ");
-          textmap[1].Add("MB .. MB b  MB .. .. .. DY .. MB ");
-          textmap[1].Add("MB .. .. .. .. .. .. .. DY .. MB ");
-          textmap[1].Add("MB .. .. MB b  MB .. DY .. .. MB ");
-          textmap[1].Add("MB .. .. .. .. .. .. .. .. .. MB ");
-          textmap[1].Add("MB MB MB MB MB MB MB MB MB MB MB ");
+          textmap[1].Add("MB  MB  MB  MB  MB  XY  MB  MB  MB  MB  MB  ");
+          textmap[1].Add("MB  .   .   .   .   .   .   .   .   .   MB  ");
+          textmap[1].Add("MB  pn  .   .   .   .   .   DY  .   .   MB  ");
+          textmap[1].Add("MB  .    .  b   .   MB  .   .   DY  .   MB  ");
+          textmap[1].Add("MB  .   MB  b   MB  .   .   .   DY  .   MB  ");
+          textmap[1].Add("MB  .   .   .   .   .   .   .   DY  .   MB  ");
+          textmap[1].Add("MB  .   .   MB  b   MB  .   DY  .   .   MB  ");
+          textmap[1].Add("MB  .   .   .   .   .   .   .   .   .   MB  ");
+          textmap[1].Add("MB  MB  MB  MB  MB  MB  MB  MB  MB  MB  MB  ");
 
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. lw .. lw .. lw .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. lw .. lw .. lw .. lY .. lw .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. lw .. lw .. lw .. lY .. lw .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. lw .. lw .. lw .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   lw  .   lw  .   lw  .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   lw  .   lw  .   lw  .   lY  .   lw  .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   lw  .   lw  .   lw  .   lY  .   lw  .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   lw  .   lw  .   lw  .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   ");
           }
 
         // test map - environment
@@ -3327,44 +2912,44 @@ namespace Boxland
           random_retard1 = 0;
           random_retard2 = 0;
 
-          textmap[0].Add("fm fm fm fm fm fm fm fm fm fm fm fm fm ");
-          textmap[0].Add("fm fm fm fm fm fm fm fm fm fm fm fm fm ");
-          textmap[0].Add("fm fm fm psyfm fm fm fm fm fm fm fm fm ");
-          textmap[0].Add("fm fm fm tk tk tk tk tk tk tk fm fm fm ");
-          textmap[0].Add("fm fm fm psgtk tk tk tk tk tk fm fm fm ");
-          textmap[0].Add("fm fm fm tk tk tk tk tk tk tk fm fm fm ");
-          textmap[0].Add("fm fm fm PSRtk tk tk tk tk tk Cs Cw fm ");
-          textmap[0].Add("fm fm fm tk tk tk tk tk tk tk Ce Cn fm ");
-          textmap[0].Add("fm fm fm tk tk tk tk tk tk tk fm fm fm ");
-          textmap[0].Add("fm fm fm fm fm fm fm fm fm fm fm fm fm ");
-          textmap[0].Add("fm fm fm fm fm fm fm fm fm fm fm fm fm ");
-          textmap[0].Add("fm fm fm fm fm fm fm fm fm fm fm fm fm ");
+          textmap[0].Add("fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  ");
+          textmap[0].Add("fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  ");
+          textmap[0].Add("fm  fm  fm  psy fm  fm  fm  fm  fm  fm  fm  fm  fm  ");
+          textmap[0].Add("fm  fm  fm  tk  tk  tk  tk  tk  tk  tk  fm  fm  fm  ");
+          textmap[0].Add("fm  fm  fm  psg tk  tk  tk  tk  tk  tk  fm  fm  fm  ");
+          textmap[0].Add("fm  fm  fm  tk  tk  tk  tk  tk  tk  tk  fm  fm  fm  ");
+          textmap[0].Add("fm  fm  fm  PSR tk  tk  tk  tk  tk  tk  Cs  Cw  fm  ");
+          textmap[0].Add("fm  fm  fm  tk  tk  tk  tk  tk  tk  tk  Ce  Cn  fm  ");
+          textmap[0].Add("fm  fm  fm  tk  tk  tk  tk  tk  tk  tk  fm  fm  fm  ");
+          textmap[0].Add("fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  ");
+          textmap[0].Add("fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  ");
+          textmap[0].Add("fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  ");
 
-          textmap[1].Add("MK MK MK MK MK MK G0 MK DY DY DY DY MK ");
-          textmap[1].Add("MK r1 DYH.  vm .  .  ID .  .  fc t1 MK ");
-          textmap[1].Add("MK DYVMK .  .  .  .  .  .  m  .  .  MK ");
-          textmap[1].Add("MK .  DGH.  .  .  .  .  .  .  i  .  MK ");
-          textmap[1].Add("MK DGVMK .  .  pn .  MK .  i  i  .  MK ");
-          textmap[1].Add("MK .  DRH.  .  .  .  .  .  .  .  .  MK ");
-          textmap[1].Add("MK DRVMK .  .  .  .  .  .  b  b  .  MK ");
-          textmap[1].Add("MK .  .  .  .  pl1.  .  .  .  .  .  MK ");
-          textmap[1].Add("MK .  .  .  .  .  .  .  .  .  .  .  MK ");
-          textmap[1].Add("MK k  h  c  .  .  .  sp sf si se sm MK ");
-          textmap[1].Add("MK e  sc .  .  .  .  .  .  .  .  .  MK ");
-          textmap[1].Add("MK MK MK MK MK MK MK MK MK MK MK MK MK ");
+          textmap[1].Add("MK  MK  MK  MK  MK  MK  G0  MK  DY  DY  DY  DY  MK  ");
+          textmap[1].Add("MK  r1  DYH .   vm  .   .   ID  .   .   fc  t1  MK  ");
+          textmap[1].Add("MK  DYV MK  .   .   .   .   .   .   m   .   .   MK  ");
+          textmap[1].Add("MK  .   DGH .   .   .   .   .   .   .   i   .   MK  ");
+          textmap[1].Add("MK  DGV MK  .   .   pn  .   MK  .   i   i   .   MK  ");
+          textmap[1].Add("MK  .   DRH .   .   .   .   .   .   .   .   .   MK  ");
+          textmap[1].Add("MK  DRV MK  .   .   .   .   .   .   b   b   .   MK  ");
+          textmap[1].Add("MK  .   .   .   .   pl1 .   .   .   .   .   .   MK  ");
+          textmap[1].Add("MK  .   .   .   .   .   .   .   .   .   .   .   MK  ");
+          textmap[1].Add("MK  k   h   c   .   .   .   sp  sf  si  se  sm  MK  ");
+          textmap[1].Add("MK  e   sc  .   .   .   .   .   .   .   .   .   MK  ");
+          textmap[1].Add("MK  MK  MK  MK  MK  MK  MK  MK  MK  MK  MK  MK  MK  ");
 
-          textmap[2].Add(".  .  .  .  .  WK WK WK .  .  .  .. .. ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .. .. ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .. .. ");
-          textmap[2].Add(".  .  .  lw .  lw .  lw .  .  .  .. .. ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .. .. ");
-          textmap[2].Add(".  .  .  lw .  lw .  lw .  .  .  .. .. ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .. .. ");
-          textmap[2].Add(".  .  .  lw .  lw .  lw .  .  .  .. .. ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .. .. ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .. .. ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .. .. ");
-          textmap[2].Add(".  .  .  .  .  .  .  .  .  .  .  .. .. ");
+          textmap[2].Add(".   .   .   .   .   WK  WK  WK  .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   lw  .   lw  .   lw  .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   lw  .   lw  .   lw  .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   lw  .   lw  .   lw  .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   ");
           }
 
         // test map - AI
@@ -3378,35 +2963,35 @@ namespace Boxland
           random_retard1 = 0;
           random_retard2 = 0;
 
-          textmap[0].Add("tk tk tk tk tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk tk tk tk tk ");
-          textmap[0].Add("tk tk zg tk tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk tk tk tk tk ");
+                    textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  tk  ");
+                    textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  tk  ");
+                    textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  tk  ");
+                    textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  tk  ");
+                    textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  tk  ");
+                    textmap[0].Add("tk  tk  zg  tk  tk  tk  tk  tk  tk  ");
+                    textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  tk  ");
+                    textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  tk  ");
+                    textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  tk  ");
 
-          textmap[1].Add("MM MM MM MM MM MM MM MM MM ");
-          textmap[1].Add("MM .. .. .. MM r2 .. .. MM ");
-          textmap[1].Add("MM .. MM .. MM MM MM .. MM ");
-          textmap[1].Add("MM .. MM .. .. .. MM .. MM ");
-          textmap[1].Add("MM .. MM .. MM .. MM r1 MM ");
-          textmap[1].Add("MM .. .. .. MM .. MM .. MM ");
-          textmap[1].Add("MM pn b  .. MM .. .. .. MM ");
-          textmap[1].Add("MM p0 .. .. MM .. MM .. MM ");
-          textmap[1].Add("MM MM MM MM MM MM MM MM MM ");
+                    textmap[1].Add("MM  MM  MM  MM  MM  MM  MM  MM  MM  ");
+                    textmap[1].Add("MM  .   .   .   MM  r2  .   .   MM  ");
+                    textmap[1].Add("MM  .   MM  .   MM  MM  MM  .   MM  ");
+                    textmap[1].Add("MM  .   MM  .   .   .   MM  .   MM  ");
+                    textmap[1].Add("MM  .   MM  .   MM  .   MM  r1  MM  ");
+                    textmap[1].Add("MM  .   .   .   MM  .   MM  .   MM  ");
+                    textmap[1].Add("MM  pn  b   .   MM  .   .   .   MM  ");
+                    textmap[1].Add("MM  p0  .   .   MM  .   MM  .   MM  ");
+                    textmap[1].Add("MM  MM  MM  MM  MM  MM  MM  MM  MM  ");
 
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. lw .. lw .. lw .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. lw .. lw .. lw .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. lw .. lw .. lw .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. ");
+                    textmap[2].Add(".   .   .   .   .   .   .   .   .   ");
+                    textmap[2].Add(".   .   .   .   .   .   .   .   .   ");
+                    textmap[2].Add(".   .   lw  .   lw  .   lw  .   .   ");
+                    textmap[2].Add(".   .   .   .   .   .   .   .   .   ");
+                    textmap[2].Add(".   .   lw  .   lw  .   lw  .   .   ");
+                    textmap[2].Add(".   .   .   .   .   .   .   .   .   ");
+                    textmap[2].Add(".   .   lw  .   lw  .   lw  .   .   ");
+                    textmap[2].Add(".   .   .   .   .   .   .   .   .   ");
+                    textmap[2].Add(".   .   .   .   .   .   .   .   .   ");
           }
 
         // test map - rube goldberg
@@ -3420,50 +3005,50 @@ namespace Boxland
           random_retard1 = 0;
           random_retard2 = 0;
 
-          textmap[0].Add("tk tk tk tk tk tk tk tk tk tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk tk tk tk tk tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk tk tk tk Cn tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk Cs tk Ce Cn tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk Cs tk Cn tk tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk tk tk Cn Cw Cw tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk tk tk tk tk tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk tk tk tk tk tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk tk tk tk tk tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk tk tk tk tk tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk tk tk tk tk tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk tk tk tk tk tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk tk tk tk tk tk tk tk tk tk ");
-          textmap[0].Add("tk tk tk tk tk tk tk tk tk tk tk tk tk tk ");
+          textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  ");
+          textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  ");
+          textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  Cn  tk  tk  tk  tk  tk  ");
+          textmap[0].Add("tk  tk  tk  tk  tk  Cs  tk  Ce  Cn  tk  tk  tk  tk  tk  ");
+          textmap[0].Add("tk  tk  tk  tk  tk  Cs  tk  Cn  tk  tk  tk  tk  tk  tk  ");
+          textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  Cn  Cw  Cw  tk  tk  tk  tk  ");
+          textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  ");
+          textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  ");
+          textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  ");
+          textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  ");
+          textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  ");
+          textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  ");
+          textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  ");
+          textmap[0].Add("tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  tk  ");
 
-          textmap[1].Add("BR BR BR BR BR BR XR BR BR BR BR BR BR BR ");
-          textmap[1].Add("BR .  .  .  .  pn p0 .  .  .  .  .  .  BR ");
-          textmap[1].Add("BR .  WE WE WE .  WE WE .  WE WE WE .  BR ");
-          textmap[1].Add("BR .  WE .  .  bb .  .  .  .  .  WE .  BR ");
-          textmap[1].Add("BR .  WE .  wi lhg.  .  WE .  .  WE .  BR ");
-          textmap[1].Add("BR .  WE .  wi .  .  .  .  .  .  WE .  BR ");
-          textmap[1].Add("BR .  WE WE wi WE .  WE .  .  .  WE .  BR ");
-          textmap[1].Add("BR .  WE .  DGH.  .  .  .  .  .  WE .  BR ");
-          textmap[1].Add("BR .  WE WE WE .  .  WE i  .  .  WE .  BR ");
-          textmap[1].Add("BR .  WE .  .  .  .  .  .  .  .  WE .  BR ");
-          textmap[1].Add("BR .  WE .  .  .  .  .  .  .  .  WE .  BR ");
-          textmap[1].Add("BR .  WE WE WE WE WE WE WE WE WE WE .  BR ");
-          textmap[1].Add("BR .  .  .  .  .  .  .  .  .  .  .  .  BR ");
-          textmap[1].Add("BR BR BR BR BR BR BR BR BR BR BR BR BR BR ");
+          textmap[1].Add("BR  BR  BR  BR  BR  BR  XR  BR  BR  BR  BR  BR  BR  BR  ");
+          textmap[1].Add("BR  .   .   .   .   pn  p0  .   .   .   .   .   .   BR  ");
+          textmap[1].Add("BR  .   WE  WE  WE  .   WE  WE  .   WE  WE  WE  .   BR  ");
+          textmap[1].Add("BR  .   WE  .   .   bb  .   .   .   .   .   WE  .   BR  ");
+          textmap[1].Add("BR  .   WE  .   wi  lhg .   .   WE  .   .   WE  .   BR  ");
+          textmap[1].Add("BR  .   WE  .   wi  .   .   .   .   .   .   WE  .   BR  ");
+          textmap[1].Add("BR  .   WE  WE  wi  WE  .   WE  .   .   .   WE  .   BR  ");
+          textmap[1].Add("BR  .   WE  .   DGH .   .   .   .   .   .   WE  .   BR  ");
+          textmap[1].Add("BR  .   WE  WE  WE  .   .   WE  i   .   .   WE  .   BR  ");
+          textmap[1].Add("BR  .   WE  .   .   .   .   .   .   .   .   WE  .   BR  ");
+          textmap[1].Add("BR  .   WE  .   .   .   .   .   .   .   .   WE  .   BR  ");
+          textmap[1].Add("BR  .   WE  WE  WE  WE  WE  WE  WE  WE  WE  WE  .   BR  ");
+          textmap[1].Add("BR  .   .   .   .   .   .   .   .   .   .   .   .   BR  ");
+          textmap[1].Add("BR  BR  BR  BR  BR  BR  BR  BR  BR  BR  BR  BR  BR  BR  ");
 
-          textmap[2].Add(".  .  .  .  .  .  .  .. .. .. .. .. .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .. .. .. .. .. .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .. .. .. .. .. .  .  ");
-          textmap[2].Add(".  .  .  .  .  lW .  lW .. .  .. .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .. .  .. .. .  .. .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  lW .  lW .. .  .. .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .. .  .. .. .. .. .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  lW .  lW .. .  .. .  .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .. .. .. .. .. .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .. .. .. .. .. .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .. .. .. .. .. .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .. .. .. .. .. .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .. .. .. .. .. .  .  ");
-          textmap[2].Add(".  .  .  .  .  .  .  .. .. .. .. .. .  .  ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   lW  .   lW  .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   lW  .   lW  .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   lW  .   lW  .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
+          textmap[2].Add(".   .   .   .   .   .   .   .   .   .   .   .   .   .   ");
           }
 
         // test map - web page
@@ -3477,57 +3062,57 @@ namespace Boxland
           random_retard1 = 0;
           random_retard2 = 0;
 
-          textmap[0].Add(".. .. .. .. .. .. .. fm fm fm fm fm fm ");
-          textmap[0].Add("fm fm fm fm fm fm fm fm fm fm fm fm fm ");
-          textmap[0].Add("fm fm fm fm fm fm fm fm fm fm fm fm fm ");
-          textmap[0].Add("fm fm fm fm fm fm fm fm fm fm fm fm fm ");
-          textmap[0].Add("ce ce ce ce log00 00 00 ce ce ce ce fm ");
-          textmap[0].Add("ce ce ce ce 00 00 00 00 ce ce ce ce fm ");
-          textmap[0].Add("ce ce ce ce tk tk tk tk ce ce ce ce fm ");
-          textmap[0].Add("ce ce ce ce tk tk tk tk ce ce ce ce fm ");
-          textmap[0].Add("ce ce ce ce tk tk tk tk ce ce ce ce fm ");
-          textmap[0].Add("ce ce ce ce tk tk tk tk ce ce ce ce fm ");
-          textmap[0].Add("ce ce ce ce tk tk tk tk ce ce ce ce fm ");
-          textmap[0].Add("ce ce ce ce tk tk tk tk ce ce ce ce fm ");
-          textmap[0].Add("ce ce ce ce tk tk tk tk ce ce ce ce fm ");
-          textmap[0].Add("ce ce ce ce tk tk tk tk ce ce ce ce fm ");
-          textmap[0].Add(".. .. .. .. .. .. .. .. fm fm fm fm fm ");
+                    textmap[0].Add("..  ..  ..  ..  ..  ..  ..  fm  fm  fm  fm  fm  fm  ");
+                    textmap[0].Add("fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  ");
+                    textmap[0].Add("fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  ");
+                    textmap[0].Add("fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  fm  ");
+                    textmap[0].Add("ce  ce  ce  ce  log00  00  00  ce  ce  ce  ce  fm  ");
+                    textmap[0].Add("ce  ce  ce  ce  00  00  00  00  ce  ce  ce  ce  fm  ");
+                    textmap[0].Add("ce  ce  ce  ce  tk  tk  tk  tk  ce  ce  ce  ce  fm  ");
+                    textmap[0].Add("ce  ce  ce  ce  tk  tk  tk  tk  ce  ce  ce  ce  fm  ");
+                    textmap[0].Add("ce  ce  ce  ce  tk  tk  tk  tk  ce  ce  ce  ce  fm  ");
+                    textmap[0].Add("ce  ce  ce  ce  tk  tk  tk  tk  ce  ce  ce  ce  fm  ");
+                    textmap[0].Add("ce  ce  ce  ce  tk  tk  tk  tk  ce  ce  ce  ce  fm  ");
+                    textmap[0].Add("ce  ce  ce  ce  tk  tk  tk  tk  ce  ce  ce  ce  fm  ");
+                    textmap[0].Add("ce  ce  ce  ce  tk  tk  tk  tk  ce  ce  ce  ce  fm  ");
+                    textmap[0].Add("ce  ce  ce  ce  tk  tk  tk  tk  ce  ce  ce  ce  fm  ");
+                    textmap[0].Add("..  ..  ..  ..  ..  ..  ..  ..  fm  fm  fm  fm  fm  ");
 
-          textmap[1].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[1].Add("DP DP DP DP DP DP DP .. DP DP DP DP .. ");
-          textmap[1].Add("DP tp .. b  p0 pn .. b  .. m  vm DP .. ");
-          textmap[1].Add("DP DP DP DP DP DP DP DP DP DP DP DP .. ");
-          textmap[1].Add("DP .. .. .. .. .. .. .. .. .. .. DP .. ");
-          textmap[1].Add("DP .. .. .. .. .. .. .. .. .. .. DP .. ");
-          textmap[1].Add("DP .. .. .. .. .. .. .. .. .. .. DP .. ");
-          textmap[1].Add("DP .. .. .. .. .. .. .. .. .. .. DP .. ");
-          textmap[1].Add("DP .. .. .. .. .. .. .. .. .. .. DP .. ");
-          textmap[1].Add("DP .. .. .. .. .. .. .. .. .. .. DP .. ");
-          textmap[1].Add("DP .. .. .. .. .. .. .. .. .. .. DP .. ");
-          textmap[1].Add("DP .. .. .. .. .. .. .. .. .. .. DP .. ");
-          textmap[1].Add("DP .. .. .. .. .. .. .. .. .. .. DP .. ");
-          textmap[1].Add("DP DP DP DP DP DP DP DP DP DP b  DP .. ");
-          textmap[1].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. ");
+                    textmap[1].Add("..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
+                    textmap[1].Add("DP  DP  DP  DP  DP  DP  DP  ..  DP  DP  DP  DP  ..  ");
+                    textmap[1].Add("DP  tp  ..  b   p0  pn  ..  b   ..  m   vm  DP  ..  ");
+                    textmap[1].Add("DP  DP  DP  DP  DP  DP  DP  DP  DP  DP  DP  DP  ..  ");
+                    textmap[1].Add("DP  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  DP  ..  ");
+                    textmap[1].Add("DP  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  DP  ..  ");
+                    textmap[1].Add("DP  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  DP  ..  ");
+                    textmap[1].Add("DP  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  DP  ..  ");
+                    textmap[1].Add("DP  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  DP  ..  ");
+                    textmap[1].Add("DP  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  DP  ..  ");
+                    textmap[1].Add("DP  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  DP  ..  ");
+                    textmap[1].Add("DP  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  DP  ..  ");
+                    textmap[1].Add("DP  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  DP  ..  ");
+                    textmap[1].Add("DP  DP  DP  DP  DP  DP  DP  DP  DP  DP  b   DP  ..  ");
+                    textmap[1].Add("..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
 
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. lw .. lw .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. lw .. lw .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. ");
-          textmap[2].Add(".. .. .. .. .. .. .. .. .. .. .. .. .. ");
+                    textmap[2].Add("..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
+                    textmap[2].Add("..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
+                    textmap[2].Add("..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
+                    textmap[2].Add("..  ..  ..  ..  ..  lw  ..  lw  ..  ..  ..  ..  ..  ");
+                    textmap[2].Add("..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
+                    textmap[2].Add("..  ..  ..  ..  ..  lw  ..  lw  ..  ..  ..  ..  ..  ");
+                    textmap[2].Add("..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
+                    textmap[2].Add("..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
+                    textmap[2].Add("..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
+                    textmap[2].Add("..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
+                    textmap[2].Add("..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
+                    textmap[2].Add("..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
+                    textmap[2].Add("..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
+                    textmap[2].Add("..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
+                    textmap[2].Add("..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ");
           }
 
         // test map - rube goldberg in feature order
-        // 1 pressure switc opens door
+        // 1 - pressure switch opens door
         // 2 - box behind door travels down conveyor belt
         // 3 - box is torched by incinerator
         // 4 - box sets second box on fire
@@ -3541,8 +3126,12 @@ namespace Boxland
           textmap[0].Add (".   .   .   ");
 
           textmap[1].Add ("BY  BY  BY  ");
-          textmap[1].Add ("BY  p   BY  ");
+          textmap[1].Add ("BY  pn  BY  ");
           textmap[1].Add ("BY  BY  BY  ");
+
+          textmap[2].Add (".   .   .   ");
+          textmap[2].Add (".   .   .   ");
+          textmap[2].Add (".   .   .   ");
           }
 
         map_tile_width = textmap[0][0].Length / 4;
@@ -3582,10 +3171,10 @@ namespace Boxland
       int spot;
 
       // clear level data
-      total_brushes = 0;
+      //total_brushes = 0;
+      brush_control.brush = new List<Brush> ();
       fixture_control.fixture = new List<Fixture> ();
       object_control.obj = new List<Object> ();
-      //total_characters = 1;
       total_lights = 0;
       total_draw_slots = 1;
       total_character_spots = 0;
@@ -3648,7 +3237,7 @@ namespace Boxland
             {
             gridspace = matrixmap[mx, my, mz];
 
-            if (gridspace == ",,  ")// && total_character_spots < max_character_spots)
+            if (gridspace == ",, ")// && total_character_spots < max_character_spots)
               {
               random_character_spot[total_character_spots].x = x;
               random_character_spot[total_character_spots].y = y;
@@ -3656,74 +3245,74 @@ namespace Boxland
               random_character_spot[total_character_spots].used = false;
               total_character_spots += 1;
               }
-            else if (gridspace == "00 ") add_brush ((int) T.INVISIBLE_WALL, (int) T.INVISIBLE_WALL, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "BE ") add_brush ((int) T.BRICK_GREY_TEST, (int) T.BRICK_GREY_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "BR ") add_brush ((int) T.BRICK_RED_TEST, (int) T.BRICK_RED_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "BW ") add_brush ((int) T.BRICK_WHITE_TEST, (int) T.BRICK_WHITE_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "DRV") add_brush ((int) T.DOOR_RED_V_TOP_CLOSED_TEST, (int) T.DOOR_RED_V_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "DRH") add_brush ((int) T.DOOR_RED_H_TOP_CLOSED_TEST, (int) T.DOOR_RED_H_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "DYV") add_brush ((int) T.DOOR_YELLOW_V_TOP_CLOSED_TEST, (int) T.DOOR_YELLOW_V_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "DYH") add_brush ((int) T.DOOR_YELLOW_H_TOP_CLOSED_TEST, (int) T.DOOR_YELLOW_H_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "DGV") add_brush ((int) T.DOOR_GREEN_V_TOP_CLOSED_TEST, (int) T.DOOR_GREEN_V_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "DGH") add_brush ((int) T.DOOR_GREEN_H_TOP_CLOSED_TEST, (int) T.DOOR_GREEN_H_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "DBV") add_brush ((int) T.DOOR_BLUE_V_TOP_CLOSED_TEST, (int) T.DOOR_BLUE_V_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "DBH") add_brush ((int) T.DOOR_BLUE_H_TOP_CLOSED_TEST, (int) T.DOOR_BLUE_H_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "DM ") add_brush ((int) T.DRYWALL_MINT_TOP_TEST, (int) T.DRYWALL_MINT_FRONT_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "DP ") add_brush ((int) T.DRYWALL_PURPLE_TOP_TEST, (int) T.DRYWALL_PURPLE_FRONT_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "DT ") add_brush ((int) T.DRYWALL_TAN_TOP_TEST, (int) T.DRYWALL_TAN_FRONT_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "DY ") add_brush ((int) T.DRYWALL_YELLOW_TOP_TEST, (int) T.DRYWALL_YELLOW_FRONT_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "00 ") add_brush ((int) Brush_Control.T.INVISIBLE_WALL, (int) Brush_Control.T.INVISIBLE_WALL, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "BE ") add_brush ((int) Brush_Control.T.BRICK_GREY_TEST, (int) Brush_Control.T.BRICK_GREY_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "BR ") add_brush ((int) Brush_Control.T.BRICK_RED_TEST, (int) Brush_Control.T.BRICK_RED_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "BW ") add_brush ((int) Brush_Control.T.BRICK_WHITE_TEST, (int) Brush_Control.T.BRICK_WHITE_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "DRV") add_brush ((int) Brush_Control.T.DOOR_RED_V_TOP_CLOSED_TEST, (int) Brush_Control.T.DOOR_RED_V_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "DRH") add_brush ((int) Brush_Control.T.DOOR_RED_H_TOP_CLOSED_TEST, (int) Brush_Control.T.DOOR_RED_H_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "DYV") add_brush ((int) Brush_Control.T.DOOR_YELLOW_V_TOP_CLOSED_TEST, (int) Brush_Control.T.DOOR_YELLOW_V_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "DYH") add_brush ((int) Brush_Control.T.DOOR_YELLOW_H_TOP_CLOSED_TEST, (int) Brush_Control.T.DOOR_YELLOW_H_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "DGV") add_brush ((int) Brush_Control.T.DOOR_GREEN_V_TOP_CLOSED_TEST, (int) Brush_Control.T.DOOR_GREEN_V_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "DGH") add_brush ((int) Brush_Control.T.DOOR_GREEN_H_TOP_CLOSED_TEST, (int) Brush_Control.T.DOOR_GREEN_H_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "DBV") add_brush ((int) Brush_Control.T.DOOR_BLUE_V_TOP_CLOSED_TEST, (int) Brush_Control.T.DOOR_BLUE_V_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "DBH") add_brush ((int) Brush_Control.T.DOOR_BLUE_H_TOP_CLOSED_TEST, (int) Brush_Control.T.DOOR_BLUE_H_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "DM ") add_brush ((int) Brush_Control.T.DRYWALL_MINT_TOP_TEST, (int) Brush_Control.T.DRYWALL_MINT_FRONT_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "DP ") add_brush ((int) Brush_Control.T.DRYWALL_PURPLE_TOP_TEST, (int) Brush_Control.T.DRYWALL_PURPLE_FRONT_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "DT ") add_brush ((int) Brush_Control.T.DRYWALL_TAN_TOP_TEST, (int) Brush_Control.T.DRYWALL_TAN_FRONT_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "DY ") add_brush ((int) Brush_Control.T.DRYWALL_YELLOW_TOP_TEST, (int) Brush_Control.T.DRYWALL_YELLOW_FRONT_TEST, x, y, z, tilesize, tilesize, tilesize);
             else if ((gridspace[0] == 'G' || gridspace[0] == 'g')  // gateway to new map
                      && (gridspace[1] == '0' || gridspace[1] == '1' || gridspace[1] == '2' || gridspace[1] == '3' || gridspace[1] == '4'
                      || gridspace[1] == '5' || gridspace[1] == '6' || gridspace[1] == '7' || gridspace[1] == '8' || gridspace[1] == '9'))
               {
-              if (gridspace[0] == 'G') add_brush ((int) T.GATEWAY_V_TOP_TEST, (int) T.GATEWAY_V_FRONT_OPEN_TEST, x, y, z, tilesize, tilesize, tilesize);
-              else if (gridspace[0] == 'g') add_brush ((int) T.GATEWAY_H_TOP_TEST, (int) T.GATEWAY_H_FRONT_TEST, x, y, z, tilesize, tilesize, tilesize);
+              if (gridspace[0] == 'G') add_brush ((int) Brush_Control.T.GATEWAY_V_TOP_TEST, (int) Brush_Control.T.GATEWAY_V_FRONT_OPEN_TEST, x, y, z, tilesize, tilesize, tilesize);
+              else if (gridspace[0] == 'g') add_brush ((int) Brush_Control.T.GATEWAY_H_TOP_TEST, (int) Brush_Control.T.GATEWAY_H_FRONT_TEST, x, y, z, tilesize, tilesize, tilesize);
 
               //gate = gridspace.Substring (1, 2);
-              brush[total_brushes - 1].gateway = Convert.ToInt16 (gridspace.Substring (1, 2));
+              brush_control.brush[brush_control.brush.Count - 1].gateway = Convert.ToInt16 (gridspace.Substring (1, 2));
               }
-            else if (gridspace == "IU ") add_brush ((int) T.INCINERATOR_TEST_UP, (int) T.METAL_BLACK_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "ID ") add_brush ((int) T.INCINERATOR_TEST_DOWN, (int) T.INCINERATOR_TEST_DOWN_FRONT, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "IL ") add_brush ((int) T.INCINERATOR_TEST_LEFT, (int) T.METAL_BLACK_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "IR ") add_brush ((int) T.INCINERATOR_TEST_RIGHT, (int) T.METAL_BLACK_TEST, x, y, z, tilesize, tilesize, tilesize);
-            //else if (gridspace == "W1 ") add_brush ((int) T.WARNING_SIGN_TEST1, (int) T.WARNING_SIGN_TEST1, x, y, z, tilesize, tilesize, tilesize);
-            //else if (gridspace == "W2 ") add_brush ((int) T.WARNING_SIGN_TEST2, (int) T.WARNING_SIGN_TEST2, x, y, z, tilesize, tilesize, tilesize);
-            //else if (gridspace == "W3 ") add_brush ((int) T.WARNING_SIGN_TEST3, (int) T.WARNING_SIGN_TEST3, x, y, z, tilesize, tilesize, tilesize);
-            //else if (gridspace == "W4 ") add_brush ((int) T.WARNING_SIGN_TEST4, (int) T.WARNING_SIGN_TEST4, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "MB ") add_brush ((int) T.METAL_BLUE_TOP_TEST, (int) T.METAL_BLUE_FRONT_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "MK ") add_brush ((int) T.METAL_BLACK_TEST, (int) T.METAL_BLACK_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "MM ") add_brush ((int) T.METAL_MINT_TOP_TEST, (int) T.METAL_MINT_FRONT_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "BM ") add_brush ((int) T.BIG_MACHINE_TEST, (int) T.BIG_MACHINE_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "EN ") add_brush ((int) T.GATEWAY_V_TOP_TEST, (int) T.GATEWAY_V_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "En ") add_brush ((int) T.GATEWAY_H_TOP_TEST, (int) T.GATEWAY_H_FRONT_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "PSB") add_brush ((int) T.SWITCH_BLUE_TEST, (int) T.SWITCH_BLUE_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "psg") add_brush ((int) T.SWITCH_GREEN_TEST, (int) T.SWITCH_GREEN_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "PSR") add_brush ((int) T.SWITCH_RED_TEST, (int) T.SWITCH_RED_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "psy") add_brush ((int) T.SWITCH_YELLOW_TEST, (int) T.SWITCH_YELLOW_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "XR ") add_brush ((int) T.EXIT_RED_V_TOP_CLOSED_TEST, (int) T.EXIT_RED_V_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);  // red vertical exit
-            else if (gridspace == "Xr ") add_brush ((int) T.EXIT_RED_H_TOP_CLOSED_TEST, (int) T.EXIT_RED_H_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);  // red horizontal exit
+            else if (gridspace == "IU ") add_brush ((int) Brush_Control.T.INCINERATOR_TEST_UP, (int) Brush_Control.T.METAL_BLACK_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "ID ") add_brush ((int) Brush_Control.T.INCINERATOR_TEST_DOWN, (int) Brush_Control.T.INCINERATOR_TEST_DOWN_FRONT, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "IL ") add_brush ((int) Brush_Control.T.INCINERATOR_TEST_LEFT, (int) Brush_Control.T.METAL_BLACK_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "IR ") add_brush ((int) Brush_Control.T.INCINERATOR_TEST_RIGHT, (int) Brush_Control.T.METAL_BLACK_TEST, x, y, z, tilesize, tilesize, tilesize);
+            //else if (gridspace == "W1 ") add_brush ((int) Brush_Control.T.WARNING_SIGN_TEST1, (int) Brush_Control.T.WARNING_SIGN_TEST1, x, y, z, tilesize, tilesize, tilesize);
+            //else if (gridspace == "W2 ") add_brush ((int) Brush_Control.T.WARNING_SIGN_TEST2, (int) Brush_Control.T.WARNING_SIGN_TEST2, x, y, z, tilesize, tilesize, tilesize);
+            //else if (gridspace == "W3 ") add_brush ((int) Brush_Control.T.WARNING_SIGN_TEST3, (int) Brush_Control.T.WARNING_SIGN_TEST3, x, y, z, tilesize, tilesize, tilesize);
+            //else if (gridspace == "W4 ") add_brush ((int) Brush_Control.T.WARNING_SIGN_TEST4, (int) Brush_Control.T.WARNING_SIGN_TEST4, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "MB ") add_brush ((int) Brush_Control.T.METAL_BLUE_TOP_TEST, (int) Brush_Control.T.METAL_BLUE_FRONT_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "MK ") add_brush ((int) Brush_Control.T.METAL_BLACK_TEST, (int) Brush_Control.T.METAL_BLACK_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "MM ") add_brush ((int) Brush_Control.T.METAL_MINT_TOP_TEST, (int) Brush_Control.T.METAL_MINT_FRONT_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "BM ") add_brush ((int) Brush_Control.T.BIG_MACHINE_TEST, (int) Brush_Control.T.BIG_MACHINE_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "EN ") add_brush ((int) Brush_Control.T.GATEWAY_V_TOP_TEST, (int) Brush_Control.T.GATEWAY_V_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "En ") add_brush ((int) Brush_Control.T.GATEWAY_H_TOP_TEST, (int) Brush_Control.T.GATEWAY_H_FRONT_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "PSB") add_brush ((int) Brush_Control.T.SWITCH_BLUE_TEST, (int) Brush_Control.T.SWITCH_BLUE_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "psg") add_brush ((int) Brush_Control.T.SWITCH_GREEN_TEST, (int) Brush_Control.T.SWITCH_GREEN_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "PSR") add_brush ((int) Brush_Control.T.SWITCH_RED_TEST, (int) Brush_Control.T.SWITCH_RED_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "psy") add_brush ((int) Brush_Control.T.SWITCH_YELLOW_TEST, (int) Brush_Control.T.SWITCH_YELLOW_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "XR ") add_brush ((int) Brush_Control.T.EXIT_RED_V_TOP_CLOSED_TEST, (int) Brush_Control.T.EXIT_RED_V_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);  // red vertical exit
+            else if (gridspace == "Xr ") add_brush ((int) Brush_Control.T.EXIT_RED_H_TOP_CLOSED_TEST, (int) Brush_Control.T.EXIT_RED_H_FRONT_CLOSED_TEST, x, y, z, tilesize, tilesize, tilesize);  // red horizontal exit
             else if (gridspace == "Cn ") add_fixture ((int) Fixture_Control.F.CONVEYOR_NORTH_TEST, x, y, z);
             else if (gridspace == "Cs ") add_fixture ((int) Fixture_Control.F.CONVEYOR_SOUTH_TEST, x, y, z);
             else if (gridspace == "Ce ") add_fixture ((int) Fixture_Control.F.CONVEYOR_EAST_TEST, x, y, z);
             else if (gridspace == "Cw ") add_fixture ((int) Fixture_Control.F.CONVEYOR_WEST_TEST, x, y, z);
-            else if (gridspace == "as ") add_brush ((int) T.ASPHALT_TEST, (int) T.ASPHALT_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "b  ") add_brush ((int) T.BOX_WOOD_TEST, (int) T.BOX_WOOD_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "bb ") add_brush ((int) T.BOX_BANDED_TEST, (int) T.BOX_BANDED_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "as ") add_brush ((int) Brush_Control.T.ASPHALT_TEST, (int) Brush_Control.T.ASPHALT_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "b  ") add_brush ((int) Brush_Control.T.BOX_WOOD_TEST, (int) Brush_Control.T.BOX_WOOD_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "bb ") add_brush ((int) Brush_Control.T.BOX_BANDED_TEST, (int) Brush_Control.T.BOX_BANDED_TEST, x, y, z, tilesize, tilesize, tilesize);
             else if (gridspace == "c  ") add_object ((int) Object_Control.O.COIN, x + (tilesize / 2), y + (tilesize / 2), z + (tilesize / 2));
             else if (gridspace == "c1s") add_fixture ((int) Fixture_Control.F.CHAIR1_SOUTH_TEST, x, y, z);
-            else if (gridspace == "ce ") add_brush ((int) T.CARPET_GREY_TEST, (int) T.CARPET_GREY_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "ce ") add_brush ((int) Brush_Control.T.CARPET_GREY_TEST, (int) Brush_Control.T.CARPET_GREY_TEST, x, y, z, tilesize, tilesize, tilesize);
             else if (gridspace == "co ") add_fixture ((int) Fixture_Control.F.COUCH_TEST, x, y, z);
-            else if (gridspace == "cp ") add_brush ((int) T.CARPET_PURPLE_TEST, (int) T.CARPET_PURPLE_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "cp ") add_brush ((int) Brush_Control.T.CARPET_PURPLE_TEST, (int) Brush_Control.T.CARPET_PURPLE_TEST, x, y, z, tilesize, tilesize, tilesize);
             else if (gridspace == "e  ") add_object ((int) Object_Control.O.ENERGY, x + (tilesize / 2), y + (tilesize / 2), z + (tilesize / 2));
-            else if (gridspace == "i  ") add_brush ((int) T.BOX_ICE_TEST, (int) T.BOX_ICE_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "i  ") add_brush ((int) Brush_Control.T.BOX_ICE_TEST, (int) Brush_Control.T.BOX_ICE_TEST, x, y, z, tilesize, tilesize, tilesize);
             else if (gridspace == "fc ") add_fixture ((int) Fixture_Control.F.FILING_TEST, x, y, z);
-            else if (gridspace == "fg ") add_brush ((int) T.FLOOR_GRATE_TEST, (int) T.FLOOR_GRATE_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "fm ") add_brush ((int) T.FLOOR_METAL_TEST, (int) T.FLOOR_METAL_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "gr ") add_brush ((int) T.GRASS_TEST, (int) T.GRASS_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "fg ") add_brush ((int) Brush_Control.T.FLOOR_GRATE_TEST, (int) Brush_Control.T.FLOOR_GRATE_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "fm ") add_brush ((int) Brush_Control.T.FLOOR_METAL_TEST, (int) Brush_Control.T.FLOOR_METAL_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "gr ") add_brush ((int) Brush_Control.T.GRASS, (int) Brush_Control.T.GRASS, x, y, z, tilesize, tilesize, tilesize);
             else if (gridspace == "h  ") add_object ((int) Object_Control.O.HEALTH, x + (tilesize / 2), y + (tilesize / 2), z + (tilesize / 2));
             else if (gridspace == "k  ") add_object ((int) Object_Control.O.KEYCARD, x + (tilesize / 2), y + (tilesize / 2), z + (tilesize / 2));
             else if (gridspace == "lhg") add_fixture ((int) Fixture_Control.F.LASER_HORIZONTAL_GREEN_TEST, x, y, z);
-            else if (gridspace == "log") add_brush ((int) T.FLOOR_LOGO_TEST, (int) T.FLOOR_LOGO_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "log") add_brush ((int) Brush_Control.T.FLOOR_LOGO_TEST, (int) Brush_Control.T.FLOOR_LOGO_TEST, x, y, z, tilesize, tilesize, tilesize);
             if (lighting_engine == 2)
               {
               if (gridspace == "lB ") add_light (Color.Blue, x + (tilesize / 2), y + (tilesize / 2), z, 2f, .8f, SOLID);
@@ -3749,7 +3338,7 @@ namespace Boxland
               else if (gridspace == "lY ") add_light ((int) L.yellow, x + (tilesize / 2), y + (tilesize / 2), z, 2f, .15f, SOLID);
               else if (gridspace == "ly ") add_light ((int) L.yellow_pale, x + (tilesize / 2), y + (tilesize / 2), z, 1.5f, .1f, SOLID);
               }
-            if (gridspace == "m  ") add_brush ((int) T.BOX_METAL_TEST, (int) T.BOX_METAL_TEST, x, y, z, tilesize, tilesize, tilesize);
+            if (gridspace == "m  ") add_brush ((int) Brush_Control.T.BOX_METAL_TEST, (int) Brush_Control.T.BOX_METAL_TEST, x, y, z, tilesize, tilesize, tilesize);
             else if (gridspace == "pl1") add_fixture ((int) Fixture_Control.F.PLANT1_TEST, x, y, z);
             //else
             if (gridspace != null && gridspace[0] == 'p' && gridspace.Length > 1)
@@ -3761,11 +3350,11 @@ namespace Boxland
                 add_player (x, y, z);
               else if (gridspace[1] == 'n' && player_last_level == -1) add_player (x, y, z);
               }
-            else if (gridspace == "r1 " && toggle_enemies == true) add_character ("retard", (int) C.RETARD, x + (tilesize / 2), y + (tilesize / 2), z);
-            else if (gridspace == "r2 " && toggle_enemies == true) add_character ("throwing retard", (int) C.THROWING_RETARD, x + (tilesize / 2), y + (tilesize / 2), z);
-            else if (gridspace == "rd " && toggle_enemies == true) add_character ("Richard's Dad", (int) C.RICHARDS_DAD, x + (tilesize / 2), y + (tilesize / 2), z);
+            else if (gridspace == "r1 " && toggle_enemies == true) add_character ("retard", (int) Character_Control.C.RETARD, x + (tilesize / 2), y + (tilesize / 2), z);
+            else if (gridspace == "r2 " && toggle_enemies == true) add_character ("throwing retard", (int) Character_Control.C.THROWING_RETARD, x + (tilesize / 2), y + (tilesize / 2), z);
+            else if (gridspace == "rd " && toggle_enemies == true) add_character ("Richard's Dad", (int) Character_Control.C.RICHARDS_DAD, x + (tilesize / 2), y + (tilesize / 2), z);
             else if (gridspace == "sc ") add_object ((int) Object_Control.O.SCRAP_METAL, x + (tilesize / 2), y + (tilesize / 2), z + (tilesize / 2));
-            else if (gridspace == "sw ") add_brush ((int) T.SIDEWALK_TEST, (int) T.SIDEWALK_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "sw ") add_brush ((int) Brush_Control.T.SIDEWALK_TEST, (int) Brush_Control.T.SIDEWALK_TEST, x, y, z, tilesize, tilesize, tilesize);
             else if (gridspace == "se ") add_object ((int) Object_Control.O.SHIRT_BLUE, x + (tilesize / 2), y + (tilesize / 2), z + (tilesize / 2));
             else if (gridspace == "sf ") add_object ((int) Object_Control.O.SHIRT_RED, x + (tilesize / 2), y + (tilesize / 2), z + (tilesize / 2));
             else if (gridspace == "si ") add_object ((int) Object_Control.O.SHIRT_WHITE, x + (tilesize / 2), y + (tilesize / 2), z + (tilesize / 2));
@@ -3773,15 +3362,15 @@ namespace Boxland
             else if (gridspace == "sy ") add_object ((int) Object_Control.O.SHIRT_YELLOW, x + (tilesize / 2), y + (tilesize / 2), z + (tilesize / 2));
             else if (gridspace == "t1 ") add_fixture ((int) Fixture_Control.F.TABLE1_TEST, x, y, z);
             else if (gridspace == "t2 ") add_fixture ((int) Fixture_Control.F.TABLE2_TEST, x, y, z);
-            else if (gridspace == "tb ") add_brush ((int) T.TILE_BLUE_TEST, (int) T.TILE_BLUE_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "tk ") add_brush ((int) T.TILE_BLACK_TEST, (int) T.TILE_BLACK_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "tn ") add_brush ((int) T.TILE_BROWN_TEST, (int) T.TILE_BROWN_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "tb ") add_brush ((int) Brush_Control.T.TILE_BLUE_TEST, (int) Brush_Control.T.TILE_BLUE_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "tk ") add_brush ((int) Brush_Control.T.TILE_BLACK_TEST, (int) Brush_Control.T.TILE_BLACK_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "tn ") add_brush ((int) Brush_Control.T.TILE_BROWN_TEST, (int) Brush_Control.T.TILE_BROWN_TEST, x, y, z, tilesize, tilesize, tilesize);
             else if (gridspace == "tv ") add_fixture ((int) Fixture_Control.F.TV1_TEST, x, y, z);
             else if (gridspace == "vm ") add_fixture ((int) Fixture_Control.F.VENDING_TEST, x, y, z);
             else if (gridspace == "wi ") add_fixture ((int) Fixture_Control.F.WIRES, x, y, z);
-            else if (gridspace == "zg ") add_brush ((int) T.FLOOR_ZONE_GREEN_TEST, (int) T.FLOOR_ZONE_GREEN_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "zr ") add_brush ((int) T.FLOOR_ZONE_RED_TEST, (int) T.FLOOR_ZONE_RED_TEST, x, y, z, tilesize, tilesize, tilesize);
-            else if (gridspace == "zy ") add_brush ((int) T.FLOOR_ZONE_YELLOW_TEST, (int) T.FLOOR_ZONE_YELLOW_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "zg ") add_brush ((int) Brush_Control.T.FLOOR_ZONE_GREEN_TEST, (int) Brush_Control.T.FLOOR_ZONE_GREEN_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "zr ") add_brush ((int) Brush_Control.T.FLOOR_ZONE_RED_TEST, (int) Brush_Control.T.FLOOR_ZONE_RED_TEST, x, y, z, tilesize, tilesize, tilesize);
+            else if (gridspace == "zy ") add_brush ((int) Brush_Control.T.FLOOR_ZONE_YELLOW_TEST, (int) Brush_Control.T.FLOOR_ZONE_YELLOW_TEST, x, y, z, tilesize, tilesize, tilesize);
             x += tilesize;
             }
           x = 0;
@@ -3797,19 +3386,19 @@ namespace Boxland
       map_height = tilesize * map_tile_height;
 
       // add background textures to brushes that need them
-      for (b = 0; b < total_brushes; b += 1)
+      for (b = 0; b < brush_control.brush.Count; b += 1)
         {
-        if (brush[b].top_texture_number == (int) T.SWITCH_YELLOW_TEST ||
-            brush[b].top_texture_number == (int) T.SWITCH_RED_TEST ||
-            brush[b].top_texture_number == (int) T.SWITCH_GREEN_TEST ||
-            brush[b].top_texture_number == (int) T.SWITCH_BLUE_TEST)
+        if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.SWITCH_YELLOW_TEST ||
+            brush_control.brush[b].top_texture_number == (int) Brush_Control.T.SWITCH_RED_TEST ||
+            brush_control.brush[b].top_texture_number == (int) Brush_Control.T.SWITCH_GREEN_TEST ||
+            brush_control.brush[b].top_texture_number == (int) Brush_Control.T.SWITCH_BLUE_TEST)
           {
-          int clip = brush_north_of_brush (b);
-          if (clip == -1) clip = brush_west_of_brush (b);
-          if (clip == -1) clip = brush_east_of_brush (b);
-          if (clip == -1) clip = brush_south_of_brush (b);
-          if (clip > -1) brush[b].background_texture = brush[clip].top_texture_number;
-          else brush[b].background_texture = (int) T.TILE_BLACK_TEST;
+          int clip = brush_control.brush_north_of_brush (brush_control.brush[b]);
+          if (clip == -1) clip = brush_control.brush_west_of_brush (brush_control.brush[b]);
+          if (clip == -1) clip = brush_control.brush_east_of_brush (brush_control.brush[b]);
+          if (clip == -1) clip = brush_control.brush_south_of_brush (brush_control.brush[b]);
+          if (clip > -1) brush_control.brush[b].background_texture = brush_control.brush[clip].top_texture_number;
+          else brush_control.brush[b].background_texture = (int) Brush_Control.T.TILE_BLACK_TEST;
           }
         }
 
@@ -3818,34 +3407,34 @@ namespace Boxland
         {
         if (fixture_control.fixture[f].type == (int) Fixture_Control.F.WIRES)
           {
-          b = point_in_brush (fixture_control.fixture[f].x + (tilesize / 2), fixture_control.fixture[f].y + Convert.ToInt32 (tilesize * 1.5), fixture_control.fixture[f].z + 9, false);
+          b = brush_control.point_in_brush (fixture_control.fixture[f].x + (tilesize / 2), fixture_control.fixture[f].y + Convert.ToInt32 (tilesize * 1.5), fixture_control.fixture[f].z + 9, false, false);
           f2 = fixture_control.point_collide (fixture_control.fixture[f].x + (tilesize / 2), fixture_control.fixture[f].y + Convert.ToInt32 (tilesize * 1.5), fixture_control.fixture[f].z + 1);
           f3 = fixture_control.point_collide (fixture_control.fixture[f].x + (tilesize / 2), fixture_control.fixture[f].y + Convert.ToInt32 (tilesize * 1.5), fixture_control.fixture[f].z + 9);
-          if (b > -1 && brush[b].electric == true) electric_north = true;
+          if (b > -1 && brush_control.brush[b].electric == true) electric_north = true;
           else if (f2 > -1 && fixture_control.fixture[f2].electric == true) electric_north = true;
           else if (f3 > -1 && fixture_control.fixture[f3].electric == true) electric_north = true;
           else electric_north = false;
 
-          b = point_in_brush (fixture_control.fixture[f].x + (tilesize / 2), fixture_control.fixture[f].y - (tilesize / 2), fixture_control.fixture[f].z + 9, false);
+          b = brush_control.point_in_brush (fixture_control.fixture[f].x + (tilesize / 2), fixture_control.fixture[f].y - (tilesize / 2), fixture_control.fixture[f].z + 9, false, false);
           f2 = fixture_control.point_collide (fixture_control.fixture[f].x + (tilesize / 2), fixture_control.fixture[f].y - (tilesize / 2), fixture_control.fixture[f].z + 1);
           f3 = fixture_control.point_collide (fixture_control.fixture[f].x + (tilesize / 2), fixture_control.fixture[f].y - (tilesize / 2), fixture_control.fixture[f].z + 9);
-          if (b > -1 && brush[b].electric == true) electric_south = true;
+          if (b > -1 && brush_control.brush[b].electric == true) electric_south = true;
           else if (f2 > -1 && fixture_control.fixture[f2].electric == true) electric_south = true;
           else if (f3 > -1 && fixture_control.fixture[f3].electric == true) electric_south = true;
           else electric_south = false;
 
-          b = point_in_brush (fixture_control.fixture[f].x - (tilesize / 2), fixture_control.fixture[f].y + (tilesize / 2), fixture_control.fixture[f].z + 9, false);
+          b = brush_control.point_in_brush (fixture_control.fixture[f].x - (tilesize / 2), fixture_control.fixture[f].y + (tilesize / 2), fixture_control.fixture[f].z + 9, false, false);
           f2 = fixture_control.point_collide (fixture_control.fixture[f].x - (tilesize / 2), fixture_control.fixture[f].y + (tilesize / 2), fixture_control.fixture[f].z + 1);
           f3 = fixture_control.point_collide (fixture_control.fixture[f].x - (tilesize / 2), fixture_control.fixture[f].y + (tilesize / 2), fixture_control.fixture[f].z + 9);
-          if (b > -1 && brush[b].electric == true) electric_west = true;
+          if (b > -1 && brush_control.brush[b].electric == true) electric_west = true;
           else if (f2 > -1 && fixture_control.fixture[f2].electric == true) electric_west = true;
           else if (f3 > -1 && fixture_control.fixture[f3].electric == true) electric_west = true;
           else electric_west = false;
 
-          b = point_in_brush (fixture_control.fixture[f].x + Convert.ToInt32 (tilesize * 1.5), fixture_control.fixture[f].y + (tilesize / 2), fixture_control.fixture[f].z + 9, false);
+          b = brush_control.point_in_brush (fixture_control.fixture[f].x + Convert.ToInt32 (tilesize * 1.5), fixture_control.fixture[f].y + (tilesize / 2), fixture_control.fixture[f].z + 9, false, false);
           f2 = fixture_control.point_collide (fixture_control.fixture[f].x + Convert.ToInt32 (tilesize * 1.5), fixture_control.fixture[f].y + (tilesize / 2), fixture_control.fixture[f].z + 1);
           f3 = fixture_control.point_collide (fixture_control.fixture[f].x + Convert.ToInt32 (tilesize * 1.5), fixture_control.fixture[f].y + (tilesize / 2), fixture_control.fixture[f].z + 9);
-          if (b > -1 && brush[b].electric == true) electric_east = true;
+          if (b > -1 && brush_control.brush[b].electric == true) electric_east = true;
           else if (f2 > -1 && fixture_control.fixture[f2].electric == true) electric_east = true;
           else if (f3 > -1 && fixture_control.fixture[f3].electric == true) electric_east = true;
           else electric_east = false;
@@ -3859,14 +3448,6 @@ namespace Boxland
         }
 
       Add_Stickers ();
-
-      // remove stickers from walls not visible
-      for (b = 0; b < total_brushes; b += 1)
-        {
-        if (brush[b].front_sticker != 0
-            && point_in_brush (brush[b].x + (brush[b].width / 2), brush[b].y - (tilesize / 2), brush[b].z + (brush[b].height / 2), true) > -1)
-          brush[b].front_sticker = 0;
-        }
 
       if (lighting_engine == 1)
         {
@@ -4011,14 +3592,14 @@ namespace Boxland
         for (int guy = 0; guy < random_retard1; guy += 1)
           {
           while (spot == -1 || random_character_spot[spot].used == true) spot = rnd.Next (0, total_character_spots);
-          add_character ("retard", (int) C.RETARD, random_character_spot[spot].x + (tilesize / 2), random_character_spot[spot].y + (tilesize / 2), random_character_spot[spot].z);
+          add_character ("retard", (int) Character_Control.C.RETARD, random_character_spot[spot].x + (tilesize / 2), random_character_spot[spot].y + (tilesize / 2), random_character_spot[spot].z);
           random_character_spot[spot].used = true;
           }
         spot = -1;
         for (int guy = 0; guy < random_retard2; guy += 1)
           {
           while (spot == -1 || random_character_spot[spot].used == true) spot = rnd.Next (0, total_character_spots);
-          add_character ("throwing retard", (int) C.THROWING_RETARD, random_character_spot[spot].x + (tilesize / 2), random_character_spot[spot].y + (tilesize / 2), random_character_spot[spot].z);
+          add_character ("throwing retard", (int) Character_Control.C.THROWING_RETARD, random_character_spot[spot].x + (tilesize / 2), random_character_spot[spot].y + (tilesize / 2), random_character_spot[spot].z);
           random_character_spot[spot].used = true;
           }
         }
@@ -4028,140 +3609,9 @@ namespace Boxland
 
     void add_brush (int top_texture_number, int front_texture_number, int x, int y, int z, int width, int length, int height)
       {
-      int q;
-      int top_offset_x = 0;
-      int top_offset_y = 0;
-      int front_offset_x;
-      int front_offset_y;
-      int b_clip;
-      bool tall_brush = false;
-      int b = total_brushes;
-
-      // check for identical brush underneath this one (combine into one tall block)
-      if (z - (height / 2) >= 0)
+      if (brush_control.brush.Count < Brush_Control.max_brushes)
         {
-//        b_clip = point_in_brush (x + (width / 2), y + (length / 2), z - (height / 2), false);
-//        if (b_clip > -1 && brush[b_clip].front_texture_number == front_texture_number)
-//          {
-//          brush[b_clip].height += height;
-//          tall_brush = true;
-//          }
-        }
-
-      if (total_brushes < max_brushes && tall_brush == false)
-        {
-        // defaults        
-        brush[b].x = x;
-        brush[b].y = y;
-        brush[b].z = z;
-        brush[b].dx = x;
-        brush[b].dy = y;
-        brush[b].dz = z;
-        brush[b].width = width;
-        brush[b].length = length;
-        brush[b].height = height;
-        brush[b].moveable = false;
-        brush[b].weight = 100;
-        brush[b].ext_x_velocity = 0;
-        brush[b].ext_y_velocity = 0;
-        brush[b].ext_z_velocity = 0;
-        brush[b].moving_north = false;
-        brush[b].moving_south = false;
-        brush[b].moving_west = false;
-        brush[b].moving_east = false;
-        brush[b].top_sticker = -1;
-        brush[b].front_sticker = -1;
-        brush[b].gateway = -1;     // does not load a new level on collision
-        brush[b].temperature = 70;
-        brush[b].transparent = false;
-        brush[b].electric = false;
-
-        // texture on top of brush
-        brush[b].top_texture_number = top_texture_number;
-
-        // top texture offsets in texture sheet
-        if (top_texture_number != (int) T.INVISIBLE_WALL)
-          {
-          for (q = 0; q < x; q += tilesize)
-            {
-            top_offset_x += tilesize;
-            if (top_offset_x + tilesize > texture[top_texture_number].Width) top_offset_x = 0;
-            }
-          top_offset_y = texture[top_texture_number].Height - tilesize;
-          for (q = 0; q < y; q += tilesize)
-            {
-            top_offset_y -= tilesize;
-            if (top_offset_y < 0) top_offset_y = texture[top_texture_number].Height - tilesize;
-            }
-          }
-        brush[b].top_texture_offset_x = top_offset_x;
-        brush[b].top_texture_offset_y = top_offset_y;
-
-        // texture on front of brush
-        brush[b].front_texture_number = front_texture_number;
-
-        // front texture offsets in texture sheet
-        front_offset_x = top_offset_x;
-        front_offset_y = top_offset_y + length;
-        if (front_texture_number != (int) T.INVISIBLE_WALL)
-          {
-          for (q = 0; q < x; q += tilesize)
-            {
-            front_offset_x += tilesize;
-            if (front_offset_x + tilesize > texture[front_texture_number].Width) front_offset_x = 0;
-            }
-          front_offset_y = texture[front_texture_number].Height - tilesize;
-          for (q = 0; q < z; q += tilesize)
-            {
-            front_offset_y -= tilesize;
-            if (front_offset_y < 0) front_offset_y = texture[front_texture_number].Height - tilesize;
-            }
-          front_offset_y += tilesize;
-          if (front_offset_y + tilesize > texture[front_texture_number].Height) front_offset_y = 0;
-          }
-
-        brush[b].front_texture_offset_x = front_offset_x;
-        brush[b].front_texture_offset_y = front_offset_y;
-
-        // brush traits based on texture
-        if (top_texture_number == (int) T.BOX_BANDED_TEST) brush[b].moveable = true;
-        if (top_texture_number == (int) T.BOX_ICE_TEST)
-          {
-          brush[b].moveable = true;
-          brush[b].transparent = true;
-          }
-        else if (top_texture_number == (int) T.BOX_METAL_TEST) brush[b].moveable = true;
-        else if (top_texture_number == (int) T.BOX_WOOD_TEST) brush[b].moveable = true;
-        else if (top_texture_number == (int) T.DOOR_RED_V_TOP_CLOSED_TEST)
-          {
-          brush[b].transparent = true;
-          brush[b].electric = true;
-          //brush[b].door = Brush.Door.red;
-          }
-        else if (top_texture_number == (int) T.DOOR_YELLOW_V_TOP_CLOSED_TEST)
-          {
-          brush[b].transparent = true;
-          brush[b].electric = true;
-          }
-        else if (top_texture_number == (int) T.DOOR_GREEN_V_TOP_CLOSED_TEST)
-          {
-          brush[b].transparent = true;
-          brush[b].electric = true;
-          }
-        else if (top_texture_number == (int) T.DOOR_BLUE_V_TOP_CLOSED_TEST)
-          {
-          brush[b].transparent = true;
-          brush[b].electric = true;
-          }
-        else if (top_texture_number == (int) T.DOOR_RED_H_TOP_CLOSED_TEST) brush[b].electric = true;
-        else if (top_texture_number == (int) T.DOOR_YELLOW_H_TOP_CLOSED_TEST) brush[b].electric = true;
-        else if (top_texture_number == (int) T.DOOR_GREEN_H_TOP_CLOSED_TEST) brush[b].electric = true;
-        else if (top_texture_number == (int) T.DOOR_BLUE_H_TOP_CLOSED_TEST) brush[b].electric = true;
-        else if (top_texture_number == (int) T.FLOOR_GRATE_TEST) brush[b].transparent = true;
-        else if (top_texture_number == (int) T.GATEWAY_V_TOP_TEST) brush[b].transparent = true;
-        else if (top_texture_number == (int) T.GATEWAY_H_TOP_TEST) brush[b].transparent = true;
-
-        total_brushes += 1;
+        brush_control.add (top_texture_number, front_texture_number, x, y, z, width, length, height);
         total_draw_slots += 1;
         }
       }
@@ -4433,7 +3883,7 @@ namespace Boxland
         {
         player_created = true;
         character_control.character[PLAYER].name = "Richard";
-        character_control.character[PLAYER].sprite = (int) C.RICHARD;
+        character_control.character[PLAYER].sprite = (int) Character_Control.C.RICHARD;
         character_control.character[PLAYER].defaults ();
         }
       }
@@ -4459,7 +3909,7 @@ namespace Boxland
       if (mouse_current.LeftButton == ButtonState.Pressed)
         {
         /*
-        if (game_state == GAME && character_active (PLAYER))
+        if (game_state == GAME && character_control.active (PLAYER))
           {
           if (character_control.character[PLAYER].action != "grabbing" && character_control.character[PLAYER].action != "pushing")
             {
@@ -4478,15 +3928,15 @@ namespace Boxland
             }
 
           // grabbing or pushing box
-          else if (character_control.character[PLAYER].action == "grabbing" && brush[character_control.character[PLAYER].brush_grab].moveable == true)
+          else if (character_control.character[PLAYER].action == "grabbing" && brush_control.brush[character_control.character[PLAYER].brush_grab].moveable == true)
             {
             if (character_control.character[PLAYER].grab_position == "below")  // up
               {
               character_control.character[PLAYER].action = "pushing";
               b = character_control.character[PLAYER].brush_grab;
-              brush[b].moving = true;
-              character_control.character[PLAYER].dx = brush[b].x + (brush[b].width / 2);
-              character_control.character[PLAYER].dy = brush[b].y - (tilesize / 3);
+              brush_control.brush[b].moving = true;
+              character_control.character[PLAYER].dx = brush_control.brush[b].x + (brush_control.brush[b].width / 2);
+              character_control.character[PLAYER].dy = brush_control.brush[b].y - (tilesize / 3);
               character_control.character[PLAYER].push_x = character_control.character[PLAYER].x;
               character_control.character[PLAYER].push_y = character_control.character[PLAYER].y + box_move;
               character_control.character[PLAYER].push_dir = "up";
@@ -4496,9 +3946,9 @@ namespace Boxland
               {
               character_control.character[PLAYER].action = "pushing";
               b = character_control.character[PLAYER].brush_grab;
-              brush[b].moving = true;
-              character_control.character[PLAYER].dx = brush[b].x + (brush[b].width / 2);
-              character_control.character[PLAYER].dy = brush[b].y + brush[b].length + (tilesize / 4);
+              brush_control.brush[b].moving = true;
+              character_control.character[PLAYER].dx = brush_control.brush[b].x + (brush_control.brush[b].width / 2);
+              character_control.character[PLAYER].dy = brush_control.brush[b].y + brush_control.brush[b].length + (tilesize / 4);
               character_control.character[PLAYER].push_x = character_control.character[PLAYER].x;
               character_control.character[PLAYER].push_y = character_control.character[PLAYER].y - box_move;
               character_control.character[PLAYER].push_dir = "down";
@@ -4508,9 +3958,9 @@ namespace Boxland
               {
               character_control.character[PLAYER].action = "pushing";
               b = character_control.character[PLAYER].brush_grab;
-              brush[b].moving = true;
-              character_control.character[PLAYER].dx = brush[b].x + brush[b].width + (tilesize / 3);
-              character_control.character[PLAYER].dy = brush[b].y + (brush[b].length / 2);
+              brush_control.brush[b].moving = true;
+              character_control.character[PLAYER].dx = brush_control.brush[b].x + brush_control.brush[b].width + (tilesize / 3);
+              character_control.character[PLAYER].dy = brush_control.brush[b].y + (brush_control.brush[b].length / 2);
               character_control.character[PLAYER].push_x = character_control.character[PLAYER].x - box_move;
               character_control.character[PLAYER].push_y = character_control.character[PLAYER].y;
               character_control.character[PLAYER].push_dir = "left";
@@ -4520,9 +3970,9 @@ namespace Boxland
               {
               character_control.character[PLAYER].action = "pushing";
               b = character_control.character[PLAYER].brush_grab;
-              brush[b].moving = true;
-              character_control.character[PLAYER].dx = brush[b].x - (tilesize / 3);
-              character_control.character[PLAYER].dy = brush[b].y + (brush[b].length / 2);
+              brush_control.brush[b].moving = true;
+              character_control.character[PLAYER].dx = brush_control.brush[b].x - (tilesize / 3);
+              character_control.character[PLAYER].dy = brush_control.brush[b].y + (brush_control.brush[b].length / 2);
               character_control.character[PLAYER].push_x = character_control.character[PLAYER].x + box_move;
               character_control.character[PLAYER].push_y = character_control.character[PLAYER].y;
               character_control.character[PLAYER].push_dir = "right";
@@ -4550,7 +4000,7 @@ namespace Boxland
       if (mouse_current.LeftButton == ButtonState.Released & mouse_left == true)
         {
         mouse_left = false;
-        if (game_state == GAME && PLAYER > -1 && character_active (PLAYER) && character_control.character[PLAYER].action != "pushing") character_control.character[PLAYER].stand ();
+        if (game_state == GAME && PLAYER > -1 && character_control.active (PLAYER) && character_control.character[PLAYER].action != "pushing") character_control.character[PLAYER].stand ();
         }
 
       // right mouse button - shoot rock
@@ -4560,7 +4010,7 @@ namespace Boxland
           {
           mouse_right = true;
 
-          //if (character_active (PLAYER)) character_shoot_rock (PLAYER, character_control.character[PLAYER].dir);
+          //if (character_control.active (PLAYER)) character_shoot_rock (PLAYER, character_control.character[PLAYER].dir);
           }
         }
 
@@ -4655,7 +4105,7 @@ namespace Boxland
 
       if (player_control == "keyboard")
         {
-        if (game_state == GAME && character_active (PLAYER) && game_menu == false)
+        if (game_state == GAME && character_control.active (PLAYER) && game_menu == false)
           {
           // change direction facing (if-else chain handles diagonal directions)
           if (keyboard.IsKeyDown (Keys.Down) && keyboard.IsKeyDown (Keys.Right)) next_dir = MathHelper.ToRadians (315);
@@ -4814,15 +4264,19 @@ namespace Boxland
           }
         if (!keyboard.IsKeyDown (Keys.D) && key_d == true) key_d = false;
 
-        // left shift
-        if (keyboard.IsKeyDown (Keys.LeftShift) && key_leftshift == false)
-          {
-          key_leftshift = true;
-          }
-        else if (!keyboard.IsKeyDown (Keys.LeftShift) && key_leftshift == true)
-          {
-          key_leftshift = false;
-          }
+        // left shift - run
+        //if (keyboard.IsKeyDown (Keys.LeftShift) && key_leftshift == false)
+        //  {
+        //  key_leftshift = true;
+        //  character_control.character[PLAYER].runboost = true;
+        //  if (character_control.character[PLAYER].action == "walking") character_control.character[PLAYER].action = "running";
+        //  }
+        //else if (!keyboard.IsKeyDown (Keys.LeftShift) && key_leftshift == true)
+        //  {
+        //  key_leftshift = false;
+        //  character_control.character[PLAYER].runboost = false;
+        //  if (character_control.character[PLAYER].action == "running") character_control.character[PLAYER].action = "walking";
+        //  }
 
         // right shift - run
         if (keyboard.IsKeyDown (Keys.RightShift) && key_rightshift == false)
@@ -4840,7 +4294,7 @@ namespace Boxland
         if (keyboard.IsKeyDown (Keys.LeftControl) && key_leftcontrol == false)
           {
           key_leftcontrol = true;
-          if (character_active (PLAYER))
+          if (character_control.active (PLAYER))
             {
             if (character_on_ground (PLAYER)) character_punch (PLAYER);
             else character_jump_kick (PLAYER);
@@ -4856,7 +4310,7 @@ namespace Boxland
         if (keyboard.IsKeyDown (Keys.RightControl) && key_rightcontrol == false)
           {
           key_rightcontrol = true;
-          if (character_active (PLAYER))
+          if (character_control.active (PLAYER))
             {
             if (character_on_ground (PLAYER)) character_punch (PLAYER);
             else character_jump_kick (PLAYER);
@@ -4905,7 +4359,7 @@ namespace Boxland
           //if (game_state == WORLD) enter_level ();
 
           //else
-          if (game_state == GAME && character_active (PLAYER)) character_jump (PLAYER);
+          if (game_state == GAME && character_control.active (PLAYER)) character_jump (PLAYER);
           else if (game_state == CREATION && observe_creation == true) load_map ();
           }
         else if (!keyboard.IsKeyDown (Keys.Space) && key_space == true) key_space = false;
@@ -4978,7 +4432,7 @@ namespace Boxland
         if (keyboard.IsKeyDown (Keys.B) && key_b == false)
           {
           key_b = true;
-          if (character_active (PLAYER))
+          if (character_control.active (PLAYER))
             {
             if (character_on_ground (PLAYER)) character_punch (PLAYER);
             else character_jump_kick (PLAYER);
@@ -5033,7 +4487,7 @@ namespace Boxland
         if (keyboard.IsKeyDown (Keys.Q) && key_q == false)
           {
           key_q = true;
-          if (character_active (PLAYER))
+          if (character_control.active (PLAYER))
             {
             if (character_on_ground (PLAYER)) character_punch (PLAYER);
             else character_jump_kick (PLAYER);
@@ -5187,15 +4641,6 @@ namespace Boxland
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    bool character_active (int c)
-      {
-      //if (c > -1 && c < total_characters && character_control.character[c].action != "knocked out") return true;
-      if (c > -1 && c < character_control.character.Count && character_control.character[c].action != "knocked out") return true;
-      else return false;
-      }
-
-    ////////////////////////////////////////////////////////////////////////////////
-
     bool character_on_ground (int c)
       {
       bool ground = false;
@@ -5213,7 +4658,7 @@ namespace Boxland
       {
       player_last_level = -1;// player_level;
       player_level += 1;
-      if (player_level > 13) player_level = 0;
+      if (player_level > 14) player_level = 0;
 
       enter_level ();
       }
@@ -5234,7 +4679,7 @@ namespace Boxland
           {
           controller_left_stick = true;
 
-          if (character_active (PLAYER))
+          if (character_control.active (PLAYER))
             {
             // stick range = -1 to 1.  max stick should be max running speed.
             // diagonally, h_distance is about -.9 to .9, so we add .1 to adjust.
@@ -5253,7 +4698,7 @@ namespace Boxland
             {
             controller_left_stick = false;
 
-            if (character_active (PLAYER) && (character_control.character[PLAYER].action == "walking" || character_control.character[PLAYER].action == "running")) character_control.character[PLAYER].stand ();  //character_control.character[PLAYER].self_velocity = 0;
+            if (character_control.active (PLAYER) && (character_control.character[PLAYER].action == "walking" || character_control.character[PLAYER].action == "running")) character_control.character[PLAYER].stand ();  //character_control.character[PLAYER].self_velocity = 0;
             }
           }
 
@@ -5261,7 +4706,7 @@ namespace Boxland
         if (controller.Buttons.X == ButtonState.Pressed && controller_x == false)
           {
           controller_x = true;
-          if (character_active (PLAYER))
+          if (character_control.active (PLAYER))
             {
             if (character_on_ground (PLAYER)) character_punch (PLAYER);
             else character_jump_kick (PLAYER);
@@ -5278,7 +4723,7 @@ namespace Boxland
           {
           controller_a = true;
 
-          if (character_active (PLAYER)) character_jump (PLAYER);
+          if (character_control.active (PLAYER)) character_jump (PLAYER);
           }
         else if (controller.Buttons.A == ButtonState.Released && controller_a == true) controller_a = false;
 
@@ -5429,17 +4874,27 @@ namespace Boxland
       if (character_screen.Y < scroll_border.Y) screen.scroll_y += Convert.ToInt32 (scroll_border.Y - character_screen.Y);
       if (character_screen.Y > scroll_border.Y + scroll_border.Height) screen.scroll_y -= Convert.ToInt32 (character_screen.Y - (scroll_border.Y + scroll_border.Height));
 
-      screen.bg1_scroll_x = Convert.ToInt32 (screen.scroll_x * screen.bg1_scroll_speed);
-      screen.bg1_scroll_y = Convert.ToInt32 (screen.scroll_y * screen.bg1_scroll_speed);
-      screen.bg2_scroll_x = Convert.ToInt32 (screen.scroll_x * screen.bg2_scroll_speed);
-      screen.bg2_scroll_y = Convert.ToInt32 (screen.scroll_y * screen.bg2_scroll_speed);
+      if (map.bg_scroll)
+        {
+        screen.bg1_scroll_x = Convert.ToInt32 (screen.scroll_x * screen.bg1_scroll_speed);
+        screen.bg1_scroll_y = Convert.ToInt32 (screen.scroll_y * screen.bg1_scroll_speed);
+        screen.bg2_scroll_x = Convert.ToInt32 (screen.scroll_x * screen.bg2_scroll_speed);
+        screen.bg2_scroll_y = Convert.ToInt32 (screen.scroll_y * screen.bg2_scroll_speed);
+        }
+      else
+        {
+        screen.bg1_scroll_x = screen.scroll_x;
+        screen.bg1_scroll_y = screen.scroll_y;
+        screen.bg2_scroll_x = screen.scroll_x;
+        screen.bg2_scroll_y = screen.scroll_y;
+        }
       }
 
     ////////////////////////////////////////////////////////////////////////////////
 
     void Check_Doors ()
       {
-      int floor;         // texture of brush underneath the box
+      int floor;         // brush_control.texture of brush_control.brush underneath the box
       int b, c;
 
       bool green_zone_found = false;
@@ -5460,28 +4915,28 @@ namespace Boxland
       red_doors_open = false;
       blue_doors_open = false;
 
-      for (b = 0; b < total_brushes; b += 1)
+      for (b = 0; b < brush_control.brush.Count; b += 1)
         {
-        if (brush[b].top_texture_number == (int) T.FLOOR_ZONE_GREEN_TEST)
+        if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.FLOOR_ZONE_GREEN_TEST)
           {
           green_zone_found = true;
-          floor = point_in_brush (brush[b].x + (brush[b].width / 2), brush[b].y + (brush[b].length / 2), brush[b].z + brush[b].height + (tilesize / 4), false);
-          if (floor == -1 || (floor > -1 && brush[floor].top_texture_number != (int) T.BOX_WOOD_TEST && brush[floor].top_texture_number != (int) T.BOX_METAL_TEST
-              && brush[floor].top_texture_number != (int) T.BOX_ICE_TEST)) green_zones_full = false;
+          floor = brush_control.point_in_brush (brush_control.brush[b].x + (brush_control.brush[b].width / 2), brush_control.brush[b].y + (brush_control.brush[b].length / 2), brush_control.brush[b].z + brush_control.brush[b].height + (tilesize / 4), false, false);
+          if (floor == -1 || (floor > -1 && brush_control.brush[floor].top_texture_number != (int) Brush_Control.T.BOX_WOOD_TEST && brush_control.brush[floor].top_texture_number != (int) Brush_Control.T.BOX_METAL_TEST
+              && brush_control.brush[floor].top_texture_number != (int) Brush_Control.T.BOX_ICE_TEST)) green_zones_full = false;
           }
-        if (brush[b].top_texture_number == (int) T.FLOOR_ZONE_RED_TEST)
+        if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.FLOOR_ZONE_RED_TEST)
           {
           red_zone_found = true;
-          floor = point_in_brush (brush[b].x + (brush[b].width / 2), brush[b].y + (brush[b].length / 2), brush[b].z + brush[b].height + (tilesize / 4), false);
-          if (floor == -1 || (floor > -1 && brush[floor].top_texture_number != (int) T.BOX_WOOD_TEST && brush[floor].top_texture_number != (int) T.BOX_METAL_TEST
-              && brush[floor].top_texture_number != (int) T.BOX_ICE_TEST)) red_zones_full = false;
+          floor = brush_control.point_in_brush (brush_control.brush[b].x + (brush_control.brush[b].width / 2), brush_control.brush[b].y + (brush_control.brush[b].length / 2), brush_control.brush[b].z + brush_control.brush[b].height + (tilesize / 4), false, false);
+          if (floor == -1 || (floor > -1 && brush_control.brush[floor].top_texture_number != (int) Brush_Control.T.BOX_WOOD_TEST && brush_control.brush[floor].top_texture_number != (int) Brush_Control.T.BOX_METAL_TEST
+              && brush_control.brush[floor].top_texture_number != (int) Brush_Control.T.BOX_ICE_TEST)) red_zones_full = false;
           }
-        if (brush[b].top_texture_number == (int) T.FLOOR_ZONE_YELLOW_TEST)
+        if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.FLOOR_ZONE_YELLOW_TEST)
           {
           yellow_zone_found = true;
-          floor = point_in_brush (brush[b].x + (brush[b].width / 2), brush[b].y + (brush[b].length / 2), brush[b].z + brush[b].height + (tilesize / 4), false);
-          if (floor == -1 || (floor > -1 && brush[floor].top_texture_number != (int) T.BOX_WOOD_TEST && brush[floor].top_texture_number != (int) T.BOX_METAL_TEST
-              && brush[floor].top_texture_number != (int) T.BOX_ICE_TEST)) yellow_zones_full = false;
+          floor = brush_control.point_in_brush (brush_control.brush[b].x + (brush_control.brush[b].width / 2), brush_control.brush[b].y + (brush_control.brush[b].length / 2), brush_control.brush[b].z + brush_control.brush[b].height + (tilesize / 4), false, false);
+          if (floor == -1 || (floor > -1 && brush_control.brush[floor].top_texture_number != (int) Brush_Control.T.BOX_WOOD_TEST && brush_control.brush[floor].top_texture_number != (int) Brush_Control.T.BOX_METAL_TEST
+              && brush_control.brush[floor].top_texture_number != (int) Brush_Control.T.BOX_ICE_TEST)) yellow_zones_full = false;
           }
         }
 
@@ -5491,37 +4946,37 @@ namespace Boxland
       if (yellow_zone_found == false) yellow_zones_full = false;
 
       // check under boxes for switches (old method)
-      //for (b = 0; b < total_brushes; b += 1)
+      //for (b = 0; b < brush_control.brush.Count; b += 1)
       //  {
-      //  if (brush[b].top_texture_number == BOX_TEST_WOOD)
+      //  if (brush_control.brush[b].top_texture_number == BOX_TEST_WOOD)
       //    {
-      //    floor = point_in_brush (brush[b].x + (brush[b].width / 2), brush[b].y + (brush[b].length / 2), brush[b].z - (tilesize / 4), false);
-      //    if (floor > -1 && brush[floor].top_texture_number == SWITCH_TEST_GREEN) green_switch_down = true;
-      //    if (floor > -1 && brush[floor].top_texture_number == SWITCH_TEST_RED) red_switch_down = true;
-      //    if (floor > -1 && brush[floor].top_texture_number == SWITCH_TEST_YELLOW) yellow_switch_down = true;
+      //    floor = point_in_brush (brush_control.brush[b].x + (brush_control.brush[b].width / 2), brush_control.brush[b].y + (brush_control.brush[b].length / 2), brush_control.brush[b].z - (tilesize / 4), false);
+      //    if (floor > -1 && brush_control.brush[floor].top_texture_number == SWITCH_TEST_GREEN) green_switch_down = true;
+      //    if (floor > -1 && brush_control.brush[floor].top_texture_number == SWITCH_TEST_RED) red_switch_down = true;
+      //    if (floor > -1 && brush_control.brush[floor].top_texture_number == SWITCH_TEST_YELLOW) yellow_switch_down = true;
       //    }
       //  }
 
       // check above switches for boxes and walls (new method)
-      for (b = 0; b < total_brushes; b += 1)
+      for (b = 0; b < brush_control.brush.Count; b += 1)
         {
-        if (brush[b].top_texture_number == (int) T.SWITCH_RED_TEST
-          && point_in_brush (brush[b].x + (brush[b].width / 2), brush[b].y + (brush[b].length / 2), brush[b].z + Convert.ToInt32 (tilesize * 1.5), false) > -1)
+        if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.SWITCH_RED_TEST
+          && brush_control.point_in_brush (brush_control.brush[b].x + (brush_control.brush[b].width / 2), brush_control.brush[b].y + (brush_control.brush[b].length / 2), brush_control.brush[b].z + Convert.ToInt32 (tilesize * 1.5), false, false) > -1)
           {
           red_switch_down = true;
           }
-        if (brush[b].top_texture_number == (int) T.SWITCH_YELLOW_TEST
-          && point_in_brush (brush[b].x + (brush[b].width / 2), brush[b].y + (brush[b].length / 2), brush[b].z + Convert.ToInt32 (tilesize * 1.5), false) > -1)
+        if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.SWITCH_YELLOW_TEST
+          && brush_control.point_in_brush (brush_control.brush[b].x + (brush_control.brush[b].width / 2), brush_control.brush[b].y + (brush_control.brush[b].length / 2), brush_control.brush[b].z + Convert.ToInt32 (tilesize * 1.5), false, false) > -1)
           {
           yellow_switch_down = true;
           }
-        if (brush[b].top_texture_number == (int) T.SWITCH_GREEN_TEST
-          && point_in_brush (brush[b].x + (brush[b].width / 2), brush[b].y + (brush[b].length / 2), brush[b].z + Convert.ToInt32 (tilesize * 1.5), false) > -1)
+        if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.SWITCH_GREEN_TEST
+          && brush_control.point_in_brush (brush_control.brush[b].x + (brush_control.brush[b].width / 2), brush_control.brush[b].y + (brush_control.brush[b].length / 2), brush_control.brush[b].z + Convert.ToInt32 (tilesize * 1.5), false, false) > -1)
           {
           green_switch_down = true;
           }
-        if (brush[b].top_texture_number == (int) T.SWITCH_BLUE_TEST
-          && point_in_brush (brush[b].x + (brush[b].width / 2), brush[b].y + (brush[b].length / 2), brush[b].z + Convert.ToInt32 (tilesize * 1.5), false) > -1)
+        if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.SWITCH_BLUE_TEST
+          && brush_control.point_in_brush (brush_control.brush[b].x + (brush_control.brush[b].width / 2), brush_control.brush[b].y + (brush_control.brush[b].length / 2), brush_control.brush[b].z + Convert.ToInt32 (tilesize * 1.5), false, false) > -1)
           {
           blue_switch_down = true;
           }
@@ -5531,13 +4986,13 @@ namespace Boxland
       //for (c = 0; c < total_characters; c += 1)
       for (c = 0; c < character_control.character.Count; c += 1)
         {
-        if (character_active (c) && character_on_ground (c))
+        if (character_control.active (c) && character_on_ground (c))
           {
-          floor = point_in_brush (character_control.character[c].x, character_control.character[c].y, character_control.character[c].z - (tilesize / 4), false);
-          if (floor > -1 && brush[floor].top_texture_number == (int) T.SWITCH_GREEN_TEST) green_switch_down = true;
-          if (floor > -1 && brush[floor].top_texture_number == (int) T.SWITCH_RED_TEST) red_switch_down = true;
-          if (floor > -1 && brush[floor].top_texture_number == (int) T.SWITCH_YELLOW_TEST) yellow_switch_down = true;
-          if (floor > -1 && brush[floor].top_texture_number == (int) T.SWITCH_BLUE_TEST) blue_switch_down = true;
+          floor = brush_control.point_in_brush (character_control.character[c].x, character_control.character[c].y, character_control.character[c].z - (tilesize / 4), false, false);
+          if (floor > -1 && brush_control.brush[floor].top_texture_number == (int) Brush_Control.T.SWITCH_GREEN_TEST) green_switch_down = true;
+          if (floor > -1 && brush_control.brush[floor].top_texture_number == (int) Brush_Control.T.SWITCH_RED_TEST) red_switch_down = true;
+          if (floor > -1 && brush_control.brush[floor].top_texture_number == (int) Brush_Control.T.SWITCH_YELLOW_TEST) yellow_switch_down = true;
+          if (floor > -1 && brush_control.brush[floor].top_texture_number == (int) Brush_Control.T.SWITCH_BLUE_TEST) blue_switch_down = true;
           }
         }
 
@@ -5545,39 +5000,42 @@ namespace Boxland
       if (red_switch_down == true || red_zones_full == true) red_doors_open = true;
       if (yellow_switch_down == true || yellow_zones_full == true) yellow_doors_open = true;
       if (blue_switch_down == true) blue_doors_open = true;
-      }
 
-    ////////////////////////////////////////////////////////////////////////////////
-
-    int point_in_brush (int x, int y, int z, bool solid_only)
-      {
-      int b = 0;
-      int clip = -1;
-
-      while (clip == -1 && b < total_brushes)
+      // change solid value of door brushes based on switches
+      foreach (Brush br in brush_control.brush)
         {
-        if (x >= brush[b].x && x <= brush[b].x + brush[b].width &&
-            y >= brush[b].y && y <= brush[b].y + brush[b].length &&
-            z >= brush[b].z && z <= brush[b].z + brush[b].height)
+        if (blue_doors_open)
           {
-          clip = b;
-          if (solid_only == true)
+          switch (br.top_texture_number)
             {
-            if (brush[b].top_texture_number == (int) T.DOOR_RED_V_TOP_CLOSED_TEST && red_doors_open == true) clip = -1;
-            else if (brush[b].top_texture_number == (int) T.DOOR_RED_H_TOP_CLOSED_TEST && red_doors_open == true) clip = -1;
-            else if (brush[b].top_texture_number == (int) T.DOOR_YELLOW_V_TOP_CLOSED_TEST && yellow_doors_open == true) clip = -1;
-            else if (brush[b].top_texture_number == (int) T.DOOR_YELLOW_H_TOP_CLOSED_TEST && yellow_doors_open == true) clip = -1;
-            else if (brush[b].top_texture_number == (int) T.DOOR_GREEN_V_TOP_CLOSED_TEST && green_doors_open == true) clip = -1;
-            else if (brush[b].top_texture_number == (int) T.DOOR_GREEN_H_TOP_CLOSED_TEST && green_doors_open == true) clip = -1;
-            else if (brush[b].top_texture_number == (int) T.DOOR_BLUE_V_TOP_CLOSED_TEST && blue_doors_open == true) clip = -1;
-            else if (brush[b].top_texture_number == (int) T.DOOR_BLUE_H_TOP_CLOSED_TEST && blue_doors_open == true) clip = -1;
-            else if (brush[b].top_texture_number == (int) T.GATEWAY_H_TOP_TEST) clip = -1;
-            else if (brush[b].top_texture_number == (int) T.GATEWAY_V_TOP_TEST) clip = -1;
+            case (int) Brush_Control.T.DOOR_BLUE_H_TOP_CLOSED_TEST:
+            case (int) Brush_Control.T.DOOR_BLUE_V_TOP_CLOSED_TEST:
+              if (blue_doors_open) br.solid = false;
+              else br.solid = true;
+              break;
+            case (int) Brush_Control.T.DOOR_RED_H_TOP_CLOSED_TEST:
+            case (int) Brush_Control.T.DOOR_RED_V_TOP_CLOSED_TEST:
+              if (red_doors_open) br.solid = false;
+              else br.solid = true;
+              break;
+            case (int) Brush_Control.T.DOOR_GREEN_H_TOP_CLOSED_TEST:
+            case (int) Brush_Control.T.DOOR_GREEN_V_TOP_CLOSED_TEST:
+              if (green_doors_open) br.solid = false;
+              else br.solid = true;
+              break;
+            case (int) Brush_Control.T.DOOR_YELLOW_H_TOP_CLOSED_TEST:
+            case (int) Brush_Control.T.DOOR_YELLOW_V_TOP_CLOSED_TEST:
+              if (yellow_doors_open) br.solid = false;
+              else br.solid = true;
+              break;
+            //case (int) Brush_Control.T.DOOR_PURPLE_H_TOP_CLOSED_TEST:
+            //case (int) Brush_Control.T.DOOR_PURPLE_V_TOP_CLOSED_TEST:
+            //  if (purple_doors_open) br.solid = false;
+            //  else br.solid = true;
+            //  break;
             }
           }
-        b += 1;
         }
-      return clip;
       }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -5608,23 +5066,23 @@ namespace Boxland
       int b = 0;
       int clip = -1;
 
-      while (clip == -1 && b < total_brushes)
+      while (clip == -1 && b < brush_control.brush.Count)
         {
-        if (object_control.obj[o].x + (object_control.obj[o].width / 2) >= brush[b].x
-            && object_control.obj[o].x - (object_control.obj[o].width / 2) <= brush[b].x + brush[b].width
-            && object_control.obj[o].y + (object_control.obj[o].length / 2) >= brush[b].y
-            && object_control.obj[o].y - (object_control.obj[o].length / 2) <= brush[b].y + brush[b].length
-            && object_control.obj[o].z + object_control.obj[o].height >= brush[b].z
-            && object_control.obj[o].z <= brush[b].z + brush[b].height)
+        if (object_control.obj[o].x + (object_control.obj[o].width / 2) >= brush_control.brush[b].x
+            && object_control.obj[o].x - (object_control.obj[o].width / 2) <= brush_control.brush[b].x + brush_control.brush[b].width
+            && object_control.obj[o].y + (object_control.obj[o].length / 2) >= brush_control.brush[b].y
+            && object_control.obj[o].y - (object_control.obj[o].length / 2) <= brush_control.brush[b].y + brush_control.brush[b].length
+            && object_control.obj[o].z + object_control.obj[o].height >= brush_control.brush[b].z
+            && object_control.obj[o].z <= brush_control.brush[b].z + brush_control.brush[b].height)
           {
-          if (brush[b].top_texture_number == (int) T.DOOR_RED_V_TOP_CLOSED_TEST && red_doors_open == true) clip = -1;
-          else if (brush[b].top_texture_number == (int) T.DOOR_RED_H_TOP_CLOSED_TEST && red_doors_open == true) clip = -1;
-          else if (brush[b].top_texture_number == (int) T.DOOR_GREEN_V_TOP_CLOSED_TEST && green_doors_open == true) clip = -1;
-          else if (brush[b].top_texture_number == (int) T.DOOR_GREEN_H_TOP_CLOSED_TEST && green_doors_open == true) clip = -1;
-          else if (brush[b].top_texture_number == (int) T.DOOR_YELLOW_V_TOP_CLOSED_TEST && yellow_doors_open == true) clip = -1;
-          else if (brush[b].top_texture_number == (int) T.DOOR_YELLOW_H_TOP_CLOSED_TEST && yellow_doors_open == true) clip = -1;
-          else if (brush[b].top_texture_number == (int) T.DOOR_BLUE_V_TOP_CLOSED_TEST && blue_doors_open == true) clip = -1;
-          else if (brush[b].top_texture_number == (int) T.DOOR_BLUE_H_TOP_CLOSED_TEST && blue_doors_open == true) clip = -1;
+          if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_RED_V_TOP_CLOSED_TEST && red_doors_open == true) clip = -1;
+          else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_RED_H_TOP_CLOSED_TEST && red_doors_open == true) clip = -1;
+          else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_GREEN_V_TOP_CLOSED_TEST && green_doors_open == true) clip = -1;
+          else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_GREEN_H_TOP_CLOSED_TEST && green_doors_open == true) clip = -1;
+          else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_YELLOW_V_TOP_CLOSED_TEST && yellow_doors_open == true) clip = -1;
+          else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_YELLOW_H_TOP_CLOSED_TEST && yellow_doors_open == true) clip = -1;
+          else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_BLUE_V_TOP_CLOSED_TEST && blue_doors_open == true) clip = -1;
+          else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_BLUE_H_TOP_CLOSED_TEST && blue_doors_open == true) clip = -1;
           else clip = b;
           }
         b += 1;
@@ -5648,7 +5106,7 @@ namespace Boxland
       //for (int c = 0; c < total_characters; c += 1)
       for (int c = 0; c < character_control.character.Count; c += 1)
         {
-        if (character_active (c) && c != object_control.obj[o].source
+        if (character_control.active (c) && c != object_control.obj[o].source
             && character_control.character[c].x + (character_control.character[c].width / 2) > object_control.obj[o].x - (object_control.obj[o].width / 2)  // left of object
             && character_control.character[c].x - (character_control.character[c].width / 2) < object_control.obj[o].x + (object_control.obj[o].width / 2)  // right of object
             && character_control.character[c].y + character_control.character[c].length > object_control.obj[o].y  // south of object
@@ -5755,11 +5213,11 @@ namespace Boxland
     bool object_on_ground (Object o)
       {
       bool ground = false;
-      for (int b = 0; b < total_brushes; b++)
+      for (int b = 0; b < brush_control.brush.Count; b++)
         {
-        if (o.x + (o.width / 2) >= brush[b].x && o.x - (o.width / 2) <= brush[b].x + brush[b].width &&
-            o.y + (o.width / 2) >= brush[b].y && o.y - (o.width / 2) <= brush[b].y + brush[b].length &&
-            o.z >= brush[b].z + brush[b].height && o.z <= brush[b].z + brush[b].height + 1)
+        if (o.x + (o.width / 2) >= brush_control.brush[b].x && o.x - (o.width / 2) <= brush_control.brush[b].x + brush_control.brush[b].width &&
+            o.y + (o.width / 2) >= brush_control.brush[b].y && o.y - (o.width / 2) <= brush_control.brush[b].y + brush_control.brush[b].length &&
+            o.z >= brush_control.brush[b].z + brush_control.brush[b].height && o.z <= brush_control.brush[b].z + brush_control.brush[b].height + 1)
           ground = true;
         }
       return ground;
@@ -5811,7 +5269,7 @@ namespace Boxland
       z_distance = Math.Abs (z1 - z2);
       h_distance = Math.Sqrt ((x_distance * x_distance) + (y_distance * y_distance));
 
-      if (h_distance < reach_distance * 2 && z_distance < reach_distance * 2) return true;
+      if (h_distance < character_control.reach_distance * 2 && z_distance < character_control.reach_distance * 2) return true;
       else return false;
       }
 
@@ -5826,7 +5284,7 @@ namespace Boxland
       z_distance = Math.Abs (character_control.character[c].dz - object_control.obj[o].dz);
       h_distance = Math.Sqrt ((x_distance * x_distance) + (y_distance * y_distance));
 
-      if (h_distance < reach_distance * 2 && z_distance < reach_distance * 2) return true;
+      if (h_distance < character_control.reach_distance * 2 && z_distance < character_control.reach_distance * 2) return true;
       else
       return false;
       }
@@ -5872,7 +5330,7 @@ namespace Boxland
 
     int y_draw_coordinate (int world_y, int world_z)
       {
-      return (screen.height - world_y) - (world_z / 2) + screen.scroll_y;
+      return Convert.ToInt32 ((screen.height - world_y) - (world_z * parallax) + screen.scroll_y);
       }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -5881,13 +5339,12 @@ namespace Boxland
       {
       bool on_screen = true;
 
-      if (brush[b].x + brush[b].width + screen.scroll_x < 0) on_screen = false;
-      else if (brush[b].x + screen.scroll_x > screen.width) on_screen = false;
-      else if ((screen.height - brush[b].y) - (brush[b].z / 2) - (brush[b].height / 2) + screen.scroll_y + tilesize < 0) on_screen = false;
-      else if ((screen.height - brush[b].y - brush[b].length) - (brush[b].z / 2) - (brush[b].height / 2) + screen.scroll_y > screen.height) on_screen = false;
-
-      // larger pieces do not conform to above formula
-      if (brush[b].top_texture_number > (int) T.SINGLE_PIECE) on_screen = true;
+      // larger pieces do not conform to formula
+      if (brush_control.brush[b].top_texture_number > (int) Brush_Control.T.SINGLE_PIECE) on_screen = true;
+      else if (brush_control.brush[b].x + brush_control.brush[b].width + screen.scroll_x < 0) on_screen = false;
+      else if (brush_control.brush[b].x + screen.scroll_x > screen.width) on_screen = false;
+      else if ((screen.height - brush_control.brush[b].y) - (brush_control.brush[b].z * parallax) - (brush_control.brush[b].height * parallax) + screen.scroll_y + tilesize < 0) on_screen = false;
+      else if ((screen.height - brush_control.brush[b].y - brush_control.brush[b].length) - (brush_control.brush[b].z * parallax) - (brush_control.brush[b].height * parallax) + screen.scroll_y > screen.height) on_screen = false;
 
       return on_screen;
       }
@@ -5933,7 +5390,7 @@ namespace Boxland
             // collision
             if (particle_effect[e].particle[p].alive == true)
               {
-              b_clip = point_in_brush (particle_effect[e].particle[p].x, particle_effect[e].particle[p].y, particle_effect[e].particle[p].z, true);
+              b_clip = brush_control.point_in_brush (particle_effect[e].particle[p].x, particle_effect[e].particle[p].y, particle_effect[e].particle[p].z, true, true);
               c_clip = point_in_character (particle_effect[e].particle[p].x, particle_effect[e].particle[p].y, particle_effect[e].particle[p].z);
 
               if (b_clip > -1)
@@ -5941,18 +5398,18 @@ namespace Boxland
                 particle_effect[e].particle[p].alive = false;
                 if (particle_effect[e].particle[p].type == "fire")
                   {
-                  if (brush[b_clip].top_texture_number == (int) T.BOX_WOOD_TEST)
+                  if (brush_control.brush[b_clip].top_texture_number == (int) Brush_Control.T.BOX_WOOD_TEST)
                     {
                     // set wood on fire
                     }
-                  if (brush[b_clip].top_texture_number == (int) T.BOX_METAL_TEST)
+                  if (brush_control.brush[b_clip].top_texture_number == (int) Brush_Control.T.BOX_METAL_TEST)
                     {
                     // heat up the metal
-                    if (brush[b_clip].temperature < 170 && rnd.Next (0, 6) == 0) brush[b_clip].temperature += 1;
+                    if (brush_control.brush[b_clip].temperature < 170 && rnd.Next (0, 6) == 0) brush_control.brush[b_clip].temperature += 1;
                     }
                   }
                 }
-              if (c_clip > -1 && character_active (c_clip))
+              if (c_clip > -1 && character_control.active (c_clip))
                 {
                 if (particle_effect[e].particle[p].type == "fire")
                   {
@@ -6228,11 +5685,11 @@ namespace Boxland
       else if (game_state == GAME || game_state == CREATION)
         {
         // background layer 1
-        for (bg_start_x = screen.bg1_scroll_x; bg_start_x + test_background.Width > 0; bg_start_x -= test_background.Width) { }
-        for (bg_start_y = screen.bg1_scroll_y; bg_start_y + test_background.Height > 0; bg_start_y -= test_background.Height) { }
-        for (v_draw.Y = bg_start_y; v_draw.Y < screen.height; v_draw.Y += test_background.Height)
-          for (v_draw.X = bg_start_x; v_draw.X < screen.width; v_draw.X += test_background.Width)
-            spriteBatch.Draw (test_background, v_draw, Color.White);
+        for (bg_start_x = screen.bg1_scroll_x; bg_start_x + map.background.Width > 0; bg_start_x -= map.background.Width) { }
+        for (bg_start_y = screen.bg1_scroll_y; bg_start_y + map.background.Height > 0; bg_start_y -= map.background.Height) { }
+        for (v_draw.Y = bg_start_y; v_draw.Y < screen.height; v_draw.Y += map.background.Height)
+          for (v_draw.X = bg_start_x; v_draw.X < screen.width; v_draw.X += map.background.Width)
+            spriteBatch.Draw (map.background, v_draw, Color.White);
 
         // background layer 2
         //for (bg_start_x = bg2_scroll_x; bg_start_x + test_background3.Width > 0; bg_start_x -= test_background3.Width) { }
@@ -6241,9 +5698,9 @@ namespace Boxland
         //  for (v_draw.X = bg_start_x; v_draw.X < screen.width; v_draw.X += test_background3.Width)
         //    spriteBatch.Draw (test_background3, v_draw, Color.White);
 
-        //for (v_draw.Y = bg1_scroll_y - test_background.Height; v_draw.Y < screen.height; v_draw.Y += test_background.Height)
-        //  for (v_draw.X = bg1_scroll_x - test_background.Width; v_draw.X < screen.width; v_draw.X += test_background.Width)
-        //    spriteBatch.Draw (test_background, v_draw, Color.White);
+        //for (v_draw.Y = bg1_scroll_y - map.background.Height; v_draw.Y < screen.height; v_draw.Y += map.background.Height)
+        //  for (v_draw.X = bg1_scroll_x - map.background.Width; v_draw.X < screen.width; v_draw.X += map.background.Width)
+        //    spriteBatch.Draw (map.background, v_draw, Color.White);
 
         //for (v_draw.Y = bg2_scroll_y - test_background3.Height; v_draw.Y < screen.height; v_draw.Y += test_background3.Height)
         //  for (v_draw.X = bg2_scroll_x - test_background3.Width; v_draw.X < screen.width; v_draw.X += test_background3.Width)
@@ -6253,14 +5710,13 @@ namespace Boxland
         // CREATE ORDERED LIST FOR DRAWING BRUSHES, OBJECTS & CHARACTERS
 
         // reset draw flags
-        for (b = 0; b < total_brushes; b += 1) brush[b].drawn = false;
+        for (b = 0; b < brush_control.brush.Count; b += 1) brush_control.brush[b].drawn = false;
         foreach (Fixture fix in fixture_control.fixture) fix.drawn = false;
         for (o = 0; o < object_control.obj.Count; o += 1) object_control.obj[o].drawn = false;
-        //for (c = 0; c < total_characters; c += 1) character_control.character[c].drawn = false;
         foreach (Character ch in character_control.character) ch.drawn = false;
 
         draw_slot.id = -1;
-        draw_slot.type = "brush";
+        draw_slot.type = "brush_control.brush";
 
         if (draw_order == 1)
           {
@@ -6280,15 +5736,15 @@ namespace Boxland
             max_y = map_max_length;
             min_y = 0;
 
-            for (b = 0; b < total_brushes; b += 1)
+            for (b = 0; b < brush_control.brush.Count; b += 1)
               {
-              if (brush[b].drawn == false && brush[b].y >= min_y && brush[b].y <= max_y
-                  && brush[b].z >= min_z && brush[b].z <= max_z)
+              if (brush_control.brush[b].drawn == false && brush_control.brush[b].y >= min_y && brush_control.brush[b].y <= max_y
+                  && brush_control.brush[b].z >= min_z && brush_control.brush[b].z <= max_z)
                 {
                 all_items_drawn = false;
                 draw_slot.id = b;
-                draw_slot.type = "brush";
-                min_y = brush[b].y;
+                draw_slot.type = "brush_control.brush";
+                min_y = brush_control.brush[b].y;
                 }
               }
             for (f = 0; f < fixture_control.fixture.Count; f += 1)
@@ -6313,7 +5769,6 @@ namespace Boxland
                 min_y = object_control.obj[o].y;
                 }
               }
-            //for (c = 0; c < total_characters; c += 1)
             for (c = 0; c < character_control.character.Count; c += 1)
               {
               if (character_control.character[c].drawn == false && character_control.character[c].y >= min_y && character_control.character[c].y <= max_y
@@ -6330,7 +5785,7 @@ namespace Boxland
               {
               draw_list[l].id = draw_slot.id;
               draw_list[l].type = draw_slot.type;
-              if (draw_slot.type == "brush") brush[draw_slot.id].drawn = true;
+              if (draw_slot.type == "brush_control.brush") brush_control.brush[draw_slot.id].drawn = true;
               else if (draw_slot.type == "fixture") fixture_control.fixture[draw_slot.id].drawn = true;
               else if (draw_slot.type == "object") object_control.obj[draw_slot.id].drawn = true;
               else if (draw_slot.type == "character") character_control.character[draw_slot.id].drawn = true;
@@ -6361,15 +5816,15 @@ namespace Boxland
             max_z = map_max_height;
             min_z = 0;
 
-            for (b = 0; b < total_brushes; b += 1)
+            for (b = 0; b < brush_control.brush.Count; b += 1)
               {
-              if (brush[b].drawn == false && brush[b].y >= min_y && brush[b].y <= max_y
-                  && brush[b].z >= min_z && brush[b].z <= max_z)
+              if (brush_control.brush[b].drawn == false && brush_control.brush[b].y >= min_y && brush_control.brush[b].y <= max_y
+                  && brush_control.brush[b].z >= min_z && brush_control.brush[b].z <= max_z)
                 {
                 all_items_drawn = false;
                 draw_slot.id = b;
-                draw_slot.type = "brush";
-                max_z = brush[b].z;
+                draw_slot.type = "brush_control.brush";
+                max_z = brush_control.brush[b].z;
                 }
               }
             for (f = 0; f < fixture_control.fixture.Count; f += 1)
@@ -6394,7 +5849,6 @@ namespace Boxland
                 max_z = object_control.obj[o].z;
                 }
               }
-            //for (c = 0; c < total_characters; c += 1)
             for (c = 0; c < character_control.character.Count; c += 1)
               {
               if (character_control.character[c].drawn == false && character_control.character[c].y >= min_y && character_control.character[c].y <= max_y
@@ -6411,7 +5865,7 @@ namespace Boxland
               {
               draw_list[l].id = draw_slot.id;
               draw_list[l].type = draw_slot.type;
-              if (draw_slot.type == "brush") brush[draw_slot.id].drawn = true;
+              if (draw_slot.type == "brush_control.brush") brush_control.brush[draw_slot.id].drawn = true;
               else if (draw_slot.type == "fixture") fixture_control.fixture[draw_slot.id].drawn = true;
               else if (draw_slot.type == "object") object_control.obj[draw_slot.id].drawn = true;
               else if (draw_slot.type == "character") character_control.character[draw_slot.id].drawn = true;
@@ -6445,15 +5899,15 @@ namespace Boxland
             max_y = map_max_length;
             min_y = 0;
 
-            for (b = 0; b < total_brushes; b += 1)
+            for (b = 0; b < brush_control.brush.Count; b += 1)
               {
-              if (brush[b].drawn == false && brush[b].y >= min_y && brush[b].y <= max_y
-                  && brush[b].z >= min_z && brush[b].z <= max_z)
+              if (brush_control.brush[b].drawn == false && brush_control.brush[b].y >= min_y && brush_control.brush[b].y <= max_y
+                  && brush_control.brush[b].z >= min_z && brush_control.brush[b].z <= max_z)
                 {
                 all_items_drawn = false;
                 draw_slot.id = b;
-                draw_slot.type = "brush";
-                min_y = brush[b].y;
+                draw_slot.type = "brush_control.brush";
+                min_y = brush_control.brush[b].y;
                 }
               }
             for (f = 0; f < fixture_control.fixture.Count; f += 1)
@@ -6478,7 +5932,6 @@ namespace Boxland
                 min_y = object_control.obj[o].y;
                 }
               }
-            //for (c = 0; c < total_characters; c += 1)
             for (c = 0; c < character_control.character.Count; c += 1)
               {
               if (character_control.character[c].drawn == false && character_control.character[c].y >= min_y && character_control.character[c].y <= max_y
@@ -6495,7 +5948,7 @@ namespace Boxland
               {
               draw_list[l].id = draw_slot.id;
               draw_list[l].type = draw_slot.type;
-              if (draw_slot.type == "brush") brush[draw_slot.id].drawn = true;
+              if (draw_slot.type == "brush_control.brush") brush_control.brush[draw_slot.id].drawn = true;
               else if (draw_slot.type == "fixture") fixture_control.fixture[draw_slot.id].drawn = true;
               else if (draw_slot.type == "object") object_control.obj[draw_slot.id].drawn = true;
               else if (draw_slot.type == "character") character_control.character[draw_slot.id].drawn = true;
@@ -6512,110 +5965,110 @@ namespace Boxland
 
         for (l = 0; l < total_draw_slots; l += 1)
           {
-          if (draw_list[l].type == "brush" && brush_on_screen (draw_list[l].id))
+          if (draw_list[l].type == "brush_control.brush" && brush_on_screen (draw_list[l].id))
             {
             b = draw_list[l].id;
 
-            brush_screen_draw.X = brush[b].x + screen.scroll_x;
-            brush_screen_draw.Y = (screen.height - brush[b].y - brush[b].length) - (brush[b].z / 2) - (brush[b].height / 2) + screen.scroll_y;
+            brush_screen_draw.X = brush_control.brush[b].x + screen.scroll_x;
+            brush_screen_draw.Y = Convert.ToInt32((screen.height - brush_control.brush[b].y - brush_control.brush[b].length) - (brush_control.brush[b].z * parallax) - (brush_control.brush[b].height * parallax) + screen.scroll_y);
 
-            // background texture
-            if (brush[b].background_texture > -1) spriteBatch.Draw (texture[brush[b].background_texture], brush_screen_draw, new Rectangle (0, 0, tilesize, tilesize), Color.White);
+            // background brush_control.texture
+            if (brush_control.brush[b].background_texture > -1) spriteBatch.Draw (brush_control.texture[brush_control.brush[b].background_texture], brush_screen_draw, new Rectangle (0, 0, tilesize, tilesize), Color.White);
 
-            //if (brush[b].top_texture_number != INVISIBLE_WALL)
+            //if (brush_control.brush[b].top_texture_number != INVISIBLE_WALL)
             //{
-            if (draw_walls == false && (brush[b].top_texture_number == (int) T.BRICK_RED_TEST || brush[b].top_texture_number == (int) T.BRICK_GREY_TEST
-                  || brush[b].top_texture_number == (int) T.METAL_MINT_TOP_TEST || brush[b].top_texture_number == (int) T.METAL_BLUE_TOP_TEST
-                  || brush[b].top_texture_number == (int) T.DRYWALL_YELLOW_TOP_TEST || brush[b].top_texture_number == (int) T.METAL_BLACK_TEST)) { }  // draw nothing
-            else if (draw_boxes == false && brush[b].top_texture_number == (int) T.BOX_WOOD_TEST) { }  // draw nothing
+            if (draw_walls == false && (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.BRICK_RED_TEST || brush_control.brush[b].top_texture_number == (int) Brush_Control.T.BRICK_GREY_TEST
+                  || brush_control.brush[b].top_texture_number == (int) Brush_Control.T.METAL_MINT_TOP_TEST || brush_control.brush[b].top_texture_number == (int) Brush_Control.T.METAL_BLUE_TOP_TEST
+                  || brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DRYWALL_YELLOW_TOP_TEST || brush_control.brush[b].top_texture_number == (int) Brush_Control.T.METAL_BLACK_TEST)) { }  // draw nothing
+            else if (draw_boxes == false && brush_control.brush[b].top_texture_number == (int) Brush_Control.T.BOX_WOOD_TEST) { }  // draw nothing
 
             // animated surfaces (doors, buttons, etc)
-            //else if (brush[b].top_texture_number == DOOR_TEST_H_GREEN && green_doors_open == true) spriteBatch.Draw (texture[DOOR_TEST_H_GREEN_OPEN], brush_screen_draw, Color.White);
-            //else if (brush[b].top_texture_number == DOOR_TEST_H_YELLOW && yellow_doors_open == true) spriteBatch.Draw (texture[DOOR_TEST_H_YELLOW_OPEN], brush_screen_draw, Color.White);
-            else if (brush[b].top_texture_number == (int) T.SWITCH_GREEN_TEST && green_doors_open == true) spriteBatch.Draw (texture[(int) T.SWITCH_GREEN_DOWN_TEST], brush_screen_draw, Color.White);
-            else if (brush[b].top_texture_number == (int) T.SWITCH_RED_TEST && red_doors_open == true) spriteBatch.Draw (texture[(int) T.SWITCH_RED_DOWN_TEST], brush_screen_draw, Color.White);
-            else if (brush[b].top_texture_number == (int) T.SWITCH_YELLOW_TEST && yellow_doors_open == true) spriteBatch.Draw (texture[(int) T.SWITCH_YELLOW_DOWN_TEST], brush_screen_draw, Color.White);
-            else if (brush[b].top_texture_number == (int) T.SWITCH_BLUE_TEST && blue_doors_open == true) spriteBatch.Draw (texture[(int) T.SWITCH_BLUE_DOWN_TEST], brush_screen_draw, Color.White);
+            //else if (brush_control.brush[b].top_texture_number == DOOR_TEST_H_GREEN && green_doors_open == true) spriteBatch.Draw (brush_control.texture[DOOR_TEST_H_GREEN_OPEN], brush_screen_draw, Color.White);
+            //else if (brush_control.brush[b].top_texture_number == DOOR_TEST_H_YELLOW && yellow_doors_open == true) spriteBatch.Draw (brush_control.texture[DOOR_TEST_H_YELLOW_OPEN], brush_screen_draw, Color.White);
+            else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.SWITCH_GREEN_TEST && green_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.SWITCH_GREEN_DOWN_TEST], brush_screen_draw, Color.White);
+            else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.SWITCH_RED_TEST && red_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.SWITCH_RED_DOWN_TEST], brush_screen_draw, Color.White);
+            else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.SWITCH_YELLOW_TEST && yellow_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.SWITCH_YELLOW_DOWN_TEST], brush_screen_draw, Color.White);
+            else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.SWITCH_BLUE_TEST && blue_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.SWITCH_BLUE_DOWN_TEST], brush_screen_draw, Color.White);
 
               /*
               // transparency test
-              else if (brush[b].top_texture_number == WALL_TEST_YELLOW
-                && character_control.character[PLAYER].x > brush[b].x - tilesize && character_control.character[PLAYER].x < brush[b].x + (tilesize * 2)
-                && character_control.character[PLAYER].y > brush[b].y + tilesize && character_control.character[PLAYER].y < brush[b].y + (tilesize * 2))
-              //&& character_control.character[PLAYER].z > brush[b].z - (tilesize / 2) && character_control.character[PLAYER].z < brush[b].z + (tilesize * 1.5))
+              else if (brush_control.brush[b].top_texture_number == WALL_TEST_YELLOW
+                && character_control.character[PLAYER].x > brush_control.brush[b].x - tilesize && character_control.character[PLAYER].x < brush_control.brush[b].x + (tilesize * 2)
+                && character_control.character[PLAYER].y > brush_control.brush[b].y + tilesize && character_control.character[PLAYER].y < brush_control.brush[b].y + (tilesize * 2))
+              //&& character_control.character[PLAYER].z > brush_control.brush[b].z - (tilesize / 2) && character_control.character[PLAYER].z < brush_control.brush[b].z + (tilesize * 1.5))
                 {
                 r_source.X = 0;
                 r_source.Y = 0;
-                r_source.Width = texture[brush[b].top_texture_number].Width;
-                r_source.Height = tilesize / 2;// texture[brush[b].top_texture_number].Height / 2;
+                r_source.Width = brush_control.texture[brush_control.brush[b].top_texture_number].Width;
+                r_source.Height = tilesize / 2;// brush_control.texture[brush_control.brush[b].top_texture_number].Height / 2;
                 
                 r_draw.X = Convert.ToInt32 (v_draw.X);
                 r_draw.Y = Convert.ToInt32 (v_draw.Y);
-                r_draw.Width = texture[brush[b].top_texture_number].Width;
+                r_draw.Width = brush_control.texture[brush_control.brush[b].top_texture_number].Width;
                 r_draw.Height = r_source.Height;
-                spriteBatch.Draw (texture[brush[b].top_texture_number], r_draw, r_source, Color.White * .75f);
+                spriteBatch.Draw (brush_control.texture[brush_control.brush[b].top_texture_number], r_draw, r_source, Color.White * .75f);
 
                 r_source.X = 0;
-                r_source.Y = tilesize / 2;// texture[brush[b].top_texture_number].Height / 2;
-                r_source.Width = texture[brush[b].top_texture_number].Width;
-                r_source.Height = texture[brush[b].top_texture_number].Height - (tilesize / 2);
+                r_source.Y = tilesize / 2;// brush_control.texture[brush_control.brush[b].top_texture_number].Height / 2;
+                r_source.Width = brush_control.texture[brush_control.brush[b].top_texture_number].Width;
+                r_source.Height = brush_control.texture[brush_control.brush[b].top_texture_number].Height - (tilesize / 2);
                 
                 r_draw.X = Convert.ToInt32 (v_draw.X);
-                r_draw.Y = Convert.ToInt32 (v_draw.Y + (tilesize / 2));//(texture[brush[b].top_texture_number].Height / 2));
-                r_draw.Width = texture[brush[b].top_texture_number].Width;
+                r_draw.Y = Convert.ToInt32 (v_draw.Y + (tilesize / 2));//(brush_control.texture[brush_control.brush[b].top_texture_number].Height / 2));
+                r_draw.Width = brush_control.texture[brush_control.brush[b].top_texture_number].Width;
                 r_draw.Height = r_source.Height;
-                spriteBatch.Draw (texture[brush[b].top_texture_number], r_draw, r_source, Color.White);
+                spriteBatch.Draw (brush_control.texture[brush_control.brush[b].top_texture_number], r_draw, r_source, Color.White);
                 }
               */
 
             // large, one-piece units do not get tiled
-            //else if (brush[b].top_texture_number == BIG_MACHINE_TEST || brush[b].top_texture_number == WARNING_SIGN_TEST1)
-            else if (brush[b].top_texture_number > (int) T.SINGLE_PIECE && brush[b].top_texture_number != (int) T.INVISIBLE_WALL)
+            //else if (brush_control.brush[b].top_texture_number == BIG_MACHINE_TEST || brush_control.brush[b].top_texture_number == WARNING_SIGN_TEST1)
+            else if (brush_control.brush[b].top_texture_number > (int) Brush_Control.T.SINGLE_PIECE && brush_control.brush[b].top_texture_number != (int) Brush_Control.T.INVISIBLE_WALL)
               {
-              spriteBatch.Draw (texture[brush[b].top_texture_number], brush_screen_draw, Color.White);
+              spriteBatch.Draw (brush_control.texture[brush_control.brush[b].top_texture_number], brush_screen_draw, Color.White);
               }
 
-            // normal brushes use texture sheets to create seamless, tiled walls and floors
+            // normal brushes use brush_control.texture sheets to create seamless, tiled walls and floors
             else
               {
-              // bottom of brush (certain transparent brushes only)
-              if (brush[b].top_texture_number == (int) T.BOX_ICE_TEST)
+              // bottom of brush_control.brush (certain transparent brushes only)
+              if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.BOX_ICE_TEST)
                 {
-                r_source.X = brush[b].top_texture_offset_x;
-                r_source.Y = brush[b].top_texture_offset_y;
+                r_source.X = brush_control.brush[b].top_texture_offset_x;
+                r_source.Y = brush_control.brush[b].top_texture_offset_y;
                 r_source.Width = tilesize;
                 r_source.Height = tilesize;
 
                 r_draw.X = Convert.ToInt32 (brush_screen_draw.X);
-                r_draw.Y = Convert.ToInt32 (brush_screen_draw.Y) + (tilesize / 2);
+                r_draw.Y = Convert.ToInt32 ((brush_screen_draw.Y) + (tilesize * parallax));
                 r_draw.Width = tilesize;
                 r_draw.Height = tilesize;
-                spriteBatch.Draw (texture[brush[b].top_texture_number], r_draw, r_source, Color.White * .9f);
+                spriteBatch.Draw (brush_control.texture[brush_control.brush[b].top_texture_number], r_draw, r_source, Color.White * .9f);
                 }
 
-              // top of brush
+              // top of brush_control.brush
 
-              // only draw if visible (not completely covered by a brush above, unless that brush is transparent)
+              // only draw if visible (not completely covered by a brush_control.brush above, unless that brush_control.brush is transparent)
               draw_brush = false;
-              if (point_in_brush (brush[b].x + (tilesize / 2), brush[b].y + (tilesize / 2), brush[b].z + brush[b].height + 1, true) == -1) draw_brush = true;
-              else if (point_in_brush (brush[b].x + (tilesize / 2), brush[b].y + (tilesize / 2), brush[b].z + brush[b].height + 1, true) > -1
-                       && brush[point_in_brush (brush[b].x + (tilesize / 2), brush[b].y + (tilesize / 2), brush[b].z + brush[b].height + 1, true)].transparent == true) draw_brush = true;
-              else if (point_in_brush (brush[b].x, brush[b].y + (tilesize / 2), brush[b].z + brush[b].height + 1, true) == -1) draw_brush = true;
-              else if (point_in_brush (brush[b].x, brush[b].y + (tilesize / 2), brush[b].z + brush[b].height + 1, true) > -1
-                       && brush[point_in_brush (brush[b].x, brush[b].y + (tilesize / 2), brush[b].z + brush[b].height + 1, true)].transparent == true) draw_brush = true;
-              else if (point_in_brush (brush[b].x + tilesize - 1, brush[b].y + (tilesize / 2), brush[b].z + brush[b].height + 1, true) == -1) draw_brush = true;
-              else if (point_in_brush (brush[b].x + tilesize - 1, brush[b].y + (tilesize / 2), brush[b].z + brush[b].height + 1, true) > -1
-                       && brush[point_in_brush (brush[b].x + tilesize - 1, brush[b].y + (tilesize / 2), brush[b].z + brush[b].height + 1, true)].transparent == true) draw_brush = true;
-              else if (point_in_brush (brush[b].x + (tilesize / 2), brush[b].y + tilesize - 1, brush[b].z + brush[b].height + 1, true) == -1) draw_brush = true;
-              else if (point_in_brush (brush[b].x + (tilesize / 2), brush[b].y + tilesize - 1, brush[b].z + brush[b].height + 1, true) > -1
-                       && brush[point_in_brush (brush[b].x + (tilesize / 2), brush[b].y + tilesize - 1, brush[b].z + brush[b].height + 1, true)].transparent == true) draw_brush = true;
-              else if (point_in_brush (brush[b].x + (tilesize / 2), brush[b].y, brush[b].z + brush[b].height + 1, true) == -1) draw_brush = true;
-              else if (point_in_brush (brush[b].x + (tilesize / 2), brush[b].y, brush[b].z + brush[b].height + 1, true) > -1
-                       && brush[point_in_brush (brush[b].x + (tilesize / 2), brush[b].y, brush[b].z + brush[b].height + 1, true)].transparent == true) draw_brush = true;
+              if (brush_control.point_in_brush (brush_control.brush[b].x + (tilesize / 2), brush_control.brush[b].y + (tilesize / 2), brush_control.brush[b].z + brush_control.brush[b].height + 1, true, false) == -1) draw_brush = true;
+              else if (brush_control.point_in_brush (brush_control.brush[b].x + (tilesize / 2), brush_control.brush[b].y + (tilesize / 2), brush_control.brush[b].z + brush_control.brush[b].height + 1, true, false) > -1
+                       && brush_control.brush[brush_control.point_in_brush (brush_control.brush[b].x + (tilesize / 2), brush_control.brush[b].y + (tilesize / 2), brush_control.brush[b].z + brush_control.brush[b].height + 1, true, false)].transparent == true) draw_brush = true;
+              else if (brush_control.point_in_brush (brush_control.brush[b].x, brush_control.brush[b].y + (tilesize / 2), brush_control.brush[b].z + brush_control.brush[b].height + 1, true, false) == -1) draw_brush = true;
+              else if (brush_control.point_in_brush (brush_control.brush[b].x, brush_control.brush[b].y + (tilesize / 2), brush_control.brush[b].z + brush_control.brush[b].height + 1, true, false) > -1
+                       && brush_control.brush[brush_control.point_in_brush (brush_control.brush[b].x, brush_control.brush[b].y + (tilesize / 2), brush_control.brush[b].z + brush_control.brush[b].height + 1, true, false)].transparent == true) draw_brush = true;
+              else if (brush_control.point_in_brush (brush_control.brush[b].x + tilesize - 1, brush_control.brush[b].y + (tilesize / 2), brush_control.brush[b].z + brush_control.brush[b].height + 1, true, false) == -1) draw_brush = true;
+              else if (brush_control.point_in_brush (brush_control.brush[b].x + tilesize - 1, brush_control.brush[b].y + (tilesize / 2), brush_control.brush[b].z + brush_control.brush[b].height + 1, true, false) > -1
+                       && brush_control.brush[brush_control.point_in_brush (brush_control.brush[b].x + tilesize - 1, brush_control.brush[b].y + (tilesize / 2), brush_control.brush[b].z + brush_control.brush[b].height + 1, true, false)].transparent == true) draw_brush = true;
+              else if (brush_control.point_in_brush (brush_control.brush[b].x + (tilesize / 2), brush_control.brush[b].y + tilesize - 1, brush_control.brush[b].z + brush_control.brush[b].height + 1, true, false) == -1) draw_brush = true;
+              else if (brush_control.point_in_brush (brush_control.brush[b].x + (tilesize / 2), brush_control.brush[b].y + tilesize - 1, brush_control.brush[b].z + brush_control.brush[b].height + 1, true, false) > -1
+                       && brush_control.brush[brush_control.point_in_brush (brush_control.brush[b].x + (tilesize / 2), brush_control.brush[b].y + tilesize - 1, brush_control.brush[b].z + brush_control.brush[b].height + 1, true, false)].transparent == true) draw_brush = true;
+              else if (brush_control.point_in_brush (brush_control.brush[b].x + (tilesize / 2), brush_control.brush[b].y, brush_control.brush[b].z + brush_control.brush[b].height + 1, true, false) == -1) draw_brush = true;
+              else if (brush_control.point_in_brush (brush_control.brush[b].x + (tilesize / 2), brush_control.brush[b].y, brush_control.brush[b].z + brush_control.brush[b].height + 1, true, false) > -1
+                       && brush_control.brush[brush_control.point_in_brush (brush_control.brush[b].x + (tilesize / 2), brush_control.brush[b].y, brush_control.brush[b].z + brush_control.brush[b].height + 1, true, false)].transparent == true) draw_brush = true;
               if (draw_brush == true)
                 {
-                r_source.X = brush[b].top_texture_offset_x;
-                r_source.Y = brush[b].top_texture_offset_y;
+                r_source.X = brush_control.brush[b].top_texture_offset_x;
+                r_source.Y = brush_control.brush[b].top_texture_offset_y;
                 r_source.Width = tilesize;
                 r_source.Height = tilesize;
 
@@ -6624,136 +6077,136 @@ namespace Boxland
                 r_draw.Width = tilesize;
                 r_draw.Height = tilesize;
 
-                // background texture
-                if (brush[b].background_texture > -1) spriteBatch.Draw (texture[brush[b].background_texture], r_draw, new Rectangle (0, 0, tilesize, tilesize), Color.White);
+                // background brush_control.texture
+                if (brush_control.brush[b].background_texture > -1) spriteBatch.Draw (brush_control.texture[brush_control.brush[b].background_texture], r_draw, new Rectangle (0, 0, tilesize, tilesize), Color.White);
 
-                if (brush[b].top_texture_number == (int) T.INVISIBLE_WALL) { }
-                else if (brush[b].top_texture_number == (int) T.DOOR_RED_V_TOP_CLOSED_TEST && red_doors_open == true) spriteBatch.Draw (texture[(int) T.DOOR_RED_V_TOP_OPEN_TEST], r_draw, r_source, Color.White);
-                else if (brush[b].top_texture_number == (int) T.DOOR_RED_H_TOP_CLOSED_TEST && red_doors_open == true) spriteBatch.Draw (texture[(int) T.DOOR_RED_H_TOP_OPEN_TEST], r_draw, r_source, Color.White);
-                else if (brush[b].top_texture_number == (int) T.DOOR_YELLOW_V_TOP_CLOSED_TEST && yellow_doors_open == true) spriteBatch.Draw (texture[(int) T.DOOR_YELLOW_V_TOP_OPEN_TEST], r_draw, r_source, Color.White);
-                else if (brush[b].top_texture_number == (int) T.DOOR_YELLOW_H_TOP_CLOSED_TEST && yellow_doors_open == true) spriteBatch.Draw (texture[(int) T.DOOR_YELLOW_H_TOP_OPEN_TEST], r_draw, r_source, Color.White);
-                else if (brush[b].top_texture_number == (int) T.DOOR_GREEN_V_TOP_CLOSED_TEST && green_doors_open == true) spriteBatch.Draw (texture[(int) T.DOOR_GREEN_V_TOP_OPEN_TEST], r_draw, r_source, Color.White);
-                else if (brush[b].top_texture_number == (int) T.DOOR_GREEN_H_TOP_CLOSED_TEST && green_doors_open == true) spriteBatch.Draw (texture[(int) T.DOOR_GREEN_H_TOP_OPEN_TEST], r_draw, r_source, Color.White);
-                else if (brush[b].top_texture_number == (int) T.DOOR_BLUE_V_TOP_CLOSED_TEST && blue_doors_open == true) spriteBatch.Draw (texture[(int) T.DOOR_BLUE_V_TOP_OPEN_TEST], r_draw, r_source, Color.White);
-                else if (brush[b].top_texture_number == (int) T.DOOR_BLUE_H_TOP_CLOSED_TEST && blue_doors_open == true) spriteBatch.Draw (texture[(int) T.DOOR_BLUE_H_TOP_OPEN_TEST], r_draw, r_source, Color.White);
-                else if (brush[b].top_texture_number == (int) T.EXIT_RED_V_TOP_CLOSED_TEST && red_doors_open == true) spriteBatch.Draw (texture[(int) T.EXIT_RED_V_TOP_OPEN_TEST], r_draw, r_source, Color.White);
-                else if (brush[b].top_texture_number == (int) T.EXIT_RED_H_TOP_CLOSED_TEST && red_doors_open == true) spriteBatch.Draw (texture[(int) T.EXIT_RED_H_TOP_OPEN_TEST], r_draw, r_source, Color.White);
-                else if (brush[b].top_texture_number == (int) T.BOX_ICE_TEST) spriteBatch.Draw (texture[brush[b].top_texture_number], r_draw, r_source, Color.White * .9f);
-                else spriteBatch.Draw (texture[brush[b].top_texture_number], r_draw, r_source, Color.White);
+                if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.INVISIBLE_WALL) { }
+                else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_RED_V_TOP_CLOSED_TEST && red_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.DOOR_RED_V_TOP_OPEN_TEST], r_draw, r_source, Color.White);
+                else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_RED_H_TOP_CLOSED_TEST && red_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.DOOR_RED_H_TOP_OPEN_TEST], r_draw, r_source, Color.White);
+                else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_YELLOW_V_TOP_CLOSED_TEST && yellow_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.DOOR_YELLOW_V_TOP_OPEN_TEST], r_draw, r_source, Color.White);
+                else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_YELLOW_H_TOP_CLOSED_TEST && yellow_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.DOOR_YELLOW_H_TOP_OPEN_TEST], r_draw, r_source, Color.White);
+                else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_GREEN_V_TOP_CLOSED_TEST && green_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.DOOR_GREEN_V_TOP_OPEN_TEST], r_draw, r_source, Color.White);
+                else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_GREEN_H_TOP_CLOSED_TEST && green_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.DOOR_GREEN_H_TOP_OPEN_TEST], r_draw, r_source, Color.White);
+                else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_BLUE_V_TOP_CLOSED_TEST && blue_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.DOOR_BLUE_V_TOP_OPEN_TEST], r_draw, r_source, Color.White);
+                else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.DOOR_BLUE_H_TOP_CLOSED_TEST && blue_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.DOOR_BLUE_H_TOP_OPEN_TEST], r_draw, r_source, Color.White);
+                else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.EXIT_RED_V_TOP_CLOSED_TEST && red_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.EXIT_RED_V_TOP_OPEN_TEST], r_draw, r_source, Color.White);
+                else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.EXIT_RED_H_TOP_CLOSED_TEST && red_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.EXIT_RED_H_TOP_OPEN_TEST], r_draw, r_source, Color.White);
+                else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.BOX_ICE_TEST) spriteBatch.Draw (brush_control.texture[brush_control.brush[b].top_texture_number], r_draw, r_source, Color.White * .9f);
+                else spriteBatch.Draw (brush_control.texture[brush_control.brush[b].top_texture_number], r_draw, r_source, Color.White);
 
                 // top stickers
-                if (brush[b].top_sticker > -1)
+                if (brush_control.brush[b].top_sticker > -1)
                   {
-                  r_source.X = brush[b].top_sticker_offset_x;
-                  r_source.Y = brush[b].top_sticker_offset_y;
+                  r_source.X = brush_control.brush[b].top_sticker_offset_x;
+                  r_source.Y = brush_control.brush[b].top_sticker_offset_y;
                   r_source.Width = tilesize;
                   r_source.Height = tilesize;
                   r_draw.Width = tilesize;
                   r_draw.Height = tilesize;
 
-                  if (brush[b].top_sticker_type == "office") spriteBatch.Draw (sticker_office[brush[b].top_sticker], r_draw, r_source, Color.White);
-                  else if (brush[b].top_sticker_type == "office floor") spriteBatch.Draw (sticker_office_floor[brush[b].top_sticker], r_draw, r_source, Color.White);
-                  else if (brush[b].top_sticker_type == "factory") spriteBatch.Draw (sticker_factory[brush[b].top_sticker], r_draw, r_source, Color.White);
-                  else if (brush[b].top_sticker_type == "factory floor") spriteBatch.Draw (sticker_factory_floor[brush[b].top_sticker], r_draw, r_source, Color.White * brush[b].top_sticker_alpha);
+                  if (brush_control.brush[b].top_sticker_type == "office") spriteBatch.Draw (sticker_office[brush_control.brush[b].top_sticker], r_draw, r_source, Color.White);
+                  else if (brush_control.brush[b].top_sticker_type == "office floor") spriteBatch.Draw (sticker_office_floor[brush_control.brush[b].top_sticker], r_draw, r_source, Color.White);
+                  else if (brush_control.brush[b].top_sticker_type == "factory") spriteBatch.Draw (sticker_factory[brush_control.brush[b].top_sticker], r_draw, r_source, Color.White);
+                  else if (brush_control.brush[b].top_sticker_type == "factory floor") spriteBatch.Draw (sticker_factory_floor[brush_control.brush[b].top_sticker], r_draw, r_source, Color.White * brush_control.brush[b].top_sticker_alpha);
                   }
                 }
 
               // front of brush
 
-              // only draw if visible (not completely covered by a brush in front)
+              // only draw if visible (not completely covered by a brush_control.brush in front)
               draw_brush = false;
-              b1 = point_in_brush (brush[b].x + (tilesize / 2), brush[b].y - 1, brush[b].z + Convert.ToInt32 (brush[b].height * .5), true);
-              b2 = point_in_brush (brush[b].x, brush[b].y - 1, brush[b].z + Convert.ToInt32 (brush[b].height * .5), true);
-              b3 = point_in_brush (brush[b].x + tilesize - 1, brush[b].y - 1, brush[b].z + Convert.ToInt32 (brush[b].height * .5), true);
-              b4 = point_in_brush (brush[b].x + (tilesize / 2), brush[b].y - 1, brush[b].z + Convert.ToInt32 (brush[b].height * .75), true);
-              b5 = point_in_brush (brush[b].x, brush[b].y - 1, brush[b].z + Convert.ToInt32 (brush[b].height * .75), true);
-              b6 = point_in_brush (brush[b].x + tilesize - 1, brush[b].y - 1, brush[b].z + Convert.ToInt32 (brush[b].height * .75), true);
+              b1 = brush_control.point_in_brush (brush_control.brush[b].x + (tilesize / 2), brush_control.brush[b].y - 1, brush_control.brush[b].z + Convert.ToInt32 (brush_control.brush[b].height * .5), true, false);
+              b2 = brush_control.point_in_brush (brush_control.brush[b].x, brush_control.brush[b].y - 1, brush_control.brush[b].z + Convert.ToInt32 (brush_control.brush[b].height * .5), true, false);
+              b3 = brush_control.point_in_brush (brush_control.brush[b].x + tilesize - 1, brush_control.brush[b].y - 1, brush_control.brush[b].z + Convert.ToInt32 (brush_control.brush[b].height * .5), true, false);
+              b4 = brush_control.point_in_brush (brush_control.brush[b].x + (tilesize / 2), brush_control.brush[b].y - 1, brush_control.brush[b].z + Convert.ToInt32 (brush_control.brush[b].height * .75), true, false);
+              b5 = brush_control.point_in_brush (brush_control.brush[b].x, brush_control.brush[b].y - 1, brush_control.brush[b].z + Convert.ToInt32 (brush_control.brush[b].height * .75), true, false);
+              b6 = brush_control.point_in_brush (brush_control.brush[b].x + tilesize - 1, brush_control.brush[b].y - 1, brush_control.brush[b].z + Convert.ToInt32 (brush_control.brush[b].height * .75), true, false);
               if (b1 == -1) draw_brush = true;
-              else if (brush[b1].transparent == true) draw_brush = true;
+              else if (brush_control.brush[b1].transparent == true) draw_brush = true;
               else if (b2 == -1) draw_brush = true;
-              else if (brush[b2].transparent == true) draw_brush = true;
+              else if (brush_control.brush[b2].transparent == true) draw_brush = true;
               else if (b3 == -1) draw_brush = true;
-              else if (brush[b3].transparent == true) draw_brush = true;
+              else if (brush_control.brush[b3].transparent == true) draw_brush = true;
               else if (b4 == -1) draw_brush = true;
-              else if (brush[b4].transparent == true) draw_brush = true;
+              else if (brush_control.brush[b4].transparent == true) draw_brush = true;
               else if (b5 == -1) draw_brush = true;
-              else if (brush[b5].transparent == true) draw_brush = true;
+              else if (brush_control.brush[b5].transparent == true) draw_brush = true;
               else if (b6 == -1) draw_brush = true;
-              else if (brush[b6].transparent == true) draw_brush = true;
+              else if (brush_control.brush[b6].transparent == true) draw_brush = true;
               if (draw_brush == true)
                 {
                 r_draw.X = Convert.ToInt32 (brush_screen_draw.X);
                 r_draw.Y = Convert.ToInt32 (brush_screen_draw.Y + tilesize);
                 r_draw.Width = tilesize;
-                r_draw.Height = brush[b].height / 2;
+                r_draw.Height = Convert.ToInt32(brush_control.brush[b].height * parallax);/// 2;
 
-                r_source.X = brush[b].front_texture_offset_x;
-                r_source.Y = brush[b].front_texture_offset_y;
+                r_source.X = brush_control.brush[b].front_texture_offset_x;
+                r_source.Y = brush_control.brush[b].front_texture_offset_y;
                 r_source.Width = tilesize;
-                r_source.Height = brush[b].height;
+                r_source.Height = brush_control.brush[b].height;
 
-                // texture looping tall brushes
-                if (brush[b].front_texture_number < (int) T.SINGLE_PIECE && brush[b].front_texture_offset_y + brush[b].height > texture[brush[b].front_texture_number].Height)
-                  {
-                  r_source.Height = tilesize;
-                  r_draw.Height = tilesize / 2;
-                  }
+                //// brush_control.texture looping tall brushes
+                //if (brush_control.brush[b].front_texture_number < (int) Brush_Control.T.SINGLE_PIECE && brush_control.brush[b].front_texture_offset_y + brush_control.brush[b].height > brush_control.texture[brush_control.brush[b].front_texture_number].Height)
+                //  {
+                //  r_source.Height = tilesize;
+                //  r_draw.Height = tilesize / 2;
+                //  }
 
-                if (brush[b].front_texture_number == (int) T.FLOOR_GRATE_TEST)
+                if (brush_control.brush[b].front_texture_number == (int) Brush_Control.T.FLOOR_GRATE_TEST)
                   {
                   r_source.Height = 6;
                   r_draw.Height = 6;
                   }
 
-                if (brush[b].top_texture_number == (int) T.INVISIBLE_WALL) { }
-                else if (brush[b].front_texture_number == (int) T.DOOR_GREEN_V_FRONT_CLOSED_TEST && green_doors_open == true) spriteBatch.Draw (texture[(int) T.DOOR_GREEN_V_FRONT_OPEN_TEST], r_draw, r_source, Color.White);
-                else if (brush[b].front_texture_number == (int) T.DOOR_RED_V_FRONT_CLOSED_TEST && red_doors_open == true) spriteBatch.Draw (texture[(int) T.DOOR_RED_V_FRONT_OPEN_TEST], r_draw, r_source, Color.White);
-                else if (brush[b].front_texture_number == (int) T.DOOR_BLUE_V_FRONT_CLOSED_TEST && blue_doors_open == true) spriteBatch.Draw (texture[(int) T.DOOR_BLUE_V_FRONT_OPEN_TEST], r_draw, r_source, Color.White);
-                else if (brush[b].front_texture_number == (int) T.DOOR_YELLOW_V_FRONT_CLOSED_TEST && yellow_doors_open == true) spriteBatch.Draw (texture[(int) T.DOOR_YELLOW_V_FRONT_OPEN_TEST], r_draw, r_source, Color.White);
-                else if (brush[b].front_texture_number == (int) T.EXIT_RED_V_FRONT_CLOSED_TEST && red_doors_open == true) spriteBatch.Draw (texture[(int) T.EXIT_RED_V_FRONT_OPEN_TEST], r_draw, r_source, Color.White);
-                else if (brush[b].front_texture_number == (int) T.BOX_ICE_TEST) spriteBatch.Draw (texture[brush[b].front_texture_number], r_draw, r_source, Color.White * .9f);
+                if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.INVISIBLE_WALL) { }
+                else if (brush_control.brush[b].front_texture_number == (int) Brush_Control.T.DOOR_GREEN_V_FRONT_CLOSED_TEST && green_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.DOOR_GREEN_V_FRONT_OPEN_TEST], r_draw, r_source, Color.White);
+                else if (brush_control.brush[b].front_texture_number == (int) Brush_Control.T.DOOR_RED_V_FRONT_CLOSED_TEST && red_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.DOOR_RED_V_FRONT_OPEN_TEST], r_draw, r_source, Color.White);
+                else if (brush_control.brush[b].front_texture_number == (int) Brush_Control.T.DOOR_BLUE_V_FRONT_CLOSED_TEST && blue_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.DOOR_BLUE_V_FRONT_OPEN_TEST], r_draw, r_source, Color.White);
+                else if (brush_control.brush[b].front_texture_number == (int) Brush_Control.T.DOOR_YELLOW_V_FRONT_CLOSED_TEST && yellow_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.DOOR_YELLOW_V_FRONT_OPEN_TEST], r_draw, r_source, Color.White);
+                else if (brush_control.brush[b].front_texture_number == (int) Brush_Control.T.EXIT_RED_V_FRONT_CLOSED_TEST && red_doors_open == true) spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.EXIT_RED_V_FRONT_OPEN_TEST], r_draw, r_source, Color.White);
+                else if (brush_control.brush[b].front_texture_number == (int) Brush_Control.T.BOX_ICE_TEST) spriteBatch.Draw (brush_control.texture[brush_control.brush[b].front_texture_number], r_draw, r_source, Color.White * .9f);
                 else
                   {
-                  spriteBatch.Draw (texture[brush[b].front_texture_number], r_draw, r_source, Color.White);
-                  spriteBatch.Draw (texture[brush[b].front_texture_number], r_draw, r_source, Color.Black * .3f);
+                  spriteBatch.Draw (brush_control.texture[brush_control.brush[b].front_texture_number], r_draw, r_source, Color.White);
+                  spriteBatch.Draw (brush_control.texture[brush_control.brush[b].front_texture_number], r_draw, r_source, Color.Black * .3f);
                   }
 
-                // texture looping tall brushes
-                if (brush[b].front_texture_number < (int) T.SINGLE_PIECE && brush[b].front_texture_offset_y + brush[b].height > texture[brush[b].front_texture_number].Height)
-                  {
+                // brush_control.texture looping tall brushes
+                //if (brush_control.brush[b].front_texture_number < (int) Brush_Control.T.SINGLE_PIECE && brush_control.brush[b].front_texture_offset_y + brush_control.brush[b].height > brush_control.texture[brush_control.brush[b].front_texture_number].Height)
+                //  {
 //                  r_source.Y = 0;
 //                  r_draw.Y += tilesize / 2;
-//                  spriteBatch.Draw (texture[brush[b].front_texture_number], r_draw, r_source, Color.White);
-//                  spriteBatch.Draw (texture[brush[b].front_texture_number], r_draw, r_source, Color.Black * .3f);
-                  }
+//                  spriteBatch.Draw (brush_control.texture[brush_control.brush[b].front_texture_number], r_draw, r_source, Color.White);
+//                  spriteBatch.Draw (brush_control.texture[brush_control.brush[b].front_texture_number], r_draw, r_source, Color.Black * .3f);
+                  //}
 
                 // front stickers
-                if (brush[b].front_sticker > -1)
+                if (brush_control.brush[b].front_sticker > -1)
                   {
-                  r_source.X = brush[b].front_sticker_offset_x;
-                  r_source.Y = brush[b].front_sticker_offset_y;
+                  r_source.X = brush_control.brush[b].front_sticker_offset_x;
+                  r_source.Y = brush_control.brush[b].front_sticker_offset_y;
                   r_source.Width = tilesize;
                   r_source.Height = tilesize;
                   r_draw.Width = tilesize;
-                  r_draw.Height = tilesize / 2;
+                  r_draw.Height = Convert.ToInt32(tilesize * parallax);
 
-                  if (brush[b].front_sticker_type == "office") spriteBatch.Draw (sticker_office[brush[b].front_sticker], r_draw, r_source, Color.White);
-                  else if (brush[b].front_sticker_type == "factory") spriteBatch.Draw (sticker_factory[brush[b].front_sticker], r_draw, r_source, Color.White);
+                  if (brush_control.brush[b].front_sticker_type == "office") spriteBatch.Draw (sticker_office[brush_control.brush[b].front_sticker], r_draw, r_source, Color.White);
+                  else if (brush_control.brush[b].front_sticker_type == "factory") spriteBatch.Draw (sticker_factory[brush_control.brush[b].front_sticker], r_draw, r_source, Color.White);
                   }
 
                 // front shading
-                //if (brush[b].front_texture_number == DOOR_TEST_RED_V_FRONT_CLOSED && red_doors_open == false) spriteBatch.Draw (shading_door_test_closed, r_draw, Color.White * .3f);
-                //else if (brush[b].front_texture_number == DOOR_TEST_RED_V_FRONT_CLOSED && red_doors_open == true)  spriteBatch.Draw (shading_door_test_open, r_draw, Color.White * .3f);
-                //else if (brush[b].front_texture_number == DOOR_TEST_YELLOW_V_FRONT_CLOSED && yellow_doors_open == false) spriteBatch.Draw (shading_door_test_closed, r_draw, Color.White * .3f);
-                //else if (brush[b].front_texture_number == DOOR_TEST_YELLOW_V_FRONT_CLOSED && yellow_doors_open == true) spriteBatch.Draw (shading_door_test_open, r_draw, Color.White * .3f);
-                //else if (brush[b].front_texture_number == DOOR_TEST_GREEN_V_FRONT_CLOSED && green_doors_open == false) spriteBatch.Draw (shading_door_test_closed, r_draw, Color.White * .3f);
-                //else if (brush[b].front_texture_number == DOOR_TEST_GREEN_V_FRONT_CLOSED && green_doors_open == true) spriteBatch.Draw (shading_door_test_open, r_draw, Color.White * .3f);
-                //else if (brush[b].front_texture_number == DOOR_TEST_BLUE_V_FRONT_CLOSED && blue_doors_open == false) spriteBatch.Draw (shading_door_test_closed, r_draw, Color.White * .3f);
-                //else if (brush[b].front_texture_number == DOOR_TEST_BLUE_V_FRONT_CLOSED && blue_doors_open == true) spriteBatch.Draw (shading_door_test_open, r_draw, Color.White * .3f);
-                //else if (brush[b].front_texture_number == GATEWAY_TEST_V_FRONT_CLOSED) spriteBatch.Draw (shading_gateway_test, r_draw, Color.White * .3f);
-                //else if (brush[b].front_texture_number == BOX_TEST_ICE)
+                //if (brush_control.brush[b].front_texture_number == DOOR_TEST_RED_V_FRONT_CLOSED && red_doors_open == false) spriteBatch.Draw (shading_door_test_closed, r_draw, Color.White * .3f);
+                //else if (brush_control.brush[b].front_texture_number == DOOR_TEST_RED_V_FRONT_CLOSED && red_doors_open == true)  spriteBatch.Draw (shading_door_test_open, r_draw, Color.White * .3f);
+                //else if (brush_control.brush[b].front_texture_number == DOOR_TEST_YELLOW_V_FRONT_CLOSED && yellow_doors_open == false) spriteBatch.Draw (shading_door_test_closed, r_draw, Color.White * .3f);
+                //else if (brush_control.brush[b].front_texture_number == DOOR_TEST_YELLOW_V_FRONT_CLOSED && yellow_doors_open == true) spriteBatch.Draw (shading_door_test_open, r_draw, Color.White * .3f);
+                //else if (brush_control.brush[b].front_texture_number == DOOR_TEST_GREEN_V_FRONT_CLOSED && green_doors_open == false) spriteBatch.Draw (shading_door_test_closed, r_draw, Color.White * .3f);
+                //else if (brush_control.brush[b].front_texture_number == DOOR_TEST_GREEN_V_FRONT_CLOSED && green_doors_open == true) spriteBatch.Draw (shading_door_test_open, r_draw, Color.White * .3f);
+                //else if (brush_control.brush[b].front_texture_number == DOOR_TEST_BLUE_V_FRONT_CLOSED && blue_doors_open == false) spriteBatch.Draw (shading_door_test_closed, r_draw, Color.White * .3f);
+                //else if (brush_control.brush[b].front_texture_number == DOOR_TEST_BLUE_V_FRONT_CLOSED && blue_doors_open == true) spriteBatch.Draw (shading_door_test_open, r_draw, Color.White * .3f);
+                //else if (brush_control.brush[b].front_texture_number == GATEWAY_TEST_V_FRONT_CLOSED) spriteBatch.Draw (shading_gateway_test, r_draw, Color.White * .3f);
+                //else if (brush_control.brush[b].front_texture_number == BOX_TEST_ICE)
                 //{
-                //spriteBatch.Draw (texture[brush[b].front_texture_number], r_draw, r_source, Color.Black * .3f);
+                //spriteBatch.Draw (brush_control.texture[brush_control.brush[b].front_texture_number], r_draw, r_source, Color.Black * .3f);
                 //}
                 //else spriteBatch.Draw (shading_wall, r_draw, Color.White * .3f);
                 }
@@ -6761,40 +6214,40 @@ namespace Boxland
             //}  // != INVISIBLE_WALL
 
             // red tinting for hot metal
-            if ((brush[b].top_texture_number == (int) T.BOX_METAL_TEST || brush[b].top_texture_number == (int) T.METAL_MINT_TOP_TEST
-                 || brush[b].top_texture_number == (int) T.METAL_BLUE_TOP_TEST || brush[b].top_texture_number == (int) T.METAL_BLACK_TEST)
-                && brush[b].temperature > 70)
+            if ((brush_control.brush[b].top_texture_number == (int) Brush_Control.T.BOX_METAL_TEST || brush_control.brush[b].top_texture_number == (int) Brush_Control.T.METAL_MINT_TOP_TEST
+                 || brush_control.brush[b].top_texture_number == (int) Brush_Control.T.METAL_BLUE_TOP_TEST || brush_control.brush[b].top_texture_number == (int) Brush_Control.T.METAL_BLACK_TEST)
+                && brush_control.brush[b].temperature > 70)
               {
-              spriteBatch.Draw (texture[(int) T.TEXTURE_HIGHLIGHT_RED], brush_screen_draw, Color.White * ((Convert.ToSingle (brush[b].temperature) - 70f) / 300f));
+              spriteBatch.Draw (brush_control.texture[(int) Brush_Control.T.TEXTURE_HIGHLIGHT_RED], brush_screen_draw, Color.White * ((Convert.ToSingle (brush_control.brush[b].temperature) - 70f) / 300f));
               }
 
-            // determine surroundings of floor brush for shadow generation and seam blending
-            wall_to_north = point_in_brush (brush[b].x + (tilesize / 2), Convert.ToInt32 (brush[b].y + (tilesize * 1.5)), Convert.ToInt32 (brush[b].z + (tilesize * 1.5)), true);
-            wall_to_south = point_in_brush (brush[b].x + (tilesize / 2), brush[b].y - (tilesize / 2), Convert.ToInt32 (brush[b].z + (tilesize * 1.5)), true);
-            wall_to_west = point_in_brush (brush[b].x - (tilesize / 2), brush[b].y + (tilesize / 2), Convert.ToInt32 (brush[b].z + (tilesize * 1.5)), true);
-            wall_to_east = point_in_brush (Convert.ToInt32 (brush[b].x + (tilesize * 1.5)), brush[b].y + (tilesize / 2), Convert.ToInt32 (brush[b].z + (tilesize * 1.5)), true);
-            floor_to_north = brush_north_of_brush (b);
-            floor_to_south = brush_south_of_brush (b);
-            floor_to_west = brush_west_of_brush (b);
-            floor_to_east = brush_east_of_brush (b);
+            // determine surroundings of floor brush_control.brush for shadow generation and seam blending
+            wall_to_north = brush_control.point_in_brush (brush_control.brush[b].x + (tilesize / 2), Convert.ToInt32 (brush_control.brush[b].y + (tilesize * 1.5)), Convert.ToInt32 (brush_control.brush[b].z + (tilesize * 1.5)), true, false);
+            wall_to_south = brush_control.point_in_brush (brush_control.brush[b].x + (tilesize / 2), brush_control.brush[b].y - (tilesize / 2), Convert.ToInt32 (brush_control.brush[b].z + (tilesize * 1.5)), true, false);
+            wall_to_west = brush_control.point_in_brush (brush_control.brush[b].x - (tilesize / 2), brush_control.brush[b].y + (tilesize / 2), Convert.ToInt32 (brush_control.brush[b].z + (tilesize * 1.5)), true, false);
+            wall_to_east = brush_control.point_in_brush (Convert.ToInt32 (brush_control.brush[b].x + (tilesize * 1.5)), brush_control.brush[b].y + (tilesize / 2), Convert.ToInt32 (brush_control.brush[b].z + (tilesize * 1.5)), true, false);
+            floor_to_north = brush_control.brush_north_of_brush (brush_control.brush[b]);
+            floor_to_south = brush_control.brush_south_of_brush (brush_control.brush[b]);
+            floor_to_west = brush_control.brush_west_of_brush (brush_control.brush[b]);
+            floor_to_east = brush_control.brush_east_of_brush (brush_control.brush[b]);
 
             if (toggle_texture_blending == true)
               {
               // top seam blending
-              if (brush[b].moveable == false)
+              if (brush_control.brush[b].moveable == false)
                 {
                 // north
-                if (floor_to_north > -1 && wall_to_north == -1 && brush[floor_to_north].top_texture_number != brush[b].top_texture_number
-                    && brush[floor_to_north].top_texture_number < (int) T.SINGLE_PIECE
-                    && brush[floor_to_north].moveable == false)
+                if (floor_to_north > -1 && wall_to_north == -1 && brush_control.brush[floor_to_north].top_texture_number != brush_control.brush[b].top_texture_number
+                    && brush_control.brush[floor_to_north].top_texture_number < (int) Brush_Control.T.SINGLE_PIECE
+                    && brush_control.brush[floor_to_north].moveable == false)
                   {
                   int y = 0;
                   for (opacity = .5f; opacity > 0f; opacity -= .05f)//.1f)
                     {
 
-                    r_source.X = brush[floor_to_north].top_texture_offset_x;
-                    r_source.Y = brush[floor_to_north].top_texture_offset_y + tilesize + y;
-                    if (r_source.Y > texture[brush[floor_to_north].top_texture_number].Height) r_source.Y = y;
+                    r_source.X = brush_control.brush[floor_to_north].top_texture_offset_x;
+                    r_source.Y = brush_control.brush[floor_to_north].top_texture_offset_y + tilesize + y;
+                    if (r_source.Y > brush_control.texture[brush_control.brush[floor_to_north].top_texture_number].Height) r_source.Y = y;
                     r_source.Width = tilesize;
                     r_source.Height = 1;
 
@@ -6803,23 +6256,23 @@ namespace Boxland
                     r_draw.Width = r_source.Width;
                     r_draw.Height = 1;
 
-                    spriteBatch.Draw (texture[brush[floor_to_north].top_texture_number], r_draw, r_source, Color.White * opacity);
+                    spriteBatch.Draw (brush_control.texture[brush_control.brush[floor_to_north].top_texture_number], r_draw, r_source, Color.White * opacity);
 
                     y += 1;
                     }
                   }
 
                 // south
-                if (floor_to_south > -1 && wall_to_south == -1 && brush[floor_to_south].top_texture_number != brush[b].top_texture_number
-                    && brush[floor_to_south].top_texture_number < (int) T.SINGLE_PIECE
-                    && brush[floor_to_south].moveable == false)
+                if (floor_to_south > -1 && wall_to_south == -1 && brush_control.brush[floor_to_south].top_texture_number != brush_control.brush[b].top_texture_number
+                    && brush_control.brush[floor_to_south].top_texture_number < (int) Brush_Control.T.SINGLE_PIECE
+                    && brush_control.brush[floor_to_south].moveable == false)
                   {
                   int y = 1;
                   for (opacity = .5f; opacity > 0f; opacity -= .05f)//.1f)
                     {
-                    r_source.X = brush[floor_to_south].top_texture_offset_x;
-                    r_source.Y = brush[floor_to_south].top_texture_offset_y - y;
-                    if (r_source.Y < 0) r_source.Y = texture[brush[floor_to_south].top_texture_number].Height - y;
+                    r_source.X = brush_control.brush[floor_to_south].top_texture_offset_x;
+                    r_source.Y = brush_control.brush[floor_to_south].top_texture_offset_y - y;
+                    if (r_source.Y < 0) r_source.Y = brush_control.texture[brush_control.brush[floor_to_south].top_texture_number].Height - y;
                     r_source.Width = tilesize;
                     r_source.Height = 1;
 
@@ -6828,23 +6281,23 @@ namespace Boxland
                     r_draw.Width = r_source.Width;
                     r_draw.Height = 1;
 
-                    spriteBatch.Draw (texture[brush[floor_to_south].top_texture_number], r_draw, r_source, Color.White * opacity);
+                    spriteBatch.Draw (brush_control.texture[brush_control.brush[floor_to_south].top_texture_number], r_draw, r_source, Color.White * opacity);
 
                     y += 1;
                     }
                   }
 
                 // east
-                if (floor_to_east > -1 && wall_to_east == -1 && brush[floor_to_east].top_texture_number != brush[b].top_texture_number
-                    && brush[floor_to_east].top_texture_number < (int) T.SINGLE_PIECE
-                    && brush[floor_to_east].moveable == false)
+                if (floor_to_east > -1 && wall_to_east == -1 && brush_control.brush[floor_to_east].top_texture_number != brush_control.brush[b].top_texture_number
+                    && brush_control.brush[floor_to_east].top_texture_number < (int) Brush_Control.T.SINGLE_PIECE
+                    && brush_control.brush[floor_to_east].moveable == false)
                   {
                   int x = 1;
                   for (opacity = .5f; opacity > 0f; opacity -= .05f)//.1f)
                     {
-                    r_source.X = brush[floor_to_east].top_texture_offset_x - x;
-                    if (r_source.X < 0) r_source.X = texture[brush[floor_to_east].top_texture_number].Width - x;
-                    r_source.Y = brush[floor_to_east].top_texture_offset_y;
+                    r_source.X = brush_control.brush[floor_to_east].top_texture_offset_x - x;
+                    if (r_source.X < 0) r_source.X = brush_control.texture[brush_control.brush[floor_to_east].top_texture_number].Width - x;
+                    r_source.Y = brush_control.brush[floor_to_east].top_texture_offset_y;
                     r_source.Width = 1;
                     r_source.Height = tilesize;
 
@@ -6853,23 +6306,23 @@ namespace Boxland
                     r_draw.Width = r_source.Width;
                     r_draw.Height = r_source.Height;
 
-                    spriteBatch.Draw (texture[brush[floor_to_east].top_texture_number], r_draw, r_source, Color.White * opacity);
+                    spriteBatch.Draw (brush_control.texture[brush_control.brush[floor_to_east].top_texture_number], r_draw, r_source, Color.White * opacity);
 
                     x += 1;
                     }
                   }
 
                 // west
-                if (floor_to_west > -1 && wall_to_west == -1 && brush[floor_to_west].top_texture_number != brush[b].top_texture_number
-                    && brush[floor_to_west].top_texture_number < (int) T.SINGLE_PIECE
-                    && brush[floor_to_west].moveable == false)
+                if (floor_to_west > -1 && wall_to_west == -1 && brush_control.brush[floor_to_west].top_texture_number != brush_control.brush[b].top_texture_number
+                    && brush_control.brush[floor_to_west].top_texture_number < (int) Brush_Control.T.SINGLE_PIECE
+                    && brush_control.brush[floor_to_west].moveable == false)
                   {
                   int x = 0;
                   for (opacity = .5f; opacity > 0f; opacity -= .05f)//.1f
                     {
-                    r_source.X = brush[floor_to_west].top_texture_offset_x + tilesize + x;
-                    if (r_source.X > texture[brush[floor_to_west].top_texture_number].Width) r_source.X = x;
-                    r_source.Y = brush[floor_to_west].top_texture_offset_y;
+                    r_source.X = brush_control.brush[floor_to_west].top_texture_offset_x + tilesize + x;
+                    if (r_source.X > brush_control.texture[brush_control.brush[floor_to_west].top_texture_number].Width) r_source.X = x;
+                    r_source.Y = brush_control.brush[floor_to_west].top_texture_offset_y;
                     r_source.Width = 1;
                     r_source.Height = tilesize;
 
@@ -6878,7 +6331,7 @@ namespace Boxland
                     r_draw.Width = r_source.Width;
                     r_draw.Height = r_source.Height;
 
-                    spriteBatch.Draw (texture[brush[floor_to_west].top_texture_number], r_draw, r_source, Color.White * opacity);
+                    spriteBatch.Draw (brush_control.texture[brush_control.brush[floor_to_west].top_texture_number], r_draw, r_source, Color.White * opacity);
 
                     x += 1;
                     }
@@ -6889,7 +6342,7 @@ namespace Boxland
             // WALL SHADOWS
 
             // if box is between grid spaces
-            if (brush[b].moving == true)
+            if (brush_control.brush[b].moving == true)
               {
               // old method - from wall
               shadow_west = false;
@@ -6897,52 +6350,52 @@ namespace Boxland
               shadow_east = false;
 
               // wall shadow south
-              if ((point_in_brush (brush[b].x, brush[b].y - (box_move / 2), brush[b].z - (box_move / 2), false) > -1  // floor below bottom left
-                   || point_in_brush (brush[b].x + (brush[b].width / 2), brush[b].y - (box_move / 2), brush[b].z - (box_move / 2), false) > -1    // floor below bottom middle
-                   || point_in_brush (brush[b].x + (brush[b].width - 1), brush[b].y - (box_move / 2), brush[b].z - (box_move / 2), false) > -1)   // floor below bottom right
-                   && point_in_brush (brush[b].x + (brush[b].width / 2), brush[b].y - (box_move / 2), brush[b].z + (box_move / 2), false) == -1)  // no brush in front (blocks shadow, draw unnecessary)
+              if ((brush_control.point_in_brush (brush_control.brush[b].x, brush_control.brush[b].y - (box_move / 2), brush_control.brush[b].z - (box_move / 2), false, false) > -1  // floor below bottom left
+                   || brush_control.point_in_brush (brush_control.brush[b].x + (brush_control.brush[b].width / 2), brush_control.brush[b].y - (box_move / 2), brush_control.brush[b].z - (box_move / 2), false, false) > -1    // floor below bottom middle
+                   || brush_control.point_in_brush (brush_control.brush[b].x + (brush_control.brush[b].width - 1), brush_control.brush[b].y - (box_move / 2), brush_control.brush[b].z - (box_move / 2), false, false) > -1)   // floor below bottom right
+                   && brush_control.point_in_brush (brush_control.brush[b].x + (brush_control.brush[b].width / 2), brush_control.brush[b].y - (box_move / 2), brush_control.brush[b].z + (box_move / 2), false, false) == -1)  // no brush_control.brush in front (blocks shadow, draw unnecessary)
                 {
                 shadow_south = true;
-                v_draw.X = brush[b].x + screen.scroll_x;
-                v_draw.Y = (screen.height - brush[b].y) - (brush[b].z / 2) + screen.scroll_y;
+                v_draw.X = brush_control.brush[b].x + screen.scroll_x;
+                v_draw.Y = Convert.ToInt32((screen.height - brush_control.brush[b].y) - (brush_control.brush[b].z * parallax) + screen.scroll_y);
                 spriteBatch.Draw (wall_shadow_south, v_draw, Color.White * .75f);
                 }
 
               // wall shadow west
-              if ((point_in_brush (brush[b].x - (box_move / 2), brush[b].y + (brush[b].length / 2), brush[b].z - (box_move / 2), true) > -1
-                   || point_in_brush (brush[b].x - (box_move / 2), brush[b].y + (brush[b].length / 2), brush[b].z - (box_move / 2), true) > -1
-                   || point_in_brush (brush[b].x - (box_move / 2), brush[b].y + (brush[b].length / 2), brush[b].z - (box_move / 2), true) > -1)
-                   && point_in_brush (brush[b].x - 1, brush[b].y + (brush[b].length / 2), brush[b].z + (box_move / 2), true) == -1)
+              if ((brush_control.point_in_brush (brush_control.brush[b].x - (box_move / 2), brush_control.brush[b].y + (brush_control.brush[b].length / 2), brush_control.brush[b].z - (box_move / 2), true, false) > -1
+                   || brush_control.point_in_brush (brush_control.brush[b].x - (box_move / 2), brush_control.brush[b].y + (brush_control.brush[b].length / 2), brush_control.brush[b].z - (box_move / 2), true, false) > -1
+                   || brush_control.point_in_brush (brush_control.brush[b].x - (box_move / 2), brush_control.brush[b].y + (brush_control.brush[b].length / 2), brush_control.brush[b].z - (box_move / 2), true, false) > -1)
+                   && brush_control.point_in_brush (brush_control.brush[b].x - 1, brush_control.brush[b].y + (brush_control.brush[b].length / 2), brush_control.brush[b].z + (box_move / 2), true, false) == -1)
                 {
                 shadow_west = true;
-                v_draw.X = brush[b].x + screen.scroll_x - wall_shadow_west.Width;
-                v_draw.Y = (screen.height - brush[b].y - brush[b].length) - (brush[b].z / 2) + screen.scroll_y;
+                v_draw.X = brush_control.brush[b].x + screen.scroll_x - wall_shadow_west.Width;
+                v_draw.Y = Convert.ToInt32((screen.height - brush_control.brush[b].y - brush_control.brush[b].length) - (brush_control.brush[b].z * parallax) + screen.scroll_y);
                 spriteBatch.Draw (wall_shadow_west, v_draw, Color.White * .75f);
                 }
 
               // wall shadow east
-              if (point_in_brush (brush[b].x + brush[b].width + (box_move / 2), brush[b].y + (brush[b].length / 2), brush[b].z - (box_move / 2), true) > -1
-                  && point_in_brush (brush[b].x + brush[b].width + 1, brush[b].y + (brush[b].length / 2), brush[b].z + (box_move / 2), true) == -1)
+              if (brush_control.point_in_brush (brush_control.brush[b].x + brush_control.brush[b].width + (box_move / 2), brush_control.brush[b].y + (brush_control.brush[b].length / 2), brush_control.brush[b].z - (box_move / 2), true, false) > -1
+                  && brush_control.point_in_brush (brush_control.brush[b].x + brush_control.brush[b].width + 1, brush_control.brush[b].y + (brush_control.brush[b].length / 2), brush_control.brush[b].z + (box_move / 2), true, false) == -1)
                 {
                 shadow_east = true;
-                v_draw.X = brush[b].x + brush[b].width + screen.scroll_x;
-                v_draw.Y = (screen.height - brush[b].y - brush[b].length) - (brush[b].z / 2) + screen.scroll_y;
+                v_draw.X = brush_control.brush[b].x + brush_control.brush[b].width + screen.scroll_x;
+                v_draw.Y = Convert.ToInt32((screen.height - brush_control.brush[b].y - brush_control.brush[b].length) - (brush_control.brush[b].z * parallax) + screen.scroll_y);
                 spriteBatch.Draw (wall_shadow_east, v_draw, Color.White * .75f);
                 }
 
               // wall shadow south west
               if (shadow_south == true && shadow_west == true)
                 {
-                v_draw.X = brush[b].x - wall_shadow_south_west.Width + screen.scroll_x;
-                v_draw.Y = (screen.height - brush[b].y) - (brush[b].z / 2) + screen.scroll_y;
+                v_draw.X = brush_control.brush[b].x - wall_shadow_south_west.Width + screen.scroll_x;
+                v_draw.Y = Convert.ToInt32((screen.height - brush_control.brush[b].y) - (brush_control.brush[b].z * parallax) + screen.scroll_y);
                 spriteBatch.Draw (wall_shadow_south_west, v_draw, Color.White * .75f);
                 }
 
               // wall shadow south east
               if (shadow_south == true && shadow_east == true)
                 {
-                v_draw.X = brush[b].x + brush[b].width + screen.scroll_x;
-                v_draw.Y = (screen.height - brush[b].y) - (brush[b].z / 2) + screen.scroll_y;
+                v_draw.X = brush_control.brush[b].x + brush_control.brush[b].width + screen.scroll_x;
+                v_draw.Y = Convert.ToInt32((screen.height - brush_control.brush[b].y) - (brush_control.brush[b].z * parallax) + screen.scroll_y);
                 spriteBatch.Draw (wall_shadow_south_east, v_draw, Color.White * .75f);
                 }
               }
@@ -6953,32 +6406,32 @@ namespace Boxland
             shadow_east = false;
             shadow_west = false;
             floor_visible = true;
-            //if (point_in_brush (brush[b].x + (tilesize / 2), brush[b].y + (tilesize / 2), Convert.ToInt32(brush[b].z + (tilesize * 1.5)), true) > -1) floor_visible = false;
+            //if (point_in_brush (brush_control.brush[b].x + (tilesize / 2), brush_control.brush[b].y + (tilesize / 2), Convert.ToInt32(brush_control.brush[b].z + (tilesize * 1.5)), true) > -1) floor_visible = false;
             if (floor_visible == true)
               {
               // shadow from above
-              b2 = point_in_brush (brush[b].x + (tilesize / 2), brush[b].y + (tilesize / 2), Convert.ToInt32 (brush[b].z + (tilesize * 1.5)), true);
-              if (b2 > -1 && brush[b2].moving == false)
+              b2 = brush_control.point_in_brush (brush_control.brush[b].x + (tilesize / 2), brush_control.brush[b].y + (tilesize / 2), Convert.ToInt32 (brush_control.brush[b].z + (tilesize * 1.5)), true, false);
+              if (b2 > -1 && brush_control.brush[b2].moving == false)
                 {
                 //spriteBatch.Draw (wall_shadow_center, brush_screen_draw, Color.White * .75f);
                 }
               // shadow from north
-              b2 = point_in_brush (brush[b].x + (tilesize / 2), Convert.ToInt32 (brush[b].y + (tilesize * 1.5)), Convert.ToInt32 (brush[b].z + (tilesize * 1.5)), false);
-              if (b2 > -1 && brush[b2].moving == false)
+              b2 = brush_control.point_in_brush (brush_control.brush[b].x + (tilesize / 2), Convert.ToInt32 (brush_control.brush[b].y + (tilesize * 1.5)), Convert.ToInt32 (brush_control.brush[b].z + (tilesize * 1.5)), false, false);
+              if (b2 > -1 && brush_control.brush[b2].moving == false)
                 {
                 shadow_north = true;
                 spriteBatch.Draw (wall_shadow_south, brush_screen_draw, Color.White * .75f);
                 }
               // shadow from west
-              b2 = point_in_brush (brush[b].x - (tilesize / 2), brush[b].y + (tilesize / 2), Convert.ToInt32 (brush[b].z + (tilesize * 1.5)), true);
-              if (b2 > -1 && brush[b2].moving == false)
+              b2 = brush_control.point_in_brush (brush_control.brush[b].x - (tilesize / 2), brush_control.brush[b].y + (tilesize / 2), Convert.ToInt32 (brush_control.brush[b].z + (tilesize * 1.5)), true, false);
+              if (b2 > -1 && brush_control.brush[b2].moving == false)
                 {
                 shadow_west = true;
                 spriteBatch.Draw (wall_shadow_east, brush_screen_draw, Color.White * .75f);
                 }
               // shadow from east
-              b2 = point_in_brush (Convert.ToInt32 (brush[b].x + (tilesize * 1.5)), brush[b].y + (tilesize / 2), Convert.ToInt32 (brush[b].z + (tilesize * 1.5)), true);
-              if (b2 > -1 && brush[b2].moving == false)
+              b2 = brush_control.point_in_brush (Convert.ToInt32 (brush_control.brush[b].x + (tilesize * 1.5)), brush_control.brush[b].y + (tilesize / 2), Convert.ToInt32 (brush_control.brush[b].z + (tilesize * 1.5)), true, false);
+              if (b2 > -1 && brush_control.brush[b2].moving == false)
                 {
                 shadow_east = true;
                 v_draw.X = brush_screen_draw.X + tilesize - wall_shadow_west.Width;
@@ -6986,14 +6439,14 @@ namespace Boxland
                 spriteBatch.Draw (wall_shadow_west, v_draw, Color.White * .75f);
                 }
               // shadow from north west
-              b2 = point_in_brush (brush[b].x - (tilesize / 2), Convert.ToInt32 (brush[b].y + (tilesize * 1.5)), Convert.ToInt32 (brush[b].z + (tilesize * 1.5)), true);
-              if (shadow_north != true && shadow_west != true && b2 > -1 && brush[b2].moving == false)
+              b2 = brush_control.point_in_brush (brush_control.brush[b].x - (tilesize / 2), Convert.ToInt32 (brush_control.brush[b].y + (tilesize * 1.5)), Convert.ToInt32 (brush_control.brush[b].z + (tilesize * 1.5)), true, false);
+              if (shadow_north != true && shadow_west != true && b2 > -1 && brush_control.brush[b2].moving == false)
                 {
                 spriteBatch.Draw (wall_shadow_south_east, brush_screen_draw, Color.White * .75f);
                 }
               // shadow from north east
-              b2 = point_in_brush (Convert.ToInt32 (brush[b].x + (tilesize * 1.5)), Convert.ToInt32 (brush[b].y + (tilesize * 1.5)), Convert.ToInt32 (brush[b].z + (tilesize * 1.5)), true);
-              if (shadow_north != true && shadow_east != true && b2 > -1 && brush[b2].moving == false)
+              b2 = brush_control.point_in_brush (Convert.ToInt32 (brush_control.brush[b].x + (tilesize * 1.5)), Convert.ToInt32 (brush_control.brush[b].y + (tilesize * 1.5)), Convert.ToInt32 (brush_control.brush[b].z + (tilesize * 1.5)), true, false);
+              if (shadow_north != true && shadow_east != true && b2 > -1 && brush_control.brush[b2].moving == false)
                 {
                 v_draw.X = brush_screen_draw.X + tilesize - wall_shadow_south_west.Width;
                 v_draw.Y = brush_screen_draw.Y;
@@ -7012,7 +6465,7 @@ namespace Boxland
 
             f = draw_list[l].id;
             v_draw.X = fixture_control.fixture[f].x + screen.scroll_x;
-            v_draw.Y = (screen.height - fixture_control.fixture[f].y - fixture_control.fixture[f].length) - (fixture_control.fixture[f].z / 2) - (fixture_control.fixture[f].height / 2) + screen.scroll_y;
+            v_draw.Y = Convert.ToInt32(screen.height - fixture_control.fixture[f].y - fixture_control.fixture[f].length - (fixture_control.fixture[f].z * parallax) - (fixture_control.fixture[f].height * parallax) + screen.scroll_y);
 
             // fixture effects
             if (fixture_control.fixture[f].type == (int) Fixture_Control.F.WIRES_SOUTHEAST_TEST && fixture_control.fixture[f].powered == true)
@@ -7044,11 +6497,11 @@ namespace Boxland
               endloop2 = false;
               b = 0;
               f = 0;
-              while (endloop2 == false && b < total_brushes)
+              while (endloop2 == false && b < brush_control.brush.Count)
                 {
-                if (tx >= brush[b].x && tx <= brush[b].x + brush[b].width &&
-                    ty >= brush[b].y && ty <= brush[b].y + brush[b].length &&
-                    tz == brush[b].z + brush[b].height) { endloop2 = true; endloop = true; }
+                if (tx >= brush_control.brush[b].x && tx <= brush_control.brush[b].x + brush_control.brush[b].width &&
+                    ty >= brush_control.brush[b].y && ty <= brush_control.brush[b].y + brush_control.brush[b].length &&
+                    tz == brush_control.brush[b].z + brush_control.brush[b].height) { endloop2 = true; endloop = true; }
                 b += 1;
                 }
               while (endloop2 == false && f < fixture_control.fixture.Count)//total_fixtures)
@@ -7071,7 +6524,7 @@ namespace Boxland
             r_source.Width = object_control.object_sprite[object_control.obj[o].type, 0].Width;
             r_source.Height = object_control.object_sprite[object_control.obj[o].type, 0].Height;
             r_draw.X = tx + screen.scroll_x;
-            r_draw.Y = (screen.height - ty) - (tz / 2) + screen.scroll_y - 3;
+            r_draw.Y = Convert.ToInt32((screen.height - ty) - (tz * parallax) + screen.scroll_y - 3);
             r_draw.Width = Convert.ToInt32 (object_control.object_sprite[object_control.obj[o].type, 0].Width * shadow_scale);
             r_draw.Height = Convert.ToInt32 (object_control.object_sprite[object_control.obj[o].type, 0].Height / 4 * shadow_scale);
             v_origin.X = object_control.object_sprite[object_control.obj[o].type, 0].Width / 2;
@@ -7080,7 +6533,7 @@ namespace Boxland
 
             //      // draw object
             v_draw.X = object_control.obj[o].x - (object_control.obj[o].width / 2) + screen.scroll_x;
-            v_draw.Y = (screen.height - object_control.obj[o].y) - object_control.obj[o].height - (object_control.obj[o].z / 2) + screen.scroll_y;
+            v_draw.Y = Convert.ToInt32((screen.height - object_control.obj[o].y) - object_control.obj[o].height - (object_control.obj[o].z * parallax) + screen.scroll_y);
             spriteBatch.Draw (object_control.object_sprite[object_control.obj[o].type, object_control.obj[o].skin], v_draw, Color.White);
 
             if (debug == true)
@@ -7226,20 +6679,20 @@ namespace Boxland
 
           // more player stuff
           //"player id: " + Convert.ToString (PLAYER)
-          //"player active: " + Convert.ToString (character_active (PLAYER))
+          //"player active: " + Convert.ToString (character_control.active (PLAYER))
 
           //"total characters: " + Convert.ToString (total_characters)
 
           //if (total_characters > 0)
           //  {
-          //  "char 0 active: " + Convert.ToString (character_active (0))
+          //  "char 0 active: " + Convert.ToString (character_control.active (0))
           //  "char 0 name: " + Convert.ToString (character_control.character[0].name)
           //  }
 
           //if (total_characters > 1)
           //  {
           //  spriteBatch.DrawString (debug_font, "char 1 active: ", debug_pos, Color.Yellow);
-          //  spriteBatch.DrawString (debug_font, Convert.ToString (character_active (1)), debug_pos, Color.Yellow);
+          //  spriteBatch.DrawString (debug_font, Convert.ToString (character_control.active (1)), debug_pos, Color.Yellow);
 
           //  spriteBatch.DrawString (debug_font, "char 1 name: ", debug_pos, Color.Yellow);
           //  spriteBatch.DrawString (debug_font, Convert.ToString (character_control.character[1].name), debug_pos, Color.Yellow);
@@ -7248,7 +6701,7 @@ namespace Boxland
           //if (total_characters > 2)
           //  {
           //  spriteBatch.DrawString (debug_font, "char 2 active: ", debug_pos, Color.Yellow);
-          //  spriteBatch.DrawString (debug_font, Convert.ToString (character_active (2)), debug_pos, Color.Yellow);
+          //  spriteBatch.DrawString (debug_font, Convert.ToString (character_control.active (2)), debug_pos, Color.Yellow);
 
           //  spriteBatch.DrawString (debug_font, "char 2 name: ", debug_pos, Color.Yellow);
           //  spriteBatch.DrawString (debug_font, Convert.ToString (character_control.character[2].name), debug_pos, Color.Yellow);
@@ -7331,26 +6784,26 @@ namespace Boxland
 
       //    if (character_control.character[(int) C.RICHARD].brush_grab > -1)
       //      {
-      //      spriteBatch.DrawString (debug_font, "brush[grab].x: ", debug_pos, Color.Yellow);
-      //      spriteBatch.DrawString (debug_font, Convert.ToString (brush[character_control.character[PLAYER].brush_grab].x), debug_pos, Color.Yellow);
+      //      spriteBatch.DrawString (debug_font, "brush_control.brush[grab].x: ", debug_pos, Color.Yellow);
+      //      spriteBatch.DrawString (debug_font, Convert.ToString (brush_control.brush[character_control.character[PLAYER].brush_grab].x), debug_pos, Color.Yellow);
 
-      //      spriteBatch.DrawString (debug_font, "brush[grab].y: ", debug_pos, Color.Yellow);
-      //      spriteBatch.DrawString (debug_font, Convert.ToString (brush[character_control.character[PLAYER].brush_grab].y), debug_pos, Color.Yellow);
+      //      spriteBatch.DrawString (debug_font, "brush_control.brush[grab].y: ", debug_pos, Color.Yellow);
+      //      spriteBatch.DrawString (debug_font, Convert.ToString (brush_control.brush[character_control.character[PLAYER].brush_grab].y), debug_pos, Color.Yellow);
 
-      //      spriteBatch.DrawString (debug_font, "brush[grab].moving: ", debug_pos, Color.Yellow);
-      //      spriteBatch.DrawString (debug_font, Convert.ToString (brush[character_control.character[PLAYER].brush_grab].moving), debug_pos, Color.Yellow);
+      //      spriteBatch.DrawString (debug_font, "brush_control.brush[grab].moving: ", debug_pos, Color.Yellow);
+      //      spriteBatch.DrawString (debug_font, Convert.ToString (brush_control.brush[character_control.character[PLAYER].brush_grab].moving), debug_pos, Color.Yellow);
 
-      //      spriteBatch.DrawString (debug_font, "brush[grab].moving_north: ", debug_pos, Color.Yellow);
-      //      spriteBatch.DrawString (debug_font, Convert.ToString (brush[character_control.character[PLAYER].brush_grab].moving_north), debug_pos, Color.Yellow);
+      //      spriteBatch.DrawString (debug_font, "brush_control.brush[grab].moving_north: ", debug_pos, Color.Yellow);
+      //      spriteBatch.DrawString (debug_font, Convert.ToString (brush_control.brush[character_control.character[PLAYER].brush_grab].moving_north), debug_pos, Color.Yellow);
 
-      //      spriteBatch.DrawString (debug_font, "brush[grab].moving_south: ", debug_pos, Color.Yellow);
-      //      spriteBatch.DrawString (debug_font, Convert.ToString (brush[character_control.character[PLAYER].brush_grab].moving_south), debug_pos, Color.Yellow);
+      //      spriteBatch.DrawString (debug_font, "brush_control.brush[grab].moving_south: ", debug_pos, Color.Yellow);
+      //      spriteBatch.DrawString (debug_font, Convert.ToString (brush_control.brush[character_control.character[PLAYER].brush_grab].moving_south), debug_pos, Color.Yellow);
 
-      //      spriteBatch.DrawString (debug_font, "brush[grab].moving_west: ", debug_pos, Color.Yellow);
-      //      spriteBatch.DrawString (debug_font, Convert.ToString (brush[character_control.character[PLAYER].brush_grab].moving_west), debug_pos, Color.Yellow);
+      //      spriteBatch.DrawString (debug_font, "brush_control.brush[grab].moving_west: ", debug_pos, Color.Yellow);
+      //      spriteBatch.DrawString (debug_font, Convert.ToString (brush_control.brush[character_control.character[PLAYER].brush_grab].moving_west), debug_pos, Color.Yellow);
 
-      //      spriteBatch.DrawString (debug_font, "brush[grab].moving_east: ", debug_pos, Color.Yellow);
-      //      spriteBatch.DrawString (debug_font, Convert.ToString (brush[character_control.character[PLAYER].brush_grab].moving_east), debug_pos, Color.Yellow);
+      //      spriteBatch.DrawString (debug_font, "brush_control.brush[grab].moving_east: ", debug_pos, Color.Yellow);
+      //      spriteBatch.DrawString (debug_font, Convert.ToString (brush_control.brush[character_control.character[PLAYER].brush_grab].moving_east), debug_pos, Color.Yellow);
       //      }
 
       //    // scroll box
@@ -7413,18 +6866,6 @@ namespace Boxland
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    void character_blink (int c)
-      {
-      if (rnd.Next (0, 50) == 0)
-        {
-        character_control.character[c].blinking = true;
-        character_control.character[c].anim_frame_sequence = 0;
-        character_control.character[c].max_anim_frame_sequence = 1;
-        }
-      }
-
-    ////////////////////////////////////////////////////////////////////////////////
-
     void character_throw_food (int c, double dir)
       {
       int r = 0;
@@ -7449,83 +6890,83 @@ namespace Boxland
 
     void character_grab_brush (int c)
       {
-            int distance = 0;
-            int max_reach = 50;
-            Vector2 reach = Vector2.Zero;
-            //int x_distance, y_distance;
-            int b;
-            int abs_x_distance, abs_y_distance;
+      int distance = 0;
+      int max_reach = 50;
+      Vector2 reach = Vector2.Zero;
+      //int x_distance, y_distance;
+      int b;
+      int abs_x_distance, abs_y_distance;
 
-            if (character_active (c) && character_on_ground (c))
-              {
-              character_control.character[c].brush_grab = -1;
-              while (character_control.character[c].brush_grab == -1 && reach.X >= 0 && reach.X < map_max_width && reach.Y >= 0 && reach.Y < map_max_length && distance <= max_reach)
-                {
-                reach.X = Convert.ToSingle (character_control.character[c].x + (distance * Math.Cos (character_control.character[c].dir)));
-                reach.Y = Convert.ToSingle (character_control.character[c].y + (distance * Math.Sin (character_control.character[c].dir)));
+      if (character_control.active (c) && character_on_ground (c))
+        {
+        character_control.character[c].brush_grab = -1;
+        while (character_control.character[c].brush_grab == -1 && reach.X >= 0 && reach.X < map_max_width && reach.Y >= 0 && reach.Y < map_max_length && distance <= max_reach)
+          {
+          reach.X = Convert.ToSingle (character_control.character[c].x + (distance * Math.Cos (character_control.character[c].dir)));
+          reach.Y = Convert.ToSingle (character_control.character[c].y + (distance * Math.Sin (character_control.character[c].dir)));
 
-                // find box character is in front of
-                character_control.character[c].brush_grab = point_in_brush (Convert.ToInt32 (reach.X), Convert.ToInt32 (reach.Y), character_control.character[c].z, false);//true);
-                distance += 1;
-                }
+          // find box character is in front of
+          character_control.character[c].brush_grab = brush_control.point_in_brush (Convert.ToInt32 (reach.X), Convert.ToInt32 (reach.Y), character_control.character[c].z, false, false);//true);
+          distance += 1;
+          }
 
-              b = character_control.character[c].brush_grab;
-              // only grab if moveable (done to prevent "push any wall with running start" bug)
-              if (b < 0) { }  // not a brush
-              else if (brush[b].top_texture_number == (int) T.BOX_METAL_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_YELLOW && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_RED) { }  // too heavy
-              else if (brush[b].top_texture_number == (int) T.BOX_ICE_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_WHITE) { }  // too cold
-              else if (brush[b].moveable == true)
-                {
-                character_control.character[c].action = "grabbing";
-                character_control.character[c].blinking = false;
+        b = character_control.character[c].brush_grab;
+        // only grab if moveable (done to prevent "push any wall with running start" bug)
+        if (b < 0) { }  // not a brush_control.brush
+        else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.BOX_METAL_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_YELLOW && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_RED) { }  // too heavy
+        else if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.BOX_ICE_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_WHITE) { }  // too cold
+        else if (brush_control.brush[b].moveable == true)
+          {
+          character_control.character[c].action = "grabbing";
+          character_control.character[c].blinking = false;
 
-                grab_x_distance = character_control.character[c].x - (brush[b].x + (brush[b].width / 2));
-                grab_y_distance = character_control.character[c].y - (brush[b].y + (brush[b].length / 2));
-                abs_x_distance = grab_x_distance;
-                abs_y_distance = grab_y_distance;
-                if (abs_x_distance < 0) abs_x_distance = abs_x_distance * -1;
-                if (abs_y_distance < 0) abs_y_distance = abs_y_distance * -1;
+          grab_x_distance = character_control.character[c].x - (brush_control.brush[b].x + (brush_control.brush[b].width / 2));
+          grab_y_distance = character_control.character[c].y - (brush_control.brush[b].y + (brush_control.brush[b].length / 2));
+          abs_x_distance = grab_x_distance;
+          abs_y_distance = grab_y_distance;
+          if (abs_x_distance < 0) abs_x_distance = abs_x_distance * -1;
+          if (abs_y_distance < 0) abs_y_distance = abs_y_distance * -1;
 
-                // assign direction for box pushing
-                if (abs_x_distance >= abs_y_distance && grab_x_distance < 0) character_control.character[c].grab_position = "left";
-                if (abs_x_distance >= abs_y_distance && grab_x_distance >= 0) character_control.character[c].grab_position = "right";
-                if (abs_x_distance < abs_y_distance && grab_y_distance < 0) character_control.character[c].grab_position = "below";
-                if (abs_x_distance < abs_y_distance && grab_y_distance >= 0) character_control.character[c].grab_position = "above";
+          // assign direction for box pushing
+          if (abs_x_distance >= abs_y_distance && grab_x_distance < 0) character_control.character[c].grab_position = "left";
+          if (abs_x_distance >= abs_y_distance && grab_x_distance >= 0) character_control.character[c].grab_position = "right";
+          if (abs_x_distance < abs_y_distance && grab_y_distance < 0) character_control.character[c].grab_position = "below";
+          if (abs_x_distance < abs_y_distance && grab_y_distance >= 0) character_control.character[c].grab_position = "above";
 
-                // move character into position
-                if (character_control.character[c].grab_position == "below")
-                  {
-                  character_control.character[PLAYER].dx = brush[b].x + (brush[b].width / 2);
-                  character_control.character[PLAYER].dy = brush[b].y - (tilesize / 3);
-                  }
-                else if (character_control.character[c].grab_position == "above")
-                  {
-                  character_control.character[PLAYER].dx = brush[b].x + (brush[b].width / 2);
-                  character_control.character[PLAYER].dy = brush[b].y + brush[b].length + (tilesize / 4);
-                  }
-                else if (character_control.character[c].grab_position == "right")
-                  {
-                  character_control.character[PLAYER].dx = brush[b].x + brush[b].width + (tilesize / 3);
-                  character_control.character[PLAYER].dy = brush[b].y + (brush[b].length / 2);
-                  }
-                else if (character_control.character[c].grab_position == "left")
-                  {
-                  character_control.character[PLAYER].dx = brush[b].x - (tilesize / 3);
-                  character_control.character[PLAYER].dy = brush[b].y + (brush[b].length / 2);
-                  }
+          // move character into position
+          if (character_control.character[c].grab_position == "below")
+            {
+            character_control.character[PLAYER].dx = brush_control.brush[b].x + (brush_control.brush[b].width / 2);
+            character_control.character[PLAYER].dy = brush_control.brush[b].y - (tilesize / 3);
+            }
+          else if (character_control.character[c].grab_position == "above")
+            {
+            character_control.character[PLAYER].dx = brush_control.brush[b].x + (brush_control.brush[b].width / 2);
+            character_control.character[PLAYER].dy = brush_control.brush[b].y + brush_control.brush[b].length + (tilesize / 4);
+            }
+          else if (character_control.character[c].grab_position == "right")
+            {
+            character_control.character[PLAYER].dx = brush_control.brush[b].x + brush_control.brush[b].width + (tilesize / 3);
+            character_control.character[PLAYER].dy = brush_control.brush[b].y + (brush_control.brush[b].length / 2);
+            }
+          else if (character_control.character[c].grab_position == "left")
+            {
+            character_control.character[PLAYER].dx = brush_control.brush[b].x - (tilesize / 3);
+            character_control.character[PLAYER].dy = brush_control.brush[b].y + (brush_control.brush[b].length / 2);
+            }
 
-                // not moving yet, so destination same as position
-                character_control.character[c].push_x = character_control.character[c].x;
-                character_control.character[c].push_y = character_control.character[c].y;
-                }
-              }
+          // not moving yet, so destination same as position
+          character_control.character[c].push_x = character_control.character[c].x;
+          character_control.character[c].push_y = character_control.character[c].y;
+          }
+        }
       }
 
     ////////////////////////////////////////////////////////////////////////////////
 
     void character_jump (int c)
       {
-      if (character_active (c) && character_on_ground (c) && character_control.character[c].action != "grabbing" && character_control.character[c].action != "pushing")
+      if (character_control.active (c) && character_on_ground (c) && character_control.character[c].action != "grabbing" && character_control.character[c].action != "pushing")
         {
         // jumping counteracts effect of skidding, like mario
         if (character_control.character[c].action == "skidding")
@@ -7544,7 +6985,7 @@ namespace Boxland
 
     void character_punch (int c)
       {
-      if (character_active (c) && character_on_ground (c) && character_control.character[c].action != "grabbing" && character_control.character[c].action != "pushing")
+      if (character_control.active (c) && character_on_ground (c) && character_control.character[c].action != "grabbing" && character_control.character[c].action != "pushing")
         {
         character_control.character[c].action = "punching";
         character_control.character[c].blinking = false;
@@ -7567,7 +7008,7 @@ namespace Boxland
         //for (int o = 0; o < total_objects; o += 1)
         for (int o = 0; o < object_control.obj.Count; o += 1)
           {
-          if (character_near_object (c, o) && character_facing_object (c, o))
+          if (character_near_object (c, o) && character_control.character_facing_object (character_control.character[c], object_control.obj[o]))
             {
             object_control.obj[o].dir = character_control.character[c].dir;
             object_control.obj[o].velocity = 3;// 2.5;
@@ -7577,7 +7018,7 @@ namespace Boxland
         //for (int c2 = 0; c2 < total_characters; c2 += 1)
         for (int c2 = 0; c2 < character_control.character.Count; c2 += 1)
           {
-          if (c2 != c && character_reach_character (c, c2) && character_control.character[c].is_facing_character (character_control.character[c2]))
+          if (c2 != c && character_control.reach_character (c, c2, brush_control.brush) && character_control.character[c].is_facing_character (character_control.character[c2]))
             {
             if (character_control.character[c].combo < 2)
               {
@@ -7610,36 +7051,33 @@ namespace Boxland
 
     void character_jump_kick (int c)
       {
-            if (character_active (c) && character_control.character[c].action != "grabbing" && character_control.character[c].action != "pushing")
-              {
-              character_control.character[c].action = "jump kicking";
-              //character_control.character[c].anim_frame_sequence = 0;
-              //character_control.character[c].max_anim_frame_sequence = 15;
-              //character_control.character[c].combo += 1;
-              //if (character_control.character[c].combo > 3) character_control.character[c].combo = 0;
-              character_control.character[c].self_velocity = 0;
+      if (character_control.active (c) && character_control.character[c].action != "grabbing" && character_control.character[c].action != "pushing")
+        {
+        character_control.character[c].action = "jump kicking";
+        //character_control.character[c].anim_frame_sequence = 0;
+        //character_control.character[c].max_anim_frame_sequence = 15;
+        //character_control.character[c].combo += 1;
+        //if (character_control.character[c].combo > 3) character_control.character[c].combo = 0;
+        character_control.character[c].self_velocity = 0;
 
-              //for (int o = 0; o < total_objects; o += 1)
-              for (int o = 0; o < object_control.obj.Count; o += 1)
-                {
-                if (character_near_object (c, o))
-                  {
-                  object_control.obj[o].dir = character_control.character[c].dir;
-                  object_control.obj[o].velocity = 2.5;
-                  }
-                }
-              //for (int c2 = 0; c2 < total_characters; c2 += 1)
-              for (int c2 = 0; c2 < character_control.character.Count; c2 += 1)
-                {
-                if (c2 != c && character_reach_character (c, c2) && character_control.character[c].is_facing_character (character_control.character[c2]))
-                  {
-                  character_damage (c2, 30, 7, 0, character_control.character[c].x, character_control.character[c].y, "impact", c);
-//                  soundBank.PlayCue ("kick_test");
-                  sound_kick.Play ();
-                  if (c == PLAYER) color_flasher (solid_white);
-                  }
-                }
-              }
+        for (int o = 0; o < object_control.obj.Count; o += 1)
+          {
+          if (character_near_object (c, o))
+            {
+            object_control.obj[o].dir = character_control.character[c].dir;
+            object_control.obj[o].velocity = 2.5;
+            }
+          }
+        for (int c2 = 0; c2 < character_control.character.Count; c2 += 1)
+          {
+          if (c2 != c && character_control.reach_character (c, c2, brush_control.brush) && character_control.character[c].is_facing_character (character_control.character[c2]))
+            {
+            character_damage (c2, 30, 7, 0, character_control.character[c].x, character_control.character[c].y, "impact", c);
+            sound_kick.Play ();
+            if (c == PLAYER) color_flasher (solid_white);
+            }
+          }
+        }
       }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -7657,10 +7095,10 @@ namespace Boxland
         character_control.character[c].apply_force_from_point (force, x_origin, y_origin);
         character_control.character[c].ext_z_velocity = vertical_force;  // goes airborn
         character_control.character[c].injury_timer = 10;
-        if (damage_type == "impact") character_pow (c, false, false);
+        if (damage_type == "impact") character_control.pow (c, false, false);
 
         // attack source of damage (like doom)
-        if (c != PLAYER && character_active (source)) character_control.character[c].attack_character (character_control.character[source], source);
+        if (c != PLAYER && character_control.active (source)) character_control.character[c].attack_character (character_control.character[source], source);
 
         // red flasher for player damage
         if (c == PLAYER)
@@ -7675,15 +7113,15 @@ namespace Boxland
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    void character_pow (int c, bool low, bool behind)
-      {
-      character_control.character[c].pow1.opacity = .75f;// 1f;
-      character_control.character[c].pow1.x = -1 * (pow_sprite_width / 2);
-      character_control.character[c].pow1.y = 0 - character_control.character[c].sprite_height;
-      character_control.character[c].pow1.behind = behind;
-      character_control.character[c].pow1.color = rnd.Next (0, 3);
-      character_control.character[c].pow1.shape = rnd.Next (0, 5);
-      }
+    //void character_pow (int c, bool low, bool behind)
+    //  {
+    //  character_control.character[c].pow1.opacity = .75f;// 1f;
+    //  character_control.character[c].pow1.x = -1 * (pow_sprite_width / 2);
+    //  character_control.character[c].pow1.y = 0 - character_control.character[c].sprite_height;
+    //  character_control.character[c].pow1.behind = behind;
+    //  character_control.character[c].pow1.color = rnd.Next (0, 3);
+    //  character_control.character[c].pow1.shape = rnd.Next (0, 5);
+    //  }
 
     ////////////////////////////////////////////////////////////////////////////////
 
@@ -7721,7 +7159,7 @@ namespace Boxland
         // laser tripwires
         if (fixture_control.fixture[f].type == (int) Fixture_Control.F.LASER_HORIZONTAL_GREEN_TEST)
           {
-          b_clip = fixture_in_brush (fixture_control.fixture[f]);
+          b_clip = fixture_control.fixture_in_brush (fixture_control.fixture[f], brush_control.brush);
           if (b_clip > -1) fixture_control.fixture[f].powered = true;
           }
 
@@ -7755,254 +7193,272 @@ namespace Boxland
 
     ///////////////////////////////////////////////////////////////////////////////
 
-        void Add_Stickers ()
+      void Add_Stickers ()
+        {
+        bool add_top, add_front;
+        //Texture2D sticker;
+        //int sticker_number;
+        //int sticker_tile_x;
+        //int sticker_tile_y;
+        int found_brush;
+        int found_fixture;
+        //int x, y, z;
+        //float alpha;
+
+        for (int b = 0; b < brush_control.brush.Count; b += 1)
           {
-          //Texture2D sticker;
-          //int sticker_number;
-          //int sticker_tile_x;
-          //int sticker_tile_y;
-          //int b2;
-          //int x, y, z;
-          //float alpha;
+          add_top = true;
+          add_front = true;
 
-          for (int b = 0; b < total_brushes; b += 1)
+          // top stickers
+          if (brush_control.brush[b].top_sticker > 0) add_top = false;  // already has sticker
+
+          found_brush = brush_control.brush_west_of_brush (brush_control.brush[b]);
+          if (found_brush > -1 && brush_control.brush[found_brush].top_sticker > 0) add_top = false;  // stickers too close
+
+          found_brush = brush_control.brush_east_of_brush (brush_control.brush[b]);
+          if (found_brush > -1 && brush_control.brush[found_brush].top_sticker > 0) add_top = false;  // stickers too close
+
+          found_brush = brush_control.brush_above_brush (brush_control.brush[b]);
+          if (found_brush > -1 && brush_control.brush[found_brush].top_sticker > 0) add_top = false;  // sticker under wall
+
+          found_fixture = fixture_control.fixture_above_brush (brush_control.brush[b]);
+          if (found_fixture > -1) add_top = false;  // fixture sitting on floor
+
+          if (add_top)
             {
-            // top stickers
-            if (brush[b].top_texture_number == (int) T.BRICK_RED_TEST && rnd.Next (0, 15) == 1) apply_top_sticker (b, "factory");
-            if (brush[b].top_texture_number == (int) T.TILE_BLACK_TEST && rnd.Next (0, 75) == 0) apply_top_sticker (b, "factory floor");
-            if (brush[b].top_texture_number == (int) T.TILE_BROWN_TEST && rnd.Next (0, 150) == 0) apply_top_sticker (b, "office floor");
+            if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.BRICK_RED_TEST && rnd.Next (0, 15) == 1) apply_top_sticker (b, "factory");
+            if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.TILE_BLACK_TEST && rnd.Next (0, 75) == 0) apply_top_sticker (b, "factory floor");
+            if (brush_control.brush[b].top_texture_number == (int) Brush_Control.T.TILE_BROWN_TEST && rnd.Next (0, 150) == 0) apply_top_sticker (b, "office floor");
+            }
 
-            // front stickers
-            if (brush[b].front_texture_number == (int) T.BRICK_RED_TEST && rnd.Next (0, 8) == 0) apply_front_sticker (b, "factory");
-            if (brush[b].front_texture_number == (int) T.DRYWALL_MINT_FRONT_TEST && rnd.Next (0, 8) == 0) apply_front_sticker (b, "office");
-            if (brush[b].front_texture_number == (int) T.DRYWALL_PURPLE_FRONT_TEST && rnd.Next (0, 8) == 0) apply_front_sticker (b, "office");
-            if (brush[b].front_texture_number == (int) T.DRYWALL_TAN_FRONT_TEST && rnd.Next (0, 8) == 0) apply_front_sticker (b, "office");
-            if (brush[b].front_texture_number == (int) T.DRYWALL_YELLOW_FRONT_TEST && rnd.Next (0, 8) == 0) apply_front_sticker (b, "office");
-            if (brush[b].front_texture_number == (int) T.METAL_MINT_FRONT_TEST && rnd.Next (0, 8) == 0) apply_front_sticker (b, "factory");
+          // front stickers
+          if (brush_control.brush[b].front_sticker > 0) add_front = false;  // already has sticker
+
+          found_brush = brush_control.brush_west_of_brush (brush_control.brush[b]);
+          if (found_brush > -1 && brush_control.brush[found_brush].front_sticker > 0) add_front = false;  // stickers too close
+
+          found_brush = brush_control.brush_east_of_brush (brush_control.brush[b]);
+          if (found_brush > -1 && brush_control.brush[found_brush].front_sticker > 0) add_front = false;  // stickers too close
+
+          found_brush = brush_control.brush_below_south_of_brush (brush_control.brush[b]);
+          if (found_brush == -1) add_front = false;  // sticker outside building
+
+          found_fixture = fixture_control.fixture_south_of_brush (brush_control.brush[b]);
+          if (found_fixture > -1) add_front = false;  // sticker behind fixture
+
+          if (add_front)
+            {
+            if (brush_control.brush[b].front_texture_number == (int) Brush_Control.T.BRICK_RED_TEST && rnd.Next (0, 8) == 0) apply_front_sticker (b, "factory");
+            if (brush_control.brush[b].front_texture_number == (int) Brush_Control.T.DRYWALL_MINT_FRONT_TEST && rnd.Next (0, 8) == 0) apply_front_sticker (b, "office");
+            if (brush_control.brush[b].front_texture_number == (int) Brush_Control.T.DRYWALL_PURPLE_FRONT_TEST && rnd.Next (0, 8) == 0) apply_front_sticker (b, "office");
+            if (brush_control.brush[b].front_texture_number == (int) Brush_Control.T.DRYWALL_TAN_FRONT_TEST && rnd.Next (0, 8) == 0) apply_front_sticker (b, "office");
+            if (brush_control.brush[b].front_texture_number == (int) Brush_Control.T.DRYWALL_YELLOW_FRONT_TEST && rnd.Next (0, 8) == 0) apply_front_sticker (b, "office");
+            if (brush_control.brush[b].front_texture_number == (int) Brush_Control.T.METAL_MINT_FRONT_TEST && rnd.Next (0, 8) == 0) apply_front_sticker (b, "factory");
             }
           }
 
-        ///////////////////////////////////////////////////////////////////////////////
+        // remove stickers from walls not visible
+        //for (int b = 0; b < brush_control.brush.Count; b += 1)
+        //  {
+        //  if (brush_control.brush[b].front_sticker != 0
+        //      && brush_control.point_in_brush (brush_control.brush[b].x + (brush_control.brush[b].width / 2), brush_control.brush[b].y - (tilesize / 2), brush_control.brush[b].z + (brush_control.brush[b].height / 2), true, false) > -1)
+        //    brush_control.brush[b].front_sticker = 0;
+        //  }
+        }
 
-        void apply_top_sticker (int b, string sticker_type)
+      ///////////////////////////////////////////////////////////////////////////////
+
+      void apply_top_sticker (int b, string sticker_type)
+        {
+        int sticker_number;
+        Texture2D sticker;
+        float alpha;
+        int sticker_tile_x, sticker_tile_y;
+        int x, y, z;
+        int b2;
+
+        if (sticker_type == "factory")
           {
-          int sticker_number;
-          Texture2D sticker;
-          float alpha;
-          int sticker_tile_x, sticker_tile_y;
-          int x, y, z;
-          int b2;
+          sticker_number = rnd.Next (0, total_factory_stickers);
+          sticker = sticker_factory[sticker_number];
+          alpha = 1f;
+          }
+        else if (sticker_type == "factory floor")
+          {
+          sticker_number = rnd.Next (0, total_factory_floor_stickers);
+          sticker = sticker_factory_floor[sticker_number];
+          if (sticker_number == 0) alpha = .1f;
+          else alpha = 1f;
+          }
+        else
+          {
+          // default is office floor
+          sticker_type = "office floor";
+          sticker_number = rnd.Next (0, total_office_floor_stickers);
+          sticker = sticker_office_floor[sticker_number];
+          alpha = 1f;
+          }
 
-          if (sticker_type == "factory")
-            {
-            sticker_number = rnd.Next (0, total_factory_stickers);
-            sticker = sticker_factory[sticker_number];
-            alpha = 1f;
-            }
-          else if (sticker_type == "factory floor")
-            {
-            sticker_number = rnd.Next (0, total_factory_floor_stickers);
-            sticker = sticker_factory_floor[sticker_number];
-            if (sticker_number == 0) alpha = .1f;
-            else alpha = 1f;
-            }
-          else
-            {
-            // default is office floor
-            sticker_type = "office floor";
-            sticker_number = rnd.Next (0, total_office_floor_stickers);
-            sticker = sticker_office_floor[sticker_number];
-            alpha = 1f;
-            }
+        sticker_tile_x = sticker.Width / tilesize;
+        sticker_tile_y = sticker.Height / tilesize;
 
-          sticker_tile_x = sticker.Width / tilesize;
-          sticker_tile_y = sticker.Height / tilesize;
+        z = 0;
+        for (y = 0; y >= (sticker_tile_y - 1) * -1; y -= 1)
+          {
+          for (x = 0; x <= sticker_tile_x - 1; x += 1)
+            {
+            b2 = brush_control.brush_around_brush (b, x, y, z);
+            if (b2 == -1) sticker_number = -1;  // brush_control.brush exists
+            else if (brush_control.brush[b2].top_texture_number != brush_control.brush[b].top_texture_number) sticker_number = -1;  // textures match
+            else if (brush_control.brush[b2].top_sticker > -1) sticker_number = -1;  // stickerless
+            }
+          }
 
+        if (sticker_number > -1)
+          {
           z = 0;
           for (y = 0; y >= (sticker_tile_y - 1) * -1; y -= 1)
             {
             for (x = 0; x <= sticker_tile_x - 1; x += 1)
               {
-              b2 = brush_around_brush (b, x, y, z);
-              if (b2 == -1) sticker_number = -1;  // brush exists
-              else if (brush[b2].top_texture_number != brush[b].top_texture_number) sticker_number = -1;  // textures match
-              else if (brush[b2].top_sticker > -1) sticker_number = -1;  // stickerless
-              }
-            }
-
-          if (sticker_number > -1)
-            {
-            z = 0;
-            for (y = 0; y >= (sticker_tile_y - 1) * -1; y -= 1)
-              {
-              for (x = 0; x <= sticker_tile_x - 1; x += 1)
-                {
-                b2 = brush_around_brush (b, x, y, z);
-                brush[b2].top_sticker = sticker_number;
-                brush[b2].top_sticker_type = sticker_type;
-                brush[b2].top_sticker_offset_x = x * tilesize;
-                brush[b2].top_sticker_offset_y = y * -1 * tilesize;
-                brush[b2].top_sticker_alpha = alpha;
-                }
+              b2 = brush_control.brush_around_brush (b, x, y, z);
+              brush_control.brush[b2].top_sticker = sticker_number;
+              brush_control.brush[b2].top_sticker_type = sticker_type;
+              brush_control.brush[b2].top_sticker_offset_x = x * tilesize;
+              brush_control.brush[b2].top_sticker_offset_y = y * -1 * tilesize;
+              brush_control.brush[b2].top_sticker_alpha = alpha;
               }
             }
           }
+        }
 
-        ///////////////////////////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////////////////////////
 
-        void apply_front_sticker (int b, string sticker_type)
+      void apply_front_sticker (int b, string sticker_type)
+        {
+        int sticker_number;
+        Texture2D sticker;
+        float alpha;
+        int sticker_tile_x, sticker_tile_z;
+        int x, y, z;
+        int b2;
+
+        if (sticker_type == "factory")
           {
-          int sticker_number;
-          Texture2D sticker;
-          float alpha;
-          int sticker_tile_x, sticker_tile_z;
-          int x, y, z;
-          int b2;
+          sticker_number = rnd.Next (0, total_factory_stickers);
+          sticker = sticker_factory[sticker_number];
+          alpha = 1f;
+          }
+        else
+          {
+          // default is office
+          sticker_type = "office";
+          sticker_number = rnd.Next (0, total_office_stickers);
+          sticker = sticker_office[sticker_number];
+          alpha = 1f;
+          }
 
-          if (sticker_type == "factory")
+        sticker_tile_x = sticker.Width / tilesize;
+        sticker_tile_z = sticker.Height / tilesize;
+
+        y = 0;
+        for (z = 0; z >= (sticker_tile_z - 1) * -1; z -= 1)
+          {
+          for (x = 0; x <= sticker_tile_x - 1; x += 1)
             {
-            sticker_number = rnd.Next (0, total_factory_stickers);
-            sticker = sticker_factory[sticker_number];
-            alpha = 1f;
+            b2 = brush_control.brush_around_brush (b, x, y, z);
+            if (b2 == -1) sticker_number = -1;  // brush_control.brush exists
+            else if (brush_control.brush[b2].front_texture_number != brush_control.brush[b].front_texture_number) sticker_number = -1;  // textures match
+            else if (brush_control.brush[b2].front_sticker > -1) sticker_number = -1;  // stickerless
             }
-          else
-            {
-            // default is office
-            sticker_type = "office";
-            sticker_number = rnd.Next (0, total_office_stickers);
-            sticker = sticker_office[sticker_number];
-            alpha = 1f;
-            }
+          }
 
-          sticker_tile_x = sticker.Width / tilesize;
-          sticker_tile_z = sticker.Height / tilesize;
-
+        if (sticker_number > -1)
+          {
           y = 0;
           for (z = 0; z >= (sticker_tile_z - 1) * -1; z -= 1)
             {
             for (x = 0; x <= sticker_tile_x - 1; x += 1)
               {
-              b2 = brush_around_brush (b, x, y, z);
-              if (b2 == -1) sticker_number = -1;  // brush exists
-              else if (brush[b2].front_texture_number != brush[b].front_texture_number) sticker_number = -1;  // textures match
-              else if (brush[b2].front_sticker > -1) sticker_number = -1;  // stickerless
-              }
-            }
-
-          if (sticker_number > -1)
-            {
-            y = 0;
-            for (z = 0; z >= (sticker_tile_z - 1) * -1; z -= 1)
-              {
-              for (x = 0; x <= sticker_tile_x - 1; x += 1)
-                {
-                b2 = brush_around_brush (b, x, y, z);
-                brush[b2].front_sticker = sticker_number;
-                brush[b2].front_sticker_type = sticker_type;
-                brush[b2].front_sticker_offset_x = x * tilesize;
-                brush[b2].front_sticker_offset_y = z * -1 * tilesize;
-                brush[b2].front_sticker_alpha = alpha;
-                }
+              b2 = brush_control.brush_around_brush (b, x, y, z);
+              brush_control.brush[b2].front_sticker = sticker_number;
+              brush_control.brush[b2].front_sticker_type = sticker_type;
+              brush_control.brush[b2].front_sticker_offset_x = x * tilesize;
+              brush_control.brush[b2].front_sticker_offset_y = z * -1 * tilesize;
+              brush_control.brush[b2].front_sticker_alpha = alpha;
               }
             }
           }
+        }
 
-        ///////////////////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////////////
 
-        int brush_around_brush (int b, int x_grid, int y_grid, int z_grid)
-          {
-          int x = brush[b].x + (tilesize / 2) + (tilesize * x_grid);
-          int y = brush[b].y + (tilesize / 2) + (tilesize * y_grid);
-          int z = brush[b].z + (tilesize / 2) + (tilesize * z_grid);
+      int brush_on_fixture (Brush b)
+        {
+        int fixture_below = fixture_control.point_collide (b.x + (b.width / 2), b.y + (b.length / 2), b.z - 1);
+        if (fixture_below == -1) fixture_below = fixture_control.point_collide (b.x + 1, b.y + 1, b.z - 1);
+        if (fixture_below == -1) fixture_below = fixture_control.point_collide (b.x + b.width - 1, b.y + 1, b.z - 1);
+        if (fixture_below == -1) fixture_below = fixture_control.point_collide (b.x + 1, b.y + b.length - 1, b.z - 1);
+        if (fixture_below == -1) fixture_below = fixture_control.point_collide (b.x + b.width - 1, b.y + b.length - 1, b.z - 1);
 
-          return point_in_brush (x, y, z, true);
-          }
+        return fixture_below;
+        }
 
-        ////////////////////////////////////////////////////////////////////////////////
+      //////////////////////////////////////////////////////////////////////////////////
 
-        int brush_on_fixture (Brush b)
-          {
-          int fixture_below = fixture_control.point_collide (b.x + (b.width / 2), b.y + (b.length / 2), b.z - 1);
-          if (fixture_below == -1) fixture_below = fixture_control.point_collide (b.x + 1, b.y + 1, b.z - 1);
-          if (fixture_below == -1) fixture_below = fixture_control.point_collide (b.x + b.width - 1, b.y + 1, b.z - 1);
-          if (fixture_below == -1) fixture_below = fixture_control.point_collide (b.x + 1, b.y + b.length - 1, b.z - 1);
-          if (fixture_below == -1) fixture_below = fixture_control.point_collide (b.x + b.width - 1, b.y + b.length - 1, b.z - 1);
+      //int brush_in_fixture (Brush b, bool solid_only)
+      //  {
+      //  int f = 0;
+      //  int clip = -1;
 
-          return fixture_below;
-          }
+      //  while (clip == -1 && f < fixture_control.fixture.Count)
+      //    {
+      //    if (b.x + b.width > fixture_control.fixture[f].x && b.x < fixture_control.fixture[f].x + fixture_control.fixture[f].width
+      //        && b.y + b.length > fixture_control.fixture[f].y && b.y < fixture_control.fixture[f].y + fixture_control.fixture[f].length
+      //        && b.z + b.height > fixture_control.fixture[f].z && b.z < fixture_control.fixture[f].z + fixture_control.fixture[f].height - 1)
+      //      {
+      //      if (solid_only == true && fixture_control.fixture[f].solid == false)
+      //        {
+      //        clip = -1;
+      //        if (fixture_control.fixture[f].type == (int) Fixture_Control.F.LASER_HORIZONTAL_GREEN_TEST) fixture_control.fixture[f].powered = true;
+      //        }
+      //      else clip = f;
+      //      }
+      //    f += 1;
+      //    }
 
-        ////////////////////////////////////////////////////////////////////////////////
-
-        int brush_in_fixture (Brush b, bool solid_only)
-          {
-          int f = 0;
-          int clip = -1;
-
-          while (clip == -1 && f < fixture_control.fixture.Count)
-            {
-            if (b.x + b.width > fixture_control.fixture[f].x && b.x < fixture_control.fixture[f].x + fixture_control.fixture[f].width
-                && b.y + b.length > fixture_control.fixture[f].y && b.y < fixture_control.fixture[f].y + fixture_control.fixture[f].length
-                && b.z + b.height > fixture_control.fixture[f].z && b.z < fixture_control.fixture[f].z + fixture_control.fixture[f].height - 1)
-              {
-              if (solid_only == true && fixture_control.fixture[f].solid == false)
-                {
-                clip = -1;
-                if (fixture_control.fixture[f].type == (int) Fixture_Control.F.LASER_HORIZONTAL_GREEN_TEST) fixture_control.fixture[f].powered = true;
-                }
-              else clip = f;
-              }
-            f += 1;
-            }
-
-          return clip;
-          }
-
-    ////////////////////////////////////////////////////////////////////////////////
-
-    int fixture_in_brush (Fixture f)
-      {
-      int b = 0;
-      int clip = -1;
-
-            while (clip == -1 && b < total_brushes)
-              {
-              if (f.x + f.width >= brush[b].x && f.x <= brush[b].x + brush[b].width
-                  && f.y + f.length >= brush[b].y && f.y <= brush[b].y + brush[b].length
-                  && f.z + f.height >= brush[b].z && f.z <= brush[b].z + brush[b].height - 1)
-                clip = b;
-              b += 1;
-              }
-
-      return clip;
-      }
+      //  return clip;
+      //  }
 
     ////////////////////////////////////////////////////////////////////////////////
 
     void push_north ()
       {
-            int b;
+      int b;
 
-            if (character_control.character[PLAYER].action == "grabbing" && brush[character_control.character[PLAYER].brush_grab].moveable == true && character_control.character[PLAYER].grab_position == "below")  // push box (on grid)
-              {
-              if (brush[character_control.character[PLAYER].brush_grab].top_texture_number == (int) T.BOX_METAL_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_YELLOW && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_RED) { }
-              else if (brush[character_control.character[PLAYER].brush_grab].top_texture_number == (int) T.BOX_ICE_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_WHITE) { }
-              else
-                {
-                character_control.character[PLAYER].action = "pushing";
-                b = character_control.character[PLAYER].brush_grab;
-                brush[b].moving = true;
-                brush[b].moving_north = true;
-                brush[b].destination_x = brush[b].x;
-                brush[b].destination_y = brush[b].y + box_move;
-                brush[b].ext_y_velocity = character_control.character[PLAYER].speed * .45;
-                character_control.character[PLAYER].dx = brush[b].x + (brush[b].width / 2);
-                character_control.character[PLAYER].dy = brush[b].y - (tilesize / 3);
-                character_control.character[PLAYER].push_x = character_control.character[PLAYER].x;
-                character_control.character[PLAYER].push_y = character_control.character[PLAYER].y + box_move;
-                character_control.character[PLAYER].push_dir = "up";
-                character_control.character[PLAYER].self_x_velocity = 0;
-                }
-              }
+      if (character_control.character[PLAYER].action == "grabbing" && brush_control.brush[character_control.character[PLAYER].brush_grab].moveable == true && character_control.character[PLAYER].grab_position == "below")  // push box (on grid)
+        {
+        if (brush_control.brush[character_control.character[PLAYER].brush_grab].top_texture_number == (int) Brush_Control.T.BOX_METAL_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_YELLOW && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_RED) return;
+        else if (brush_control.brush[character_control.character[PLAYER].brush_grab].top_texture_number == (int) Brush_Control.T.BOX_ICE_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_WHITE) return;
+        else if (fixture_control.fixture_north_of_brush (brush_control.brush[character_control.character[PLAYER].brush_grab]) > -1) return;
+        else
+          {
+          character_control.character[PLAYER].action = "pushing";
+          b = character_control.character[PLAYER].brush_grab;
+          brush_control.brush[b].moving = true;
+          brush_control.brush[b].moving_north = true;
+          brush_control.brush[b].destination_x = brush_control.brush[b].x;
+          brush_control.brush[b].destination_y = brush_control.brush[b].y + box_move;
+          brush_control.brush[b].ext_y_velocity = character_control.character[PLAYER].speed * .45;
+          character_control.character[PLAYER].dx = brush_control.brush[b].x + (brush_control.brush[b].width / 2);
+          character_control.character[PLAYER].dy = brush_control.brush[b].y - (tilesize / 3);
+          character_control.character[PLAYER].push_x = character_control.character[PLAYER].x;
+          character_control.character[PLAYER].push_y = character_control.character[PLAYER].y + box_move;
+          character_control.character[PLAYER].push_dir = "up";
+          character_control.character[PLAYER].self_x_velocity = 0;
+          }
+        }
       }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -8011,23 +7467,22 @@ namespace Boxland
       {
       int b;
 
-      if (character_control.character[PLAYER].action == "grabbing")// && brush[character_control.character[PLAYER].brush_grab].moveable == true && character_control.character[PLAYER].grab_position == "above")  // push box (on grid)
+      if (character_control.character[PLAYER].action == "grabbing")// && brush_control.brush[character_control.character[PLAYER].brush_grab].moveable == true && character_control.character[PLAYER].grab_position == "above")
         {
-        //brush[16].moving = true;
-        //brush[16].destination_y = brush[16].y - 96;
-        if (brush[character_control.character[PLAYER].brush_grab].top_texture_number == (int) T.BOX_METAL_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_YELLOW && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_RED) { }
-        else if (brush[character_control.character[PLAYER].brush_grab].top_texture_number == (int) T.BOX_ICE_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_WHITE) { }
+        if (brush_control.brush[character_control.character[PLAYER].brush_grab].top_texture_number == (int) Brush_Control.T.BOX_METAL_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_YELLOW && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_RED) return;
+        else if (brush_control.brush[character_control.character[PLAYER].brush_grab].top_texture_number == (int) Brush_Control.T.BOX_ICE_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_WHITE) return;
+        else if (fixture_control.fixture_south_of_brush (brush_control.brush[character_control.character[PLAYER].brush_grab]) > -1) return;
         else
           {
           character_control.character[PLAYER].action = "pushing";
           b = character_control.character[PLAYER].brush_grab;
-          brush[b].moving = true;
-          brush[b].moving_south = true;
-          brush[b].destination_x = brush[b].x;
-          brush[b].destination_y = brush[b].y - box_move;
-          brush[b].ext_y_velocity = character_control.character[PLAYER].speed * .45;
-          character_control.character[PLAYER].dx = brush[b].x + (brush[b].width / 2);
-          character_control.character[PLAYER].dy = brush[b].y + brush[b].length + (tilesize / 4);
+          brush_control.brush[b].moving = true;
+          brush_control.brush[b].moving_south = true;
+          brush_control.brush[b].destination_x = brush_control.brush[b].x;
+          brush_control.brush[b].destination_y = brush_control.brush[b].y - box_move;
+          brush_control.brush[b].ext_y_velocity = character_control.character[PLAYER].speed * .45;
+          character_control.character[PLAYER].dx = brush_control.brush[b].x + (brush_control.brush[b].width / 2);
+          character_control.character[PLAYER].dy = brush_control.brush[b].y + brush_control.brush[b].length + (tilesize / 4);
           character_control.character[PLAYER].push_x = character_control.character[PLAYER].x;
           character_control.character[PLAYER].push_y = character_control.character[PLAYER].y - box_move;
           character_control.character[PLAYER].push_dir = "down";
@@ -8042,21 +7497,22 @@ namespace Boxland
       {
       int b;
 
-      if (character_control.character[PLAYER].action == "grabbing" && brush[character_control.character[PLAYER].brush_grab].moveable == true && character_control.character[PLAYER].grab_position == "right")  // push box (on grid)
+      if (character_control.character[PLAYER].action == "grabbing" && brush_control.brush[character_control.character[PLAYER].brush_grab].moveable == true && character_control.character[PLAYER].grab_position == "right")  // push box (on grid)
         {
-        if (brush[character_control.character[PLAYER].brush_grab].top_texture_number == (int) T.BOX_METAL_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_YELLOW && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_RED) { }
-        else if (brush[character_control.character[PLAYER].brush_grab].top_texture_number == (int) T.BOX_ICE_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_WHITE) { }
+        if (brush_control.brush[character_control.character[PLAYER].brush_grab].top_texture_number == (int) Brush_Control.T.BOX_METAL_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_YELLOW && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_RED) return;
+        else if (brush_control.brush[character_control.character[PLAYER].brush_grab].top_texture_number == (int) Brush_Control.T.BOX_ICE_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_WHITE) { }
+        else if (fixture_control.fixture_west_of_brush (brush_control.brush[character_control.character[PLAYER].brush_grab]) > -1) return;
         else
           {
           character_control.character[PLAYER].action = "pushing";
           b = character_control.character[PLAYER].brush_grab;
-          brush[b].moving = true;
-          brush[b].moving_west = true;
-          brush[b].destination_x = brush[b].x - box_move;
-          brush[b].destination_y = brush[b].y;
-          brush[b].ext_x_velocity = character_control.character[PLAYER].speed * .45;
-          character_control.character[PLAYER].dx = brush[b].x + brush[b].width + (tilesize / 3);
-          character_control.character[PLAYER].dy = brush[b].y + (brush[b].length / 2);
+          brush_control.brush[b].moving = true;
+          brush_control.brush[b].moving_west = true;
+          brush_control.brush[b].destination_x = brush_control.brush[b].x - box_move;
+          brush_control.brush[b].destination_y = brush_control.brush[b].y;
+          brush_control.brush[b].ext_x_velocity = character_control.character[PLAYER].speed * .45;
+          character_control.character[PLAYER].dx = brush_control.brush[b].x + brush_control.brush[b].width + (tilesize / 3);
+          character_control.character[PLAYER].dy = brush_control.brush[b].y + (brush_control.brush[b].length / 2);
           character_control.character[PLAYER].push_x = character_control.character[PLAYER].x - box_move;
           character_control.character[PLAYER].push_y = character_control.character[PLAYER].y;
           character_control.character[PLAYER].push_dir = "left";
@@ -8071,21 +7527,22 @@ namespace Boxland
       {
       int b;
 
-      if (character_control.character[PLAYER].action == "grabbing" && brush[character_control.character[PLAYER].brush_grab].moveable == true && character_control.character[PLAYER].grab_position == "left")  // push box (on grid)
+      if (character_control.character[PLAYER].action == "grabbing" && brush_control.brush[character_control.character[PLAYER].brush_grab].moveable == true && character_control.character[PLAYER].grab_position == "left")  // push box (on grid)
         {
-        if (brush[character_control.character[PLAYER].brush_grab].top_texture_number == (int) T.BOX_METAL_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_YELLOW && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_RED) { }
-        else if (brush[character_control.character[PLAYER].brush_grab].top_texture_number == (int) T.BOX_ICE_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_WHITE) { }
+        if (brush_control.brush[character_control.character[PLAYER].brush_grab].top_texture_number == (int) Brush_Control.T.BOX_METAL_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_YELLOW && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_RED) return;
+        else if (brush_control.brush[character_control.character[PLAYER].brush_grab].top_texture_number == (int) Brush_Control.T.BOX_ICE_TEST && character_control.character[PLAYER].shirt != (int) Object_Control.O.SHIRT_WHITE) return;
+        else if (fixture_control.fixture_east_of_brush (brush_control.brush[character_control.character[PLAYER].brush_grab]) > -1) return;
         else
           {
           character_control.character[PLAYER].action = "pushing";
           b = character_control.character[PLAYER].brush_grab;
-          brush[b].moving = true;
-          brush[b].moving_east = true;
-          brush[b].destination_x = brush[b].x + box_move;
-          brush[b].destination_y = brush[b].y;
-          brush[b].ext_x_velocity = character_control.character[PLAYER].speed * .45;
-          character_control.character[PLAYER].dx = brush[b].x - (tilesize / 3);
-          character_control.character[PLAYER].dy = brush[b].y + (brush[b].length / 2);
+          brush_control.brush[b].moving = true;
+          brush_control.brush[b].moving_east = true;
+          brush_control.brush[b].destination_x = brush_control.brush[b].x + box_move;
+          brush_control.brush[b].destination_y = brush_control.brush[b].y;
+          brush_control.brush[b].ext_x_velocity = character_control.character[PLAYER].speed * .45;
+          character_control.character[PLAYER].dx = brush_control.brush[b].x - (tilesize / 3);
+          character_control.character[PLAYER].dy = brush_control.brush[b].y + (brush_control.brush[b].length / 2);
           character_control.character[PLAYER].push_x = character_control.character[PLAYER].x + box_move;
           character_control.character[PLAYER].push_y = character_control.character[PLAYER].y;
           character_control.character[PLAYER].push_dir = "right";
@@ -8098,78 +7555,78 @@ namespace Boxland
 
     void continue_to_target (int c)
       {
-            int tx, ty, tz;  // test location
-            double td;       // test direction
-            double xmove, ymove;
-            //bool endloop, endloop2;
-            int b;
-            //bool positive;
-            //int rotation;
+          int tx, ty, tz;  // test location
+          double td;       // test direction
+          double xmove, ymove;
+          //bool endloop, endloop2;
+          int b;
+          //bool positive;
+          //int rotation;
 
-            // face target
-            //if (character_control.character[c].target_type == "object") character_control.character[c].dir = get_direction (character_control.character[c].x, character_control.character[c].y, obj[character_control.character[c].target].x, obj[character_control.character[c].target].y);
-            //else if (character_control.character[c].target_type == "character")
-            character_control.character[c].dir = get_direction (character_control.character[c].x, character_control.character[c].y, character_control.character[character_control.character[c].target].x, character_control.character[character_control.character[c].target].y);
+          // face target
+          //if (character_control.character[c].target_type == "object") character_control.character[c].dir = get_direction (character_control.character[c].x, character_control.character[c].y, obj[character_control.character[c].target].x, obj[character_control.character[c].target].y);
+          //else if (character_control.character[c].target_type == "character")
+          character_control.character[c].dir = get_direction (character_control.character[c].x, character_control.character[c].y, character_control.character[character_control.character[c].target].x, character_control.character[character_control.character[c].target].y);
 
-            //positive = false;
-            //rotation = 0;
-            //endloop2 = false;
-            //while (!endloop2)
-            //  {
-            // test for projected collision on path
-            tx = character_control.character[c].x;
-            ty = character_control.character[c].y;
-            tz = character_control.character[c].z;
-            td = character_control.character[c].dir;
+          //positive = false;
+          //rotation = 0;
+          //endloop2 = false;
+          //while (!endloop2)
+          //  {
+          // test for projected collision on path
+          tx = character_control.character[c].x;
+          ty = character_control.character[c].y;
+          tz = character_control.character[c].z;
+          td = character_control.character[c].dir;
 
-            xmove = reach_distance / 4 * Math.Cos (td);
-            ymove = reach_distance / 4 * Math.Sin (td);
+          xmove = character_control.reach_distance / 4 * Math.Cos (td);
+          ymove = character_control.reach_distance / 4 * Math.Sin (td);
 
-            b = -1;
-            bool endloop = false;
-            while (!endloop)
+          b = -1;
+          bool endloop = false;
+          while (!endloop)
+            {
+            tx += Convert.ToInt16 (xmove);
+            ty += Convert.ToInt16 (ymove);
+            b = brush_control.point_in_brush (tx, ty, tz, false, true);
+            if (b >= 0) endloop = true;  // hit wall
+
+            // if hit target or
+            // went passed target without hitting wall or
+            // made it more than 2 tiles without hitting wall
+            if (point_near_point (tx, ty, tz, character_control.character[c].target_x, character_control.character[c].target_y, character_control.character[c].target_z)
+                || distance2d (tx, ty, character_control.character[c].target_x, character_control.character[c].target_y) > distance2d (character_control.character[c].x, character_control.character[c].y, character_control.character[c].target_x, character_control.character[c].target_y))
+            //|| distance2d (character_control.character[c].x, character_control.character[c].y, tx, ty) > tilesize * 2)
               {
-              tx += Convert.ToInt16 (xmove);
-              ty += Convert.ToInt16 (ymove);
-              b = point_in_brush (tx, ty, tz, false);
-              if (b >= 0) endloop = true;  // hit wall
-
-              // if hit target or
-              // went passed target without hitting wall or
-              // made it more than 2 tiles without hitting wall
-              if (point_near_point (tx, ty, tz, character_control.character[c].target_x, character_control.character[c].target_y, character_control.character[c].target_z)
-                  || distance2d (tx, ty, character_control.character[c].target_x, character_control.character[c].target_y) > distance2d (character_control.character[c].x, character_control.character[c].y, character_control.character[c].target_x, character_control.character[c].target_y))
-              //|| distance2d (character_control.character[c].x, character_control.character[c].y, tx, ty) > tilesize * 2)
-                {
-                endloop = true;
-                //      endloop2 = true;
-                //      character_control.character[c].subtarget_x = tx;
-                //      character_control.character[c].subtarget_y = ty;
-                //      character_control.character[c].dir = td;
-                }
-              }
-
-            if (b >= 0)  // hit wall
-              {
-              //    rotation += 15;
-              //    if (positive == true) positive = false;
-              //    else positive = true;
-              //    if (positive == true) td = character_control.character[c].dir + MathHelper.ToRadians(rotation);
-              //    else td = character_control.character[c].dir - MathHelper.ToRadians(rotation);
-              //    if (td >= MathHelper.ToRadians(360)) td -= MathHelper.ToRadians(360);
-              //    if (td < MathHelper.ToRadians(0)) td += MathHelper.ToRadians(360);
-              //    if (rotation > 720)  // trapped
-              //      {
-              //      endloop = true;
+              endloop = true;
               //      endloop2 = true;
-              //      td = character_control.character[c].dir;
-              //      }
-
-              character_control.character[c].dir = get_direction (character_control.character[c].x, character_control.character[c].y, character_control.character[character_control.character[c].target].x, character_control.character[character_control.character[c].target].y);
-              character_control.character[c].subtarget_x = character_control.character[character_control.character[c].target].x;
-              character_control.character[c].subtarget_y = character_control.character[character_control.character[c].target].y;
-
+              //      character_control.character[c].subtarget_x = tx;
+              //      character_control.character[c].subtarget_y = ty;
+              //      character_control.character[c].dir = td;
               }
+            }
+
+          if (b >= 0)  // hit wall
+            {
+            //    rotation += 15;
+            //    if (positive == true) positive = false;
+            //    else positive = true;
+            //    if (positive == true) td = character_control.character[c].dir + MathHelper.ToRadians(rotation);
+            //    else td = character_control.character[c].dir - MathHelper.ToRadians(rotation);
+            //    if (td >= MathHelper.ToRadians(360)) td -= MathHelper.ToRadians(360);
+            //    if (td < MathHelper.ToRadians(0)) td += MathHelper.ToRadians(360);
+            //    if (rotation > 720)  // trapped
+            //      {
+            //      endloop = true;
+            //      endloop2 = true;
+            //      td = character_control.character[c].dir;
+            //      }
+
+            character_control.character[c].dir = get_direction (character_control.character[c].x, character_control.character[c].y, character_control.character[character_control.character[c].target].x, character_control.character[character_control.character[c].target].y);
+            character_control.character[c].subtarget_x = character_control.character[character_control.character[c].target].x;
+            character_control.character[c].subtarget_y = character_control.character[character_control.character[c].target].y;
+
+            }
       //  }
 
       //if (character_control.character[c].subtarget_x != -1) character_control.character[c].dir = get_direction (character_control.character[c].x, character_control.character[c].y, character_control.character[c].subtarget_x, character_control.character[c].subtarget_y);
@@ -8190,104 +7647,81 @@ namespace Boxland
 
     ////////////////////////////////////////////////////////////////////////////////
 
-        int character_on_fixture (Character c)
-          {
-          // reset point for character and not for brush?
-          int fixture_below = fixture_control.point_collide (c.x + (c.width / 2), c.y + (c.length / 2), c.z - 1);
-          if (fixture_below == -1) fixture_below = fixture_control.point_collide (c.x + 1, c.y + 1, c.z - 1);
-          if (fixture_below == -1) fixture_below = fixture_control.point_collide (c.x + c.width - 1, c.y + 1, c.z - 1);
-          if (fixture_below == -1) fixture_below = fixture_control.point_collide (c.x + 1, c.y + c.length - 1, c.z - 1);
-          if (fixture_below == -1) fixture_below = fixture_control.point_collide (c.x + c.width - 1, c.y + c.length - 1, c.z - 1);
+    //int character_on_fixture (Character c)
+    //  {
+    //  // reset point for character and not for brush_control.brush?
+    //  int fixture_below = fixture_control.point_collide (c.x + (c.width / 2), c.y + (c.length / 2), c.z - 1);
+    //  if (fixture_below == -1) fixture_below = fixture_control.point_collide (c.x + 1, c.y + 1, c.z - 1);
+    //  if (fixture_below == -1) fixture_below = fixture_control.point_collide (c.x + c.width - 1, c.y + 1, c.z - 1);
+    //  if (fixture_below == -1) fixture_below = fixture_control.point_collide (c.x + 1, c.y + c.length - 1, c.z - 1);
+    //  if (fixture_below == -1) fixture_below = fixture_control.point_collide (c.x + c.width - 1, c.y + c.length - 1, c.z - 1);
 
-          return fixture_below;
-          }
-
-    ////////////////////////////////////////////////////////////////////////////////
-
-    bool character_sees_character (int c1, int c2)
-      {
-      // can character 1 see character 2?
-
-      bool sees_character = true;
-      double eye_x = character_control.character[c1].x;
-      double eye_y = character_control.character[c1].y;
-      double eye_z = character_control.character[c1].z + character_control.character[c1].height;
-      double eye_dir = get_direction (character_control.character[c1].x, character_control.character[c1].y, character_control.character[c2].x, character_control.character[c2].y);
-      double distance = distance2d (eye_x, eye_y, character_control.character[c2].x, character_control.character[c2].y);
-      bool endloop = false;
-
-      while (endloop == false)
-        {
-        eye_x += 4 * Math.Cos (eye_dir);
-        eye_y += 4 * Math.Sin (eye_dir);
-        if (point_in_brush (Convert.ToInt32 (eye_x), Convert.ToInt32 (eye_y), Convert.ToInt32 (eye_z), true) >= 0) { sees_character = false; endloop = true; }
-        if (distance2d (character_control.character[c1].x, character_control.character[c1].y, eye_x, eye_y) >= distance) { sees_character = true; endloop = true; }
-        }
-
-      return sees_character;
-      }
+    //  return fixture_below;
+    //  }
 
     ////////////////////////////////////////////////////////////////////////////////
 
-        bool character_facing_object (int c, int o)
-          {
-          double radians_needed = get_direction (character_control.character[c].dx, character_control.character[c].dy, object_control.obj[o].dx, object_control.obj[o].dy);
+    //bool character_sees_character (int c1, int c2)
+    //  {
+    //  // can character 1 see character 2?
 
-          if (radians_needed + MathHelper.ToRadians (45) > MathHelper.ToRadians (360)
-              && character_control.character[c].dir + MathHelper.ToRadians (360) <= radians_needed + MathHelper.ToRadians (45)
-              && character_control.character[c].dir + MathHelper.ToRadians (360) >= radians_needed - MathHelper.ToRadians (45))
-            return true;
+    //  bool sees_character = true;
+    //  double eye_x = character_control.character[c1].x;
+    //  double eye_y = character_control.character[c1].y;
+    //  double eye_z = character_control.character[c1].z + character_control.character[c1].height;
+    //  double eye_dir = get_direction (character_control.character[c1].x, character_control.character[c1].y, character_control.character[c2].x, character_control.character[c2].y);
+    //  double distance = distance2d (eye_x, eye_y, character_control.character[c2].x, character_control.character[c2].y);
+    //  bool endloop = false;
 
-          else if (radians_needed - MathHelper.ToRadians (45) < MathHelper.ToRadians (0)
-              && character_control.character[c].dir <= radians_needed + MathHelper.ToRadians (45)
-              && character_control.character[c].dir - MathHelper.ToRadians (360) >= radians_needed - MathHelper.ToRadians (45))
-            return true;
+    //  while (endloop == false)
+    //    {
+    //    eye_x += 4 * Math.Cos (eye_dir);
+    //    eye_y += 4 * Math.Sin (eye_dir);
+    //    if (brush_control.point_in_brush (Convert.ToInt32 (eye_x), Convert.ToInt32 (eye_y), Convert.ToInt32 (eye_z), true, true) >= 0) { sees_character = false; endloop = true; }
+    //    if (distance2d (character_control.character[c1].x, character_control.character[c1].y, eye_x, eye_y) >= distance) { sees_character = true; endloop = true; }
+    //    }
 
-          else if (character_control.character[c].dir <= radians_needed + MathHelper.ToRadians (45)
-              && character_control.character[c].dir >= radians_needed - MathHelper.ToRadians (45))
-            return true;
-          
-          else return false;
-          }
+    //  return sees_character;
+    //  }
 
-    ////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////
 
-        bool character_reach_character (int c1, int c2)
-          {
-          bool reach = false;
-          double x_distance, y_distance, z_distance, h_distance;
-          double arm_x, arm_y, arm_z;
+    //bool character_reach_character (int c1, int c2)
+    //  {
+    //  bool reach = false;
+    //  double x_distance, y_distance, z_distance, h_distance;
+    //  double arm_x, arm_y, arm_z;
 
-          double reach_distance2 = reach_distance;
-          if (c1 == PLAYER) reach_distance2 = reach_distance * 1.2;
+    //  double reach_distance2 = character_control.reach_distance;
+    //  if (c1 == PLAYER) reach_distance2 = character_control.reach_distance * 1.2;
 
-          x_distance = character_control.character[c1].dx - character_control.character[c2].dx;
-          y_distance = character_control.character[c1].dy - character_control.character[c2].dy;
-          z_distance = Math.Abs (character_control.character[c1].dz - character_control.character[c2].dz);
-          h_distance = Math.Sqrt ((x_distance * x_distance) + (y_distance * y_distance));
+    //  x_distance = character_control.character[c1].dx - character_control.character[c2].dx;
+    //  y_distance = character_control.character[c1].dy - character_control.character[c2].dy;
+    //  z_distance = Math.Abs (character_control.character[c1].dz - character_control.character[c2].dz);
+    //  h_distance = Math.Sqrt ((x_distance * x_distance) + (y_distance * y_distance));
 
-          // if he's close enough to hit him
-          if (h_distance < reach_distance2 && z_distance < reach_distance2 * 2)
-            {
-            reach = true;
+    //  // if he's close enough to hit him
+    //  if (h_distance < reach_distance2 && z_distance < reach_distance2 * 2)
+    //    {
+    //    reach = true;
 
-            arm_x = character_control.character[c1].x;
-            arm_y = character_control.character[c1].y;
-            arm_z = character_control.character[c1].z;
+    //    arm_x = character_control.character[c1].x;
+    //    arm_y = character_control.character[c1].y;
+    //    arm_z = character_control.character[c1].z;
 
-            // if there are no walls between them
-            for (int d = 0; d < h_distance; d += 1)
-              {
-              arm_x += 1 * Math.Cos (Convert.ToInt32 (character_control.character[c1].dir));
-              if (point_in_brush (Convert.ToInt16 (arm_x), Convert.ToInt16 (arm_y), Convert.ToInt16 (arm_z), true) >= 0) reach = false;
+    //    // if there are no walls between them
+    //    for (int d = 0; d < h_distance; d += 1)
+    //      {
+    //      arm_x += 1 * Math.Cos (Convert.ToInt32 (character_control.character[c1].dir));
+    //      if (brush_control.point_in_brush (Convert.ToInt16 (arm_x), Convert.ToInt16 (arm_y), Convert.ToInt16 (arm_z), true, true) >= 0) reach = false;
 
-              arm_y += 1 * Math.Sin (character_control.character[c1].dir);
-              if (point_in_brush (Convert.ToInt16 (arm_x), Convert.ToInt16 (arm_y), Convert.ToInt16 (arm_z), true) >= 0) reach = false;
-              }
-            }
+    //      arm_y += 1 * Math.Sin (character_control.character[c1].dir);
+    //      if (brush_control.point_in_brush (Convert.ToInt16 (arm_x), Convert.ToInt16 (arm_y), Convert.ToInt16 (arm_z), true, true) >= 0) reach = false;
+    //      }
+    //    }
 
-          return reach;
-          }
+    //  return reach;
+    //  }
 
     ////////////////////////////////////////////////////////////////////////////////
 
@@ -8315,13 +7749,13 @@ namespace Boxland
         endloop2 = false;
         b = 0;
         f = 0;
-        while (endloop2 == false && (b < total_brushes || f < fixture_control.fixture.Count))//total_fixtures))
+        while (endloop2 == false && (b < brush_control.brush.Count || f < fixture_control.fixture.Count))//total_fixtures))
           {
-          if (b < total_brushes)
+          if (b < brush_control.brush.Count)
             {
-            if (tx >= brush[b].x && tx <= brush[b].x + brush[b].width &&
-                ty >= brush[b].y && ty <= brush[b].y + brush[b].length &&
-                tz == brush[b].z + brush[b].height) { endloop2 = true; endloop = true; }
+            if (tx >= brush_control.brush[b].x && tx <= brush_control.brush[b].x + brush_control.brush[b].width &&
+                ty >= brush_control.brush[b].y && ty <= brush_control.brush[b].y + brush_control.brush[b].length &&
+                tz == brush_control.brush[b].z + brush_control.brush[b].height) { endloop2 = true; endloop = true; }
             b += 1;
             }
           if (f < fixture_control.fixture.Count)//total_fixtures)
@@ -8368,7 +7802,7 @@ namespace Boxland
         v_origin.X = character_control.character[c].sprite_width / 2;
         v_origin.Y = 0;
 
-        spriteBatch.Draw (character_sprite[character_control.character[c].sprite, 0], r_draw, r_source, Color.Black * temp_fade, MathHelper.ToRadians (0), v_origin, SpriteEffects.FlipVertically, 0);
+        spriteBatch.Draw (character_control.character_sprite[character_control.character[c].sprite, 0], r_draw, r_source, Color.Black * temp_fade, MathHelper.ToRadians (0), v_origin, SpriteEffects.FlipVertically, 0);
         }
       else
         {
@@ -8404,12 +7838,12 @@ namespace Boxland
       v_origin.Y = character_control.character[c].sprite_height;
       rotation = 0;
 
-      spriteBatch.Draw (character_sprite[character_control.character[c].sprite, character_control.character[c].skin], v_draw, r_source, Color.White, MathHelper.ToRadians (rotation), v_origin, 1, SpriteEffects.None, 0);
+      spriteBatch.Draw (character_control.character_sprite[character_control.character[c].sprite, character_control.character[c].skin], v_draw, r_source, Color.White, MathHelper.ToRadians (rotation), v_origin, 1, SpriteEffects.None, 0);
 
       if (character_control.character[c].blinking == true)
         {
         r_source.X = 1 + (character_control.character[c].sprite_width + 1);
-        spriteBatch.Draw (character_sprite[character_control.character[c].sprite, character_control.character[c].skin], v_draw, r_source, Color.White, MathHelper.ToRadians (rotation), v_origin, 1, SpriteEffects.None, 0);
+        spriteBatch.Draw (character_control.character_sprite[character_control.character[c].sprite, character_control.character[c].skin], v_draw, r_source, Color.White, MathHelper.ToRadians (rotation), v_origin, 1, SpriteEffects.None, 0);
         }
 
       if (debug == true && game_state == GAME)
@@ -8427,10 +7861,10 @@ namespace Boxland
         {
         v_draw2.X = v_draw.X + character_control.character[c].pow1.x;
         v_draw2.Y = v_draw.Y + character_control.character[c].pow1.y;
-        r_source.X = 1 + (character_control.character[c].pow1.shape * (pow_sprite_width + 1));
-        r_source.Y = 1 + (character_control.character[c].pow1.color * (pow_sprite_height + 1));
-        r_source.Width = pow_sprite_width;
-        r_source.Height = pow_sprite_height;
+        r_source.X = 1 + (character_control.character[c].pow1.shape * (Character_Control.pow_sprite_width + 1));
+        r_source.Y = 1 + (character_control.character[c].pow1.color * (Character_Control.pow_sprite_height + 1));
+        r_source.Width = Character_Control.pow_sprite_width;
+        r_source.Height = Character_Control.pow_sprite_height;
         spriteBatch.Draw (pow_sprite, v_draw2, r_source, Color.White * character_control.character[c].pow1.opacity);
         character_control.character[c].pow1.opacity -= 0.03f;
         if (character_control.character[c].pow1.opacity < 0f) character_control.character[c].pow1.opacity = 0f;
@@ -8445,7 +7879,7 @@ namespace Boxland
         }
 
       // draw subtarget location for ai navigation (remove later)
-      if (debug == true && game_state == GAME && c != PLAYER && character_active (character_control.character[c].target))
+      if (debug == true && game_state == GAME && c != PLAYER && character_control.active (character_control.character[c].target))
         {
         //v_subtarget.X = character_control.character[character_control.character[c].target].x + scroll_x;
         v_subtarget.X = character_control.character[c].subtarget_x + screen.scroll_x;
@@ -8457,34 +7891,6 @@ namespace Boxland
         spriteBatch.Draw (target_sprite, v_draw2, Color.White * 0.5f);
         shape.line (spriteBatch, Convert.ToInt32 (v_draw.X), Convert.ToInt32 (v_draw.Y), Convert.ToInt32 (v_subtarget.X), Convert.ToInt32 (v_subtarget.Y), pixel_yellow, 1f);
         }
-      }
-
-    //////////////////////////////////////////////////////////////////////////////////
-
-    int brush_north_of_brush (int check_brush)
-      {
-      return point_in_brush (brush[check_brush].x + (tilesize / 2), Convert.ToInt32(brush[check_brush].y + (tilesize * 1.5)), brush[check_brush].z + (tilesize  / 2), true);
-      }
-
-    //////////////////////////////////////////////////////////////////////////////////
-
-    int brush_south_of_brush (int check_brush)
-      {
-      return point_in_brush (brush[check_brush].x + (tilesize / 2), brush[check_brush].y - (tilesize / 2), brush[check_brush].z + (tilesize / 2), true);
-      }
-
-    //////////////////////////////////////////////////////////////////////////////////
-
-    int brush_east_of_brush (int check_brush)
-      {
-      return point_in_brush (Convert.ToInt32 (brush[check_brush].x + (tilesize * 1.5)), brush[check_brush].y + (tilesize / 2), brush[check_brush].z + (tilesize / 2), true);
-      }
-
-    //////////////////////////////////////////////////////////////////////////////////
-
-    int brush_west_of_brush (int check_brush)
-      {
-      return point_in_brush (brush[check_brush].x - (tilesize / 2), brush[check_brush].y + (tilesize / 2), brush[check_brush].z + (tilesize / 2), true);
       }
 
     //////////////////////////////////////////////////////////////////////////////////
