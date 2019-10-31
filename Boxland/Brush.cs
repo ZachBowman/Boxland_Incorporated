@@ -1,13 +1,10 @@
 ﻿using System;
-using Microsoft.Xna.Framework.Graphics;
+//using Microsoft.Xna.Framework.Graphics;
 
 namespace Boxland
   {
   public class Brush : Thing
     {
-    //public int x, y, z;                // world location
-    //public double dx, dy, dz;          // fractional world location
-    //public int width, length, height;  // dimensions
     public int top_texture_number;       // top of cube - references an array of TextureStruct
     public int top_texture_offset_x;     // location within texture sheet of this brush's texture
     public int top_texture_offset_y;
@@ -28,6 +25,7 @@ namespace Boxland
     public bool moving_west;
     public bool moving_east;
     //public bool moving_on_conveyor;
+
     public int top_sticker;              // 0 = none
     public string top_sticker_type;      // standard, art, sign
     public int top_sticker_offset_x;
@@ -38,6 +36,7 @@ namespace Boxland
     public int front_sticker_offset_x;
     public int front_sticker_offset_y;
     public float front_sticker_alpha;
+
     public bool moving;                  // true if box being moved (used for shadow correction)
     public int gateway;                  // level number the game loads if richards passes through (for gateway doors, -1 = none)
     public double temperature;           // used for hot metal boxes
@@ -46,32 +45,32 @@ namespace Boxland
     public bool solid = true;            // collision detection.  set to false for open doors, etc.
     public Door door;
 
+    public bool top_shadow_north;  // tells whether the top of the brush has a shadow casted from a wall in that direction
+    public bool top_shadow_south;
+    public bool top_shadow_east;
+    public bool top_shadow_west;
+    public bool top_shadow_northeast;
+    public bool top_shadow_northwest;
+
+    public bool top_left_outline;    // draws a black line around the outside of a wall section
+    public bool top_right_outline;   // outlines should wrap each unique group of textures
+    public bool top_top_outline;
+    public bool top_bottom_outline;
+    public bool top_top_left_outline;
+    public bool top_top_right_outline;
+    public bool top_bottom_left_outline;
+    public bool top_bottom_right_outline;
+    public bool front_left_outline;
+    public bool front_right_outline;
+    public bool front_top_outline;
+    public bool front_bottom_outline;
+    public bool front_top_left_outline;
+    public bool front_top_right_outline;
+    public bool front_bottom_left_outline;
+    public bool front_bottom_right_outline;
+
     ////////////////////////////////////////////////////////////////////////////////
 
-    public enum Door
-      {
-      red_secure,
-      yellow_secure,
-      green_secure,
-      blue_secure,
-      purple_secure
-      }
-
-    ////////////////////////////////////////////////////////////////////////////////
-
-    public void stop_moving ()
-      {
-      moving_east = false;
-      moving_west = false;
-      moving_north = false;
-      moving_south = false;
-      ext_x_velocity = 0;
-      ext_y_velocity = 0;
-      //x = destination_x;
-      //y = destination_y;
-      //dx = destination_x;
-      //dy = destination_y;
-      }
   
     ////////////////////////////////////////////////////////////////////////////////
 

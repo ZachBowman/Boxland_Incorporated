@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?><control_bindings>
+<binding key="Up" action="up" />
+<binding key="Down" action="down" />
+<binding key="Left" action="left" />
+<binding key="Right" action="right" />
+<binding key="Space" action="jump" />
+<binding key="LeftControl" action="attack" />
+<binding key="LeftShift" action="run" />
+<binding key="Z" action="run" />
+<binding key="LeftAlt" action="grab" />
+<binding key="X" action="grab" />
+<binding key="Escape" action="menu" />
+</control_bindings>

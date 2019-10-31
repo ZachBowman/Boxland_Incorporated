@@ -22,10 +22,10 @@ namespace Boxland
     public string type;  // brush / character / object
     }
 
-  struct Light
+  class Light
     {
     public int x, y, z;
-    public int light_number;
+    //public int light_number;
     public float alpha;
     public float scale;
     public int type;          // 0 = normal, 1 = pulsing, 2 = flickering

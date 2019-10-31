@@ -9,9 +9,13 @@ namespace Boxland
   {
   public class Map
     {
-    public int width;
-    public int length;
-    public int height;
+    public int char_width;
+    public int tile_width;
+    public int tile_length;
+    public int tile_height;
+    public int pixel_width;
+    public int pixel_length;
+    public int pixel_height;
     public float ambient_dark;
     public Color ambient_light;
     public Texture2D background;

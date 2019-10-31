@@ -1,3 +1,16 @@
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Fonts\Kooten.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\door_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\fire_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\kick_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\pickup_coin_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\pickup_glove_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\pickup_key_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\punch_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\retard_death_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_buttsmash_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_death_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_hurt_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_jump_test.xnb
 C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Boxland.exe
 C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Boxland.pdb
 C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\MonoGame.Framework.dll
@@ -23,16 +36,464 @@ C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Wi
 C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\obj\x86\Debug\Boxland.exe
 C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\obj\x86\Debug\Boxland.pdb
 C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\obj\x86\Debug\Boxland.csprojResolveAssemblyReference.cache
-C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Fonts\Kooten.xnb
-C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\door_test.xnb
-C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\fire_test.xnb
-C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\kick_test.xnb
-C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\pickup_coin_test.xnb
-C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\pickup_glove_test.xnb
-C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\pickup_key_test.xnb
-C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\punch_test.xnb
-C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\retard_death_test.xnb
-C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_buttsmash_test.xnb
-C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_death_test.xnb
-C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_hurt_test.xnb
-C:\Nightmare Games\Games\In Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_jump_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\obj\x86\Debug\Boxland.exe
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\obj\x86\Debug\Boxland.pdb
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Fonts\Kooten.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\door_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\fire_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\kick_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\pickup_coin_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\pickup_glove_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\pickup_key_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\punch_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\retard_death_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_buttsmash_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_death_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_hurt_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_jump_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Boxland.exe
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Boxland.pdb
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\MonoGame.Framework.dll
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.MediaFoundation.dll
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.dll
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.XAudio2.dll
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.Direct3D11.dll
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.DXGI.dll
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.Direct2D1.dll
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\Lidgren.Network.dll
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.XInput.dll
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.RawInput.dll
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.Direct3D9.dll
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.MediaFoundation.xml
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.xml
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.XAudio2.xml
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.Direct3D11.xml
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.DXGI.xml
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.Direct2D1.xml
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.XInput.xml
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.RawInput.xml
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.Direct3D9.xml
+C:\Nightmare_Games\Games\In_Production\Boxland\Boxland (monogame)\Boxland\obj\x86\Debug\Boxland.csprojResolveAssemblyReference.cache
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\obj\x86\Debug\Boxland.exe
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\obj\x86\Debug\Boxland.pdb
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Fonts\Kooten.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\door_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\fire_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\kick_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\pickup_coin_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\pickup_glove_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\pickup_key_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\punch_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\retard_death_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_buttsmash_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_death_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_hurt_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_jump_test.xnb
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Boxland.exe
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Boxland.pdb
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\MonoGame.Framework.dll
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.MediaFoundation.dll
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.dll
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.XAudio2.dll
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.Direct3D11.dll
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.DXGI.dll
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.Direct2D1.dll
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Lidgren.Network.dll
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.XInput.dll
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.RawInput.dll
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.Direct3D9.dll
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.MediaFoundation.xml
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.xml
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.XAudio2.xml
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.Direct3D11.xml
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.DXGI.xml
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.Direct2D1.xml
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.XInput.xml
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.RawInput.xml
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.Direct3D9.xml
+C:\Nightmare_Games\Games\In_Production\Boxland Incorporated\Boxland (monogame)\Boxland\obj\x86\Debug\Boxland.csprojResolveAssemblyReference.cache
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\obj\x86\Debug\Boxland.exe
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\obj\x86\Debug\Boxland.pdb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Fonts\Kooten.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Boxland.exe
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Boxland.pdb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\MonoGame.Framework.dll
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.MediaFoundation.dll
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.dll
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.XAudio2.dll
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.Direct3D11.dll
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.DXGI.dll
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.Direct2D1.dll
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.XInput.dll
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.MediaFoundation.xml
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.xml
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.XAudio2.xml
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.Direct3D11.xml
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.DXGI.xml
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.Direct2D1.xml
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.XInput.xml
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\obj\x86\Debug\Boxland.csprojResolveAssemblyReference.cache
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Boxland.exe.config
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Characters\retard_tall_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Characters\richards_dad_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Characters\richard_green.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Characters\richard_red.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Characters\richard_yellow.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Characters\secretary_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\MonoGame.Framework.xml
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.RawInput.dll
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.Direct3D9.dll
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.RawInput.xml
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\SharpDX.Direct3D9.xml
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\solid_black.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\pixel_black.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\pixel_yellow.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\test_background1a.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\test_background2a.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\test_background3.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\test_background4a.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\test_background5.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\brush_outline_bottom.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\brush_outline_bottom_left.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\brush_outline_bottom_right.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\brush_outline_left.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\brush_outline_right.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\brush_outline_top.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\brush_outline_top_left.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\brush_outline_top_right.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\flame_orange.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\flame_red.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\flame_white.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\flame_yellow.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\light_blue.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\light_blue_pale.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\light_dark.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\light_fushia.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\light_green.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\light_orange.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\light_purple.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\light_red.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\light_white.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\light_yellow.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\light_yellow_pale.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\pain.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\shadow_left3.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\shadow_lower3.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\shadow_lower_left3.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\shadow_lower_right3.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\shadow_right3.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\smoke.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\sparkle_white.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\snowflake.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\cold_energy.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\dollars.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\solid_red.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\solid_white.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\pixel_green.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\wires_southeast_powered_test2.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\shadow_character_generic.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\a.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\b.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\c.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\comma.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\d.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\e.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\exclamation.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\f.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\g.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\h.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\i.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\j.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\k.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\l.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\m.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\n.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\o.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\p.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\period.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\q.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\question.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\r.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\s.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\t.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\u.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\v.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\w.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\x.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\y.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\Font\z.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\asphalt_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\box_metal_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\box_wood.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\carpet_grey_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\carpet_purple_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_house_pink_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_blue_horizontal_front_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_blue_horizontal_front_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_blue_horizontal_top_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_blue_horizontal_top_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_blue_vertical_front_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_blue_vertical_front_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_blue_vertical_top_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_blue_vertical_top_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_green_horizontal_front_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_green_horizontal_front_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_green_horizontal_top_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_green_horizontal_top_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_green_vertical_front_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_green_vertical_front_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_green_vertical_top_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_green_vertical_top_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_purple_horizontal_front_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_purple_horizontal_front_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_purple_horizontal_top_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_purple_horizontal_top_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_purple_vertical_front_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_purple_vertical_front_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_purple_vertical_top_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_purple_vertical_top_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_red_horizontal_front_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_red_horizontal_front_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_red_horizontal_top_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\metal_black_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\metal_blue_top_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\metal_mint_front_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\metal_mint_top_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sidewalk_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\tile_black.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\tile_brown.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\box_ice4.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\brick_blue_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\brick_grey_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\brick_red.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\brick_white_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\brick_yellow_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_red_vertical_front_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_red_vertical_front_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_red_vertical_top_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_red_vertical_top_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_yellow_horizontal_front_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_yellow_horizontal_front_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_yellow_horizontal_top_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_yellow_horizontal_top_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_yellow_vertical_front_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_yellow_vertical_front_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_yellow_vertical_top_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_yellow_vertical_top_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_test_red_horizontal_top_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\drywall_mint_front_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\drywall_mint_top_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\drywall_purple_front_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\drywall_purple_top_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\drywall_tan_front_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\drywall_tan_top_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\drywall_yellow_front_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\drywall_yellow_top_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\floor_grate_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\floor_test_logo.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\floor_metal_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\loading_zone_green_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\loading_zone_red_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\loading_zone_yellow_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\gateway_test_horizontal_front.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\gateway_test_horizontal_top.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\gateway_test_vertical_front_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\gateway_test_vertical_front_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\gateway_test_vertical_top.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\grass.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\metal_blue_front_test2.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\switch_test_blue.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\switch_test_blue_down.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\switch_test_green.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\switch_test_green_down.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\switch_test_purple.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\switch_test_purple_down.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\switch_test_red.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\switch_test_red_down.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\switch_test_yellow.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\switch_test_yellow_down.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\texture_highlight_red.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\tile_blue_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\tile_mint.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\incinerator_test_down.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\incinerator_test_down_front.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\incinerator_test_left.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\incinerator_test_right.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\incinerator_test_up.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\big_machine_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\aluminum_siding_mint_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\aluminum_siding_orange_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\aluminum_siding_pink_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\aluminum_siding_polkadot1_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\aluminum_siding_white.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\box_banded_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\door_house_white_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\railing_horizontal_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\rubber_black_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sidewalk_curb_south_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sidewalk_grasscurb_south_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_factory0_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_factory10_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_factory1_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_factory2_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_factory3_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_factory4_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_factory5_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_factory6_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_factory7_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_factory8_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_factory9_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_factory_floor0a_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_factory_floor1_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office0_test2.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office10_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office11_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office12_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office13_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office14_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office15_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office16_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office17_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office18_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office19_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office1_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office20_2_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office20_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office21_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office22_double_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office22_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office23_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office24_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office25_double_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office25_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office26_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office27_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office28_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office29_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office2_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office30_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office31_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office32_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office3_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office4_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office5_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office6_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office7_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office8_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office9_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\sticker_office_floor0_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\bigkey_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\coin0_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\coin1_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\coin2_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\energy0_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\energy1_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\food_hamburger_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\food_hotdog_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\food_pizza_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\health0_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\health1_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\health2_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\health3_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\key0_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\key1_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\key2_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\key3_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\key4_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\keycard3_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\rock_brown_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\rock_grey_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\rock_red_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\rock_white_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\scrap_metal_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\shirt_electric.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\shirt_fire.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\shirt_fire0_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\shirt_ice0_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\shirt_ice1_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\shirt_magnet0_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\shirt_magnet1_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\shirt_power0_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\shirt_power1_ink.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\battery_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\bench1_west_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\chair1_south_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\chair2_south_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\chair3_east_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\chair3_north_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\conveyor_east_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\conveyor_north_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\conveyor_south_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\conveyor_west_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\couch_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\crusher_red_test_south.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\desk1_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\door_mint_horizontal_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\door_mint_vertical_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\door_white_horizontal_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\electric_gun_test_south.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\filing_cabinet_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\flamethrower_test_south.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\generator_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\laser_fixture_horizontal_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\laser_horizontal_green_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\laser_horizontal_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\magnet_test_south.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\phone1_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\pipes_test_horizontal.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\pipes_test_ne.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\pipes_test_nw.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\pipes_test_se.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\pipes_test_sw.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\pipes_test_vertical.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\plant1_mint_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\plant1_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\railing_horizontal_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\railing_vertical_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\table1_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\table2_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\table3_mint_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\table3_white_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\turbine_test_south.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\tv1_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\tv2_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\vending_red_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\vending_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\vending_yellow_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\wires_horizontal_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\wires_northeast_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\wires_northwest_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\wires_southeast_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\wires_southwest_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\wires_vertical_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Characters\richard_white.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Characters\richard_fushia.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Characters\richard_teal.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\boxland_logo5a.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Menu\menu_exit.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\door_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\fire_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\kick_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\pickup_coin_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\pickup_glove_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\pickup_key_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\punch_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\retard_death_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_buttsmash_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_death_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_hurt_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Sounds\richard_jump_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\exit_test_red_horizontal_front_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\exit_test_red_horizontal_front_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\exit_test_red_horizontal_top_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\exit_test_red_horizontal_top_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\exit_test_red_vertical_front_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\exit_test_red_vertical_front_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\exit_test_red_vertical_top_closed.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Textures\exit_test_red_vertical_top_open.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\keydoor_1_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Objects\key0_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Fixtures\keydoor_10_test.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\arrow.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\POW.xnb
+C:\Nightmare Games\Games\In Production\Boxland Incorporated\Boxland (monogame)\Boxland\bin\Windows\Debug\Content\Images\Effects\target.xnb

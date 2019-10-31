@@ -1,133 +1,56 @@
-﻿using System;
+﻿// Boxland Incorporated
+// Brush Control Class
+// 2011-2018 Nightmare Games
+// Zach Bowman
+
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Boxland
   {
-  public class Brush_Control
+  // brushes are the cubes that compose the game world
+  public class Brush_Control : Game
     {
-    public List<Brush> brush = new List<Brush> ();
-    public const int max_brushes = 625;
-
-    public const int max_textures = 96;
-    public Texture2D[] texture = new Texture2D[max_textures];
-
-    public const string Texture_Path = @"c:\boxland_images\";
-
-    int tilesize;
-
-    // TEXTURES
-    public enum T
+    public class Tile
       {
-      //ZERO,
-      INVISIBLE_WALL,
-      ASPHALT_TEST,
-      BOX_ICE_TEST,
-      BOX_METAL_TEST,
-      BOX_WOOD_TEST,
-      BRICK_GREY_TEST,
-      BRICK_RED_TEST,
-      BRICK_WHITE_TEST,
-      CARPET_GREY_TEST,
-      CARPET_PURPLE_TEST,
-      DOOR_RED_V_TOP_CLOSED_TEST,
-      DOOR_RED_V_TOP_OPEN_TEST,
-      DOOR_RED_V_FRONT_CLOSED_TEST,
-      DOOR_RED_V_FRONT_OPEN_TEST,
-      DOOR_RED_H_TOP_CLOSED_TEST,
-      DOOR_RED_H_TOP_OPEN_TEST,
-      DOOR_RED_H_FRONT_CLOSED_TEST,
-      DOOR_RED_H_FRONT_OPEN_TEST,
-      DOOR_GREEN_V_TOP_CLOSED_TEST,
-      DOOR_GREEN_V_TOP_OPEN_TEST,
-      DOOR_GREEN_V_FRONT_CLOSED_TEST,
-      DOOR_GREEN_V_FRONT_OPEN_TEST,
-      DOOR_GREEN_H_TOP_CLOSED_TEST,
-      DOOR_GREEN_H_TOP_OPEN_TEST,
-      DOOR_GREEN_H_FRONT_CLOSED_TEST,
-      DOOR_GREEN_H_FRONT_OPEN_TEST,
-      DOOR_YELLOW_V_TOP_CLOSED_TEST,
-      DOOR_YELLOW_V_TOP_OPEN_TEST,
-      DOOR_YELLOW_V_FRONT_CLOSED_TEST,
-      DOOR_YELLOW_V_FRONT_OPEN_TEST,
-      DOOR_YELLOW_H_TOP_CLOSED_TEST,
-      DOOR_YELLOW_H_TOP_OPEN_TEST,
-      DOOR_YELLOW_H_FRONT_CLOSED_TEST,
-      DOOR_YELLOW_H_FRONT_OPEN_TEST,
-      DOOR_BLUE_V_TOP_CLOSED_TEST,
-      DOOR_BLUE_V_TOP_OPEN_TEST,
-      DOOR_BLUE_V_FRONT_CLOSED_TEST,
-      DOOR_BLUE_V_FRONT_OPEN_TEST,
-      DOOR_BLUE_H_TOP_CLOSED_TEST,
-      DOOR_BLUE_H_TOP_OPEN_TEST,
-      DOOR_BLUE_H_FRONT_CLOSED_TEST,
-      DOOR_BLUE_H_FRONT_OPEN_TEST,
-      DRYWALL_MINT_FRONT_TEST,
-      DRYWALL_MINT_TOP_TEST,
-      DRYWALL_PURPLE_FRONT_TEST,
-      DRYWALL_PURPLE_TOP_TEST,
-      DRYWALL_TAN_TOP_TEST,
-      DRYWALL_TAN_FRONT_TEST,
-      DRYWALL_YELLOW_FRONT_TEST,
-      DRYWALL_YELLOW_TOP_TEST,
-      EXIT_RED_V_TOP_CLOSED_TEST,
-      EXIT_RED_V_TOP_OPEN_TEST,
-      EXIT_RED_V_FRONT_CLOSED_TEST,
-      EXIT_RED_V_FRONT_OPEN_TEST,
-      EXIT_RED_H_TOP_CLOSED_TEST,
-      EXIT_RED_H_TOP_OPEN_TEST,
-      EXIT_RED_H_FRONT_CLOSED_TEST,
-      EXIT_RED_H_FRONT_OPEN_TEST,
-      FLOOR_GRATE_TEST,
-      FLOOR_METAL_TEST,
-      FLOOR_ZONE_YELLOW_TEST,
-      FLOOR_ZONE_RED_TEST,
-      FLOOR_ZONE_GREEN_TEST,
-      GATEWAY_V_TOP_TEST,
-      GATEWAY_V_FRONT_CLOSED_TEST,
-      GATEWAY_V_FRONT_OPEN_TEST,
-      GATEWAY_H_TOP_TEST,
-      GATEWAY_H_FRONT_TEST,
-      GRASS,
-      METAL_BLACK_TEST,
-      METAL_BLUE_FRONT_TEST,
-      METAL_BLUE_TOP_TEST,
-      METAL_MINT_FRONT_TEST,
-      METAL_MINT_TOP_TEST,
-      SIDEWALK_TEST,
-      SWITCH_GREEN_TEST,
-      SWITCH_GREEN_DOWN_TEST,
-      SWITCH_BLUE_TEST,
-      SWITCH_BLUE_DOWN_TEST,
-      SWITCH_RED_TEST,
-      SWITCH_RED_DOWN_TEST,
-      SWITCH_YELLOW_TEST,
-      SWITCH_YELLOW_DOWN_TEST,
-      TEXTURE_HIGHLIGHT_RED,
-      TILE_BLACK_TEST,
-      TILE_BLUE_TEST,
-      TILE_BROWN_TEST,
-      INCINERATOR_TEST_UP,
-      INCINERATOR_TEST_DOWN,
-      INCINERATOR_TEST_DOWN_FRONT,
-      INCINERATOR_TEST_LEFT,
-      INCINERATOR_TEST_RIGHT,
-      /////////////////////////////////////
-      SINGLE_PIECE,                      // everything below here is a single piece that does not tile
-      /////////////////////////////////////
-      BOX_BANDED_TEST,
-      //WARNING_SIGN_TEST1,
-      //WARNING_SIGN_TEST2,
-      //WARNING_SIGN_TEST3,
-      //WARNING_SIGN_TEST4,
-      BIG_MACHINE_TEST,
-      FLOOR_LOGO_TEST
+      public Texture2D texture;
+      public string name;
+      public string map_symbol;
+      public string set;
+
+      //void ConvertToPremultipliedAlpha (Color? colorKey)
+      //  {
+      //  Color[] data = new Color[texture.Width * texture.Height];
+      //  texture.GetData<Color> (data, 0, data.Length);
+
+      //  if (colorKey.HasValue)
+      //    {
+      //    for (int i = 0; i < data.Length; i += 1)
+      //      {
+      //      if (data[i] == colorKey) data[i] = Color.Transparent;
+      //      else data[i] = new Color (new Vector4 (data[i].ToVector3 () * (data[i].A / 255f), (data[i].A / 255f)));
+      //      }
+      //    }
+      //  else
+      //    {
+      //    for (int i = 0; i < data.Length; i += 1)
+      //      data[i] = new Color (new Vector4 (data[i].ToVector3 () * (data[i].A / 255f), (data[i].A / 255f)));
+      //    }
+      //  texture.SetData<Color> (data, 0, data.Length);
+      //  }
       }
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+    public List <Brush> brush = new List<Brush> ();
+    public const int max_brushes = 625;
+    public Tile[] tile = new Tile[99];
+    int tilesize;
+    List<int> tile_lookup = new List<int> ();
     
     public Brush_Control (int new_tilesize)
       {
@@ -136,171 +59,18 @@ namespace Boxland
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    public void load_textures (GraphicsDevice GraphicsDevice)
+    public int find_tile_from_symbol (string symbol)
       {
-      texture[(int) T.ASPHALT_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\asphalt_test.png", FileMode.Open, FileAccess.Read));
-
-      texture[(int) Brush_Control.T.BOX_ICE_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "textures\\box_ice4.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) Brush_Control.T.BOX_ICE_TEST], new Color (255, 0, 255, 255));
-      
-      texture[(int) T.BOX_METAL_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\box_metal_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.BOX_WOOD_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\box_wood_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.BRICK_GREY_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\brick_grey_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.BRICK_RED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\brick_red.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.BRICK_WHITE_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\brick_white_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.CARPET_GREY_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\carpet_grey_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.CARPET_PURPLE_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\carpet_purple_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_RED_V_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_red_vertical_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_RED_V_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_red_vertical_top_open.png", FileMode.Open, FileAccess.Read));
-      
-      texture[(int) T.DOOR_RED_V_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_red_vertical_front_closed.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.DOOR_RED_V_FRONT_CLOSED_TEST], new Color (255, 0, 255, 255));
-      
-      texture[(int) T.DOOR_RED_V_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_red_vertical_front_open.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.DOOR_RED_V_FRONT_OPEN_TEST], new Color (255, 0, 255, 255));
-      
-      texture[(int) T.DOOR_RED_H_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_red_horizontal_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_RED_H_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_red_horizontal_top_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_RED_H_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_red_horizontal_front_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_RED_H_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_red_horizontal_front_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_YELLOW_V_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_yellow_vertical_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_YELLOW_V_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_yellow_vertical_top_open.png", FileMode.Open, FileAccess.Read));
-      
-      texture[(int) T.DOOR_YELLOW_V_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_yellow_vertical_front_closed.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.DOOR_YELLOW_V_FRONT_CLOSED_TEST], new Color (255, 0, 255, 255));
-      
-      texture[(int) T.DOOR_YELLOW_V_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_yellow_vertical_front_open.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.DOOR_YELLOW_V_FRONT_OPEN_TEST], new Color (255, 0, 255, 255));
-      
-      texture[(int) T.DOOR_YELLOW_H_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_yellow_horizontal_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_YELLOW_H_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_yellow_horizontal_top_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_YELLOW_H_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_yellow_horizontal_front_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_YELLOW_H_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_yellow_horizontal_front_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_GREEN_V_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_green_vertical_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_GREEN_V_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_green_vertical_top_open.png", FileMode.Open, FileAccess.Read));
-      
-      texture[(int) T.DOOR_GREEN_V_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_green_vertical_front_closed.png", FileMode.Open, FileAccess.Read));
-      ConvertToPremultipliedAlpha (texture[(int) T.DOOR_GREEN_V_FRONT_CLOSED_TEST], new Color (255, 0, 255, 255));
-      
-      texture[(int) T.DOOR_GREEN_V_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_green_vertical_front_open.png", FileMode.Open, FileAccess.Read));
-     
-      texture[(int) T.DOOR_GREEN_H_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_green_horizontal_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_GREEN_H_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_green_horizontal_top_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_GREEN_H_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_green_horizontal_front_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_GREEN_H_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_green_horizontal_front_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_BLUE_V_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_blue_vertical_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_BLUE_V_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_blue_vertical_top_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_BLUE_V_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_blue_vertical_front_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_BLUE_V_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_blue_vertical_front_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_BLUE_H_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_blue_horizontal_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_BLUE_H_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_blue_horizontal_top_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_BLUE_H_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_blue_horizontal_front_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DOOR_BLUE_H_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\door_test_blue_horizontal_front_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DRYWALL_MINT_TOP_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\drywall_mint_top_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DRYWALL_MINT_FRONT_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\drywall_mint_front_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DRYWALL_PURPLE_TOP_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\drywall_purple_top_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DRYWALL_PURPLE_FRONT_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\drywall_purple_front_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DRYWALL_TAN_TOP_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\drywall_tan_top_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DRYWALL_TAN_FRONT_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\drywall_tan_front_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DRYWALL_YELLOW_FRONT_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\drywall_yellow_front_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.DRYWALL_YELLOW_TOP_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\drywall_yellow_top_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.EXIT_RED_V_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\exit_test_red_vertical_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.EXIT_RED_V_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\exit_test_red_vertical_top_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.EXIT_RED_V_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\exit_test_red_vertical_front_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.EXIT_RED_V_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\exit_test_red_vertical_front_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.EXIT_RED_H_TOP_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\exit_test_red_horizontal_top_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.EXIT_RED_H_TOP_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\exit_test_red_horizontal_top_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.EXIT_RED_H_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\exit_test_red_horizontal_front_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.EXIT_RED_H_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\exit_test_red_horizontal_front_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.FLOOR_GRATE_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\floor_grate_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.FLOOR_LOGO_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\floor_test_logo.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.FLOOR_METAL_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\floor_metal_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.FLOOR_ZONE_GREEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\loading_zone_green_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.FLOOR_ZONE_RED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\loading_zone_red_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.FLOOR_ZONE_YELLOW_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\loading_zone_yellow_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.GATEWAY_V_TOP_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\gateway_test_vertical_top.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.GATEWAY_V_FRONT_CLOSED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\gateway_test_vertical_front_closed.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.GATEWAY_V_FRONT_OPEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\gateway_test_vertical_front_open.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.GATEWAY_H_TOP_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\gateway_test_horizontal_top.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.GATEWAY_H_FRONT_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\gateway_test_horizontal_front.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.GRASS] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\grass.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.METAL_BLUE_FRONT_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\metal_blue_front_test2.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.METAL_BLUE_TOP_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\metal_blue_top_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.METAL_MINT_FRONT_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\metal_mint_front_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.METAL_MINT_TOP_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\metal_mint_top_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.SIDEWALK_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\sidewalk_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.SWITCH_GREEN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\switch_test_green.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.SWITCH_GREEN_DOWN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\switch_test_green_down.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.SWITCH_RED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\switch_test_red.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.SWITCH_RED_DOWN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\switch_test_red_down.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.SWITCH_BLUE_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\switch_test_blue.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.SWITCH_BLUE_DOWN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\switch_test_blue_down.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.SWITCH_YELLOW_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\switch_test_yellow.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.SWITCH_YELLOW_DOWN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\switch_test_yellow_down.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.TEXTURE_HIGHLIGHT_RED] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\texture_highlight_red.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.TILE_BLACK_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\tile_black_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.TILE_BLUE_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\tile_blue_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.TILE_BROWN_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\tile_brown_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.METAL_BLACK_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\metal_black_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.INCINERATOR_TEST_UP] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\incinerator_test_up.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.INCINERATOR_TEST_DOWN] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\incinerator_test_down.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.INCINERATOR_TEST_DOWN_FRONT] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\incinerator_test_down_front.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.INCINERATOR_TEST_LEFT] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\incinerator_test_left.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.INCINERATOR_TEST_RIGHT] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\incinerator_test_right.png", FileMode.Open, FileAccess.Read));
-      //texture[(int) T.WARNING_SIGN_TEST1] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\warning_sign1.png", FileMode.Open, FileAccess.Read));
-      //texture[(int) T.WARNING_SIGN_TEST2] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\warning_sign2.png", FileMode.Open, FileAccess.Read));
-      //texture[(int) T.WARNING_SIGN_TEST3] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\warning_sign3.png", FileMode.Open, FileAccess.Read));
-      //texture[(int) T.WARNING_SIGN_TEST4] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\warning_sign4.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.BIG_MACHINE_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\big_machine_test.png", FileMode.Open, FileAccess.Read));
-      texture[(int) T.BOX_BANDED_TEST] = Texture2D.FromStream (GraphicsDevice, new FileStream (Texture_Path + "textures\\box_banded_test.png", FileMode.Open, FileAccess.Read));
-
-      ConvertToPremultipliedAlpha (texture[(int) T.DOOR_GREEN_V_FRONT_OPEN_TEST], new Color (255, 0, 255, 255));
-      ConvertToPremultipliedAlpha (texture[(int) T.DOOR_BLUE_V_FRONT_CLOSED_TEST], new Color (255, 0, 255, 255));
-      ConvertToPremultipliedAlpha (texture[(int) T.DOOR_BLUE_V_FRONT_OPEN_TEST], new Color (255, 0, 255, 255));
-      ConvertToPremultipliedAlpha (texture[(int) T.EXIT_RED_V_TOP_CLOSED_TEST], new Color (255, 0, 255, 255));
-      ConvertToPremultipliedAlpha (texture[(int) T.EXIT_RED_V_TOP_OPEN_TEST], new Color (255, 0, 255, 255));
-      ConvertToPremultipliedAlpha (texture[(int) T.EXIT_RED_V_FRONT_CLOSED_TEST], new Color (255, 0, 255, 255));
-      ConvertToPremultipliedAlpha (texture[(int) T.EXIT_RED_V_FRONT_OPEN_TEST], new Color (255, 0, 255, 255));
-      ConvertToPremultipliedAlpha (texture[(int) T.FLOOR_GRATE_TEST], new Color (255, 0, 255, 255));
-      ConvertToPremultipliedAlpha (texture[(int) T.GATEWAY_V_FRONT_CLOSED_TEST], new Color (255, 0, 255, 255));
-      ConvertToPremultipliedAlpha (texture[(int) T.GATEWAY_V_FRONT_OPEN_TEST], new Color (255, 0, 255, 255));
-      ConvertToPremultipliedAlpha (texture[(int) T.SWITCH_YELLOW_TEST], new Color (255, 0, 255, 255));
-      ConvertToPremultipliedAlpha (texture[(int) T.SWITCH_YELLOW_DOWN_TEST], new Color (255, 0, 255, 255));
-      ConvertToPremultipliedAlpha (texture[(int) T.BOX_BANDED_TEST], new Color (255, 0, 255, 255));
+      for (int t = 0; t < tile.Length; t += 1)
+        {
+        if (tile[t].map_symbol == symbol) return t;
+        }
+      return -1;
       }
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    void ConvertToPremultipliedAlpha (Texture2D texture, Color? colorKey)
-      {
-      Color[] data = new Color[texture.Width * texture.Height];
-      texture.GetData<Color> (data, 0, data.Length);
-      if (colorKey.HasValue)
-        {
-        for (int i = 0; i < data.Length; i += 1)
-          {
-          if (data[i] == colorKey)
-            {
-            data[i] = Color.Transparent;
-            }
-          else
-            {
-            data[i] = new Color (new Vector4 (data[i].ToVector3 () * (data[i].A / 255f), (data[i].A / 255f)));
-            }
-          }
-        }
-      else
-        {
-        for (int i = 0; i < data.Length; i += 1)
-          {
-          data[i] = new Color (new Vector4 (data[i].ToVector3 () * (data[i].A / 255f), (data[i].A / 255f)));
-          }
-        }
-      texture.SetData<Color> (data, 0, data.Length);
-      }
-
-    ////////////////////////////////////////////////////////////////////////////////
-
+    // create new brush
     public void add (int top_texture_number, int front_texture_number, int x, int y, int z, int width, int length, int height)
       {
       int q;
@@ -308,19 +78,7 @@ namespace Boxland
       int top_offset_y = 0;
       int front_offset_x;
       int front_offset_y;
-      //bool tall_brush = false;
       Brush b = new Brush ();
-
-      // check for identical brush underneath this one (combine into one tall block)
-      if (z - (height / 2) >= 0)
-        {
-        //        b_clip = point_in_brush (x + (width / 2), y + (length / 2), z - (height / 2), false);
-        //        if (b_clip > -1 && brush[b_clip].front_texture_number == front_texture_number)
-        //          {
-        //          brush[b_clip].height += height;
-        //          tall_brush = true;
-        //          }
-        }
 
       // defaults        
       b.x = x;
@@ -352,18 +110,18 @@ namespace Boxland
       b.top_texture_number = top_texture_number;
 
       // top texture offsets in texture sheet
-      if (top_texture_number != (int) T.INVISIBLE_WALL)
+      if (top_texture_number != (int) Texture_Type.invisible)
         {
         for (q = 0; q < x; q += tilesize)
           {
           top_offset_x += tilesize;
-          if (top_offset_x + tilesize > texture[top_texture_number].Width) top_offset_x = 0;
+          if (top_offset_x + tilesize > tile[top_texture_number].texture.Width) top_offset_x = 0;
           }
-        top_offset_y = texture[top_texture_number].Height - tilesize;
+        top_offset_y = tile[top_texture_number].texture.Height - tilesize;
         for (q = 0; q < y; q += tilesize)
           {
           top_offset_y -= tilesize;
-          if (top_offset_y < 0) top_offset_y = texture[top_texture_number].Height - tilesize;
+          if (top_offset_y < 0) top_offset_y = tile[top_texture_number].texture.Height - tilesize;
           }
         }
       b.top_texture_offset_x = top_offset_x;
@@ -375,70 +133,70 @@ namespace Boxland
       // front texture offsets in texture sheet
       front_offset_x = top_offset_x;
       front_offset_y = top_offset_y + length;
-      if (front_texture_number != (int) T.INVISIBLE_WALL)
+      if (front_texture_number != (int) Texture_Type.invisible)
         {
         for (q = 0; q < x; q += tilesize)
           {
           front_offset_x += tilesize;
-          if (front_offset_x + tilesize > texture[front_texture_number].Width) front_offset_x = 0;
+          if (front_offset_x + tilesize > tile[front_texture_number].texture.Width) front_offset_x = 0;
           }
-        front_offset_y = texture[front_texture_number].Height - tilesize;
+        front_offset_y = tile[front_texture_number].texture.Height - tilesize;
         for (q = 0; q < z; q += tilesize)
           {
           front_offset_y -= tilesize;
-          if (front_offset_y < 0) front_offset_y = texture[front_texture_number].Height - tilesize;
+          if (front_offset_y < 0) front_offset_y = tile[front_texture_number].texture.Height - tilesize;
           }
         front_offset_y += tilesize;
-        if (front_offset_y + tilesize > texture[front_texture_number].Height) front_offset_y = 0;
+        if (front_offset_y + tilesize > tile[front_texture_number].texture.Height) front_offset_y = 0;
         }
 
       b.front_texture_offset_x = front_offset_x;
       b.front_texture_offset_y = front_offset_y;
 
       // brush traits based on texture
-      if (top_texture_number == (int) T.INVISIBLE_WALL) b.transparent = true;
-      else if (top_texture_number == (int) T.BOX_BANDED_TEST) b.moveable = true;
-      else if (top_texture_number == (int) T.BOX_ICE_TEST)
+      if (top_texture_number == (int) Texture_Type.invisible) b.transparent = true;
+      else if (top_texture_number == (int) Texture_Type.box_banded_test) b.moveable = true;
+      else if (top_texture_number == (int) Texture_Type.box_ice_test)
         {
         b.moveable = true;
         b.transparent = true;
         }
-      else if (top_texture_number == (int) T.BOX_METAL_TEST) b.moveable = true;
-      else if (top_texture_number == (int) T.BOX_WOOD_TEST) b.moveable = true;
-      else if (top_texture_number == (int) T.DOOR_RED_V_TOP_CLOSED_TEST)
-        {
-        b.transparent = true;
-        b.electric = true;
-        //b.door = Brush.Door.red;
-        }
-      else if (top_texture_number == (int) T.DOOR_YELLOW_V_TOP_CLOSED_TEST)
+      else if (top_texture_number == (int) Texture_Type.box_metal_test) b.moveable = true;
+      else if (top_texture_number == (int) Texture_Type.box_wood) b.moveable = true;
+      else if (top_texture_number == (int) Texture_Type.door_red_v_top_closed_test)
         {
         b.transparent = true;
         b.electric = true;
         }
-      else if (top_texture_number == (int) T.DOOR_GREEN_V_TOP_CLOSED_TEST)
+      else if (top_texture_number == (int) Texture_Type.door_yellow_v_top_closed_test)
         {
         b.transparent = true;
         b.electric = true;
         }
-      else if (top_texture_number == (int) T.DOOR_BLUE_V_TOP_CLOSED_TEST)
+      else if (top_texture_number == (int) Texture_Type.door_green_v_top_closed_test)
         {
         b.transparent = true;
         b.electric = true;
         }
-      else if (top_texture_number == (int) T.DOOR_RED_H_TOP_CLOSED_TEST) b.electric = true;
-      else if (top_texture_number == (int) T.DOOR_YELLOW_H_TOP_CLOSED_TEST) b.electric = true;
-      else if (top_texture_number == (int) T.DOOR_GREEN_H_TOP_CLOSED_TEST) b.electric = true;
-      else if (top_texture_number == (int) T.DOOR_BLUE_H_TOP_CLOSED_TEST) b.electric = true;
-      else if (top_texture_number == (int) T.FLOOR_GRATE_TEST) b.transparent = true;
-      else if (top_texture_number == (int) T.GATEWAY_V_TOP_TEST) b.transparent = true;
-      else if (top_texture_number == (int) T.GATEWAY_H_TOP_TEST) b.transparent = true;
+      else if (top_texture_number == (int) Texture_Type.door_blue_v_top_closed_test)
+        {
+        b.transparent = true;
+        b.electric = true;
+        }
+      else if (top_texture_number == (int) Texture_Type.door_red_h_top_closed_test) b.electric = true;
+      else if (top_texture_number == (int) Texture_Type.door_yellow_h_top_closed_test) b.electric = true;
+      else if (top_texture_number == (int) Texture_Type.door_green_h_top_closed_test) b.electric = true;
+      else if (top_texture_number == (int) Texture_Type.door_blue_h_top_closed_test) b.electric = true;
+      else if (top_texture_number == (int) Texture_Type.floor_grate_test) b.transparent = true;
+      else if (top_texture_number == (int) Texture_Type.gateway_v_top_test) b.transparent = true;
+      else if (top_texture_number == (int) Texture_Type.gateway_h_top_test) b.transparent = true;
 
       brush.Add (b);
       }
 
     ////////////////////////////////////////////////////////////////////////////////
 
+    // check if point collides with a brush
     public int point_in_brush (int x, int y, int z, bool solid_only, bool invisible_counts)
       {
       int b = 0;
@@ -452,7 +210,7 @@ namespace Boxland
           {
           clip = b;
           if (solid_only == true && !brush[b].solid) clip = -1;
-          if (!invisible_counts && brush[b].top_texture_number == (int) T.INVISIBLE_WALL) clip = -1;
+          if (!invisible_counts && brush[b].top_texture_number == (int) Texture_Type.invisible) clip = -1;
           break;  // stop looking
           }
         b += 1;
@@ -462,6 +220,7 @@ namespace Boxland
 
     ////////////////////////////////////////////////////////////////////////////////
 
+    // check if two brushes are colliding
     public int brush_in_brush (int b1)
       {
       int b2 = 0;
@@ -483,6 +242,7 @@ namespace Boxland
 
     ///////////////////////////////////////////////////////////////////////////////
 
+    // check if anothong brush is in a specific grid location relative to this brush
     public int brush_around_brush (int b, int x_grid, int y_grid, int z_grid)
       {
       int x = brush[b].x + (tilesize / 2) + (tilesize * x_grid);
@@ -494,38 +254,152 @@ namespace Boxland
 
     //////////////////////////////////////////////////////////////////////////////////
 
-    public int brush_north_of_brush (Brush check_brush)
+    public int brush_north_of_brush (Brush check_brush, bool moving_counts, bool transparent_counts)
       {
-      return point_in_brush (check_brush.x + (tilesize / 2), Convert.ToInt32 (check_brush.y + (tilesize * 1.5)), check_brush.z + (tilesize / 2), true, true);
+      int clip = point_in_brush (check_brush.x + (tilesize / 2), Convert.ToInt16 (check_brush.y + (tilesize * 1.5)), check_brush.z + (tilesize / 2), true, true);
+      if (clip > -1 && brush[clip].moving && !moving_counts) return -1;
+      else if (clip > -1 && brush[clip].transparent && !transparent_counts) return -1;
+      else return clip;
       }
 
     //////////////////////////////////////////////////////////////////////////////////
 
-    public int brush_south_of_brush (Brush check_brush)
+    public int brush_south_of_brush (Brush check_brush, bool moving_counts, bool transparent_counts)
       {
-      return point_in_brush (check_brush.x + (tilesize / 2), check_brush.y - (tilesize / 2), check_brush.z + (tilesize / 2), true, true);
+      int clip = point_in_brush (check_brush.x + (tilesize / 2), check_brush.y - (tilesize / 2), check_brush.z + (tilesize / 2), true, true);
+      if (clip > -1 && brush[clip].moving && !moving_counts) return -1;
+      else if (clip > -1 && brush[clip].transparent && !transparent_counts) return -1;
+      else return clip;
       }
 
     //////////////////////////////////////////////////////////////////////////////////
 
-    public int brush_east_of_brush (Brush check_brush)
+    public int brush_east_of_brush (Brush check_brush, bool moving_counts, bool transparent_counts)
       {
-      return point_in_brush (Convert.ToInt32 (check_brush.x + (tilesize * 1.5)), check_brush.y + (tilesize / 2), check_brush.z + (tilesize / 2), true, true);
+      int clip = point_in_brush (Convert.ToInt16 (check_brush.x + (tilesize * 1.5)), check_brush.y + (tilesize / 2), check_brush.z + (tilesize / 2), true, true);
+      if (clip > -1 && brush[clip].moving && !moving_counts) return -1;
+      else if (clip > -1 && brush[clip].transparent && !transparent_counts) return -1;
+      else return clip;
       }
 
     //////////////////////////////////////////////////////////////////////////////////
 
-    public int brush_west_of_brush (Brush check_brush)
+    public int brush_west_of_brush (Brush check_brush, bool moving_counts, bool transparent_counts)
       {
-      return point_in_brush (check_brush.x - (tilesize / 2), check_brush.y + (tilesize / 2), check_brush.z + (tilesize / 2), true, true);
+      int clip = point_in_brush (check_brush.x - (tilesize / 2), check_brush.y + (tilesize / 2), check_brush.z + (tilesize / 2), true, true);
+      if (clip > -1 && brush[clip].moving && !moving_counts) return -1;
+      else if (clip > -1 && brush[clip].transparent && !transparent_counts) return -1;
+      else return clip;
       }
-
 
     //////////////////////////////////////////////////////////////////////////////////
 
-    public int brush_above_brush (Brush check_brush)
+    public int brush_northwest_of_brush (Brush check_brush, bool moving_counts, bool transparent_counts)
       {
-      return point_in_brush (check_brush.x + (tilesize / 2), Convert.ToInt32 (check_brush.y + (tilesize / 2)), check_brush.z + tilesize + (tilesize / 2), true, true);
+      int clip = point_in_brush (check_brush.x - (tilesize / 2), Convert.ToInt16 (check_brush.y + (tilesize * 1.5)), check_brush.z + (tilesize / 2), true, true);
+      if (clip > -1 && brush[clip].moving && !moving_counts) return -1;
+      else if (clip > -1 && brush[clip].transparent && !transparent_counts) return -1;
+      else return clip;
+      }
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    public int brush_northeast_of_brush (Brush check_brush, bool moving_counts, bool transparent_counts)
+      {
+      int clip = point_in_brush (Convert.ToInt16 (check_brush.x + tilesize * 1.5), Convert.ToInt16 (check_brush.y + (tilesize * 1.5)), check_brush.z + (tilesize / 2), true, true);
+      if (clip > -1 && brush[clip].moving && !moving_counts) return -1;
+      else if (clip > -1 && brush[clip].transparent && !transparent_counts) return -1;
+      else return clip;
+      }
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    public int brush_southwest_of_brush (Brush check_brush, bool moving_counts, bool transparent_counts)
+      {
+      int clip = point_in_brush (check_brush.x - (tilesize / 2), check_brush.y - (tilesize / 2), check_brush.z + (tilesize / 2), true, true);
+      if (clip > -1 && brush[clip].moving && !moving_counts) return -1;
+      else if (clip > -1 && brush[clip].transparent && !transparent_counts) return -1;
+      else return clip;
+      }
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    public int brush_southeast_of_brush (Brush check_brush, bool moving_counts, bool transparent_counts)
+      {
+      int clip = point_in_brush (Convert.ToInt16 (check_brush.x + tilesize * 1.5), check_brush.y - (tilesize / 2), check_brush.z + (tilesize / 2), true, true);
+      if (clip > -1 && brush[clip].moving && !moving_counts) return -1;
+      else if (clip > -1 && brush[clip].transparent && !transparent_counts) return -1;
+      else return clip;
+      }
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    public int brush_above_brush (Brush check_brush, bool moving_counts, bool transparent_counts)
+      {
+      int clip = point_in_brush (check_brush.x + (tilesize / 2), Convert.ToInt16 (check_brush.y + (tilesize / 2)), check_brush.z + tilesize + (tilesize / 2), true, true);
+      if (clip > -1 && brush[clip].moving && !moving_counts) return -1;
+      else if (clip > -1 && brush[clip].transparent && !transparent_counts) return -1;
+      else return clip;
+      }
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    public int brush_above_north_of_brush (Brush check_brush, bool moving_counts, bool transparent_counts)
+      {
+      int clip = point_in_brush (check_brush.x + (tilesize / 2), Convert.ToInt32 (check_brush.y + (tilesize * 1.5)), check_brush.z + tilesize + (tilesize / 2), true, true);
+      if (clip > -1 && brush[clip].moving && !moving_counts) return -1;
+      else if (clip > -1 && brush[clip].transparent && !transparent_counts) return -1;
+      else return clip;
+      }
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    public int brush_above_south_of_brush (Brush check_brush, bool moving_counts, bool transparent_counts)
+      {
+      int clip = point_in_brush (check_brush.x + (tilesize / 2), check_brush.y - (tilesize / 2), check_brush.z + tilesize + (tilesize / 2), true, true);
+      if (clip > -1 && brush[clip].moving && !moving_counts) return -1;
+      else if (clip > -1 && brush[clip].transparent && !transparent_counts) return -1;
+      else return clip;
+      }
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    public int brush_above_east_of_brush (Brush check_brush, bool moving_counts, bool transparent_counts)
+      {
+      int clip = point_in_brush (Convert.ToInt16 (check_brush.x + (tilesize * 1.5)), check_brush.y + (tilesize / 2), check_brush.z + tilesize + (tilesize / 2), true, true);
+      if (clip > -1 && brush[clip].moving && !moving_counts) return -1;
+      else if (clip > -1 && brush[clip].transparent && !transparent_counts) return -1;
+      else return clip;
+      }
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    public int brush_above_west_of_brush (Brush check_brush, bool moving_counts, bool transparent_counts)
+      {
+      int clip = point_in_brush (check_brush.x - (tilesize / 2), check_brush.y + (tilesize / 2), check_brush.z + tilesize + (tilesize / 2), true, true);
+      if (clip > -1 && brush[clip].moving && !moving_counts) return -1;
+      else if (clip > -1 && brush[clip].transparent && !transparent_counts) return -1;
+      else return clip;
+      }
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    public int brush_above_northeast_of_brush (Brush check_brush, bool moving_counts, bool transparent_counts)
+      {
+      int clip = point_in_brush (Convert.ToInt16 (check_brush.x + (tilesize * 1.5)), Convert.ToInt16 (check_brush.y + (tilesize * 1.5)), check_brush.z + tilesize + (tilesize / 2), true, true);
+      if (clip > -1 && brush[clip].moving && !moving_counts) return -1;
+      else if (clip > -1 && brush[clip].transparent && !transparent_counts) return -1;
+      else return clip;
+      }
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    public int brush_above_northwest_of_brush (Brush check_brush, bool moving_counts, bool transparent_counts)
+      {
+      int clip = point_in_brush (check_brush.x - (tilesize / 2), Convert.ToInt16 (check_brush.y + (tilesize * 1.5)), check_brush.z + tilesize + (tilesize / 2), true, true);
+      if (clip > -1 && brush[clip].moving && !moving_counts) return -1;
+      else if (clip > -1 && brush[clip].transparent && !transparent_counts) return -1;
+      else return clip;
       }
 
     //////////////////////////////////////////////////////////////////////////////////
@@ -535,9 +409,9 @@ namespace Boxland
       return point_in_brush (check_brush.x + (tilesize / 2), check_brush.y - (tilesize / 2), check_brush.z - (tilesize / 2), true, true);
       }
 
-
     ////////////////////////////////////////////////////////////////////////////////
 
+    // check if this brush is colliding with a fixture
     public int brush_in_fixture (Brush b, List<Fixture> fixture, bool solid_only)
       {
       int f = 0;
@@ -552,7 +426,7 @@ namespace Boxland
           if (solid_only == true && fixture[f].solid == false)
             {
             clip = -1;
-            if (fixture[f].type == (int) Fixture_Control.F.LASER_HORIZONTAL_GREEN_TEST) fixture[f].powered = true;
+            if (fixture[f].type == Fixture_Type.laser_horizontal_green_test) fixture[f].powered = true;
             }
           else clip = f;
           }
@@ -560,6 +434,117 @@ namespace Boxland
         }
 
       return clip;
+      }
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+    // decide which walls are casting shadows on this floor
+    public void calculate_top_shadows (Brush check_brush)
+      {
+      check_brush.top_shadow_north = false;
+      check_brush.top_shadow_south = false;
+      check_brush.top_shadow_east = false;
+      check_brush.top_shadow_west = false;
+      check_brush.top_shadow_northeast = false;
+      check_brush.top_shadow_northwest = false;
+
+      if (brush_above_brush (check_brush, false, false) > -1) return;
+      else
+        {
+        if (brush_above_north_of_brush (check_brush, false, false) > -1) check_brush.top_shadow_north = true;
+        if (brush_above_south_of_brush (check_brush, false, false) > -1) check_brush.top_shadow_south = true;
+        if (brush_above_east_of_brush (check_brush, false, false) > -1) check_brush.top_shadow_east = true;
+        if (brush_above_west_of_brush (check_brush, false, false) > -1) check_brush.top_shadow_west = true;
+        if (brush_above_northeast_of_brush (check_brush, false, false) > -1
+            && brush_above_north_of_brush (check_brush, false, false) == -1
+            && brush_above_east_of_brush (check_brush, false, false) == -1) check_brush.top_shadow_northeast = true;
+        if (brush_above_northwest_of_brush (check_brush, false, false) > -1
+            && brush_above_north_of_brush (check_brush, false, false) == -1
+            && brush_above_west_of_brush (check_brush, false, false) == -1) check_brush.top_shadow_northwest = true;
+        }
+      }
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+    // decide which sides of this wall are an edge side
+    public void calculate_outlines (Brush check_brush)
+      {
+      int brush_north, brush_south, brush_east, brush_west;
+      int brush_northwest, brush_northeast, brush_southwest, brush_southeast;
+
+      check_brush.top_top_outline = false;
+      check_brush.top_bottom_outline = false;
+      check_brush.top_left_outline = false;
+      check_brush.top_right_outline = false;
+      check_brush.top_top_left_outline = false;
+      check_brush.top_top_right_outline = false;
+      check_brush.top_bottom_left_outline = false;
+      check_brush.top_bottom_right_outline = false;
+      check_brush.front_top_outline = false;
+      check_brush.front_bottom_outline = false;
+      check_brush.front_left_outline = false;
+      check_brush.front_right_outline = false;
+      check_brush.front_top_left_outline = false;
+      check_brush.front_top_right_outline = false;
+      check_brush.front_bottom_left_outline = false;
+      check_brush.front_bottom_right_outline = false;
+      
+      if (check_brush.transparent) return;
+      else if (check_brush.top_texture_number == (int) Texture_Type.box_wood) return;
+      
+      if (brush_above_brush (check_brush, false, false) == -1 && check_brush.z > 0)  // only draw top outlines if the top's visible
+        {
+        brush_north = brush_north_of_brush (check_brush, false, false);
+        brush_south = brush_south_of_brush (check_brush, false, false);
+        brush_east = brush_east_of_brush (check_brush, false, false);
+        brush_west = brush_west_of_brush (check_brush, false, false);
+        brush_northeast = brush_northeast_of_brush (check_brush, false, false);
+        brush_northwest = brush_northwest_of_brush (check_brush, false, false);
+        brush_southeast = brush_southeast_of_brush (check_brush, false, false);
+        brush_southwest = brush_southwest_of_brush (check_brush, false, false);
+
+        if (brush_north == -1) check_brush.top_top_outline = true;
+        //else if (brush[brush_north].top_texture_number != check_brush.top_texture_number && check_brush.z > 0) check_brush.top_top_outline = true;
+        else if (brush[brush_north].top_texture_number != check_brush.top_texture_number) check_brush.top_top_outline = true;
+
+        if (brush_west == -1) check_brush.top_left_outline = true;
+        else if (brush[brush_west].top_texture_number != check_brush.top_texture_number) check_brush.top_left_outline = true;
+
+        if (brush_east == -1) check_brush.top_right_outline = true;
+        else if (brush[brush_east].top_texture_number != check_brush.top_texture_number) check_brush.top_right_outline = true;
+
+        if (brush_south == -1) check_brush.top_bottom_outline = true;
+        else if (brush[brush_south].top_texture_number != check_brush.top_texture_number) check_brush.top_bottom_outline = true;
+
+        if (!check_brush.top_top_outline && !check_brush.top_left_outline
+          && (brush_northwest == -1 || brush[brush_northwest].top_texture_number != check_brush.top_texture_number))
+          check_brush.top_top_left_outline = true;
+
+        if (!check_brush.top_top_outline && !check_brush.top_right_outline
+          && (brush_northeast == -1 || brush[brush_northeast].top_texture_number != check_brush.top_texture_number))
+          check_brush.top_top_right_outline = true;
+
+        if (!check_brush.top_bottom_outline && !check_brush.top_left_outline
+          && (brush_southwest == -1 || brush[brush_southwest].top_texture_number != check_brush.top_texture_number))
+          check_brush.top_bottom_left_outline = true;
+
+        if (!check_brush.top_bottom_outline && !check_brush.top_right_outline
+          && (brush_southeast == -1 || brush[brush_southeast].top_texture_number != check_brush.top_texture_number))
+          check_brush.top_bottom_right_outline = true;
+        }
+      if (brush_south_of_brush (check_brush, false, false) == -1)  // only draw front outlines if the front's visible
+        {
+        if (!check_brush.top_bottom_outline) check_brush.front_top_outline = true;
+        check_brush.front_bottom_outline = true;
+
+        brush_west = brush_west_of_brush (check_brush, false, false);
+        if (brush_west == -1) check_brush.front_left_outline = true;
+        else if (brush[brush_west].front_texture_number != check_brush.front_texture_number) check_brush.front_left_outline = true;
+
+        brush_east = brush_east_of_brush (check_brush, false, false);
+        if (brush_east == -1) check_brush.front_right_outline = true;
+        else if (brush[brush_east].front_texture_number != check_brush.front_texture_number) check_brush.front_right_outline = true;
+        }
       }
     }
   }

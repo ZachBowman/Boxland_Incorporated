@@ -7,14 +7,15 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
+//using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Microsoft.Xna.Framework.Net;
+//using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
 
 namespace Boxland
@@ -82,24 +83,21 @@ namespace Boxland
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    public void rectangle_filled (SpriteBatch spriteBatch, int x1, int y1, int x2, int y2, Texture2D pixel, int opacity)
+    public void rectangle_filled (SpriteBatch spriteBatch, int x1, int y1, int x2, int y2, Texture2D pixel, float opacity)
       {
-      Vector2 v;
-      float temp_fade;
+      Rectangle r;
 
-      for (v.Y = y1; v.Y <= y2; v.Y ++)
-        {
-        for (v.X = x1; v.X <= x2; v.X ++)
-          {
-          temp_fade = Convert.ToSingle (opacity / 255); 
-          spriteBatch.Draw (pixel, v, Color.White * temp_fade);//new Color (Color.White, Convert.ToByte (opacity)));
-          }
-        }
+      r.X = x1;
+      r.Y = y1;
+      r.Width = x2 - x1;
+      r.Height = y2 - y1;
+
+      spriteBatch.Draw (pixel, r, Color.White * opacity);
       }
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    public void test_pattern (SpriteBatch spriteBatch, Texture2D pixel, int opacity)
+    public void test_pattern (SpriteBatch spriteBatch, Texture2D pixel, float opacity)
       {
       line (spriteBatch, 400, 400, 200, 200, pixel, opacity);
       line (spriteBatch, 400, 400, 300, 200, pixel, opacity);

@@ -1,21 +1,22 @@
-﻿using System;
+﻿// Boxland Incorporated
+// Character Control Class
+// 2011-2018 Nightmare Games
+// Zach Bowman
+
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Boxland
   {
-  public class Character_Control
+  public class Character_Control : Game
     {
-    public const int max_character_list = 4;
+    public const int max_character_list = 5;
     public const int max_character_skins = 7;
     public double reach_distance;  // minimum distance to reach another object/character
-
-    const int PLAYER = 0;
 
     public List<Character> character = new List<Character> ();
     public Texture2D[,] character_sprite = new Texture2D[max_character_list, max_character_skins];
@@ -23,47 +24,14 @@ namespace Boxland
     public const int pow_sprite_width = 80;
     public const int pow_sprite_height = 80;
 
-    public enum C
-      {
-      // NONE = -1;
-      RICHARD,
-      RICHARDS_DAD,
-      RETARD,
-      THROWING_RETARD
-      }
-
     public Character_Control (int tilesize)
       {
-      reach_distance = tilesize * .6;
+      reach_distance = tilesize;// *.9;
       }
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    public void load_sprites (GraphicsDevice GraphicsDevice)
-      {
-      character_sprite[(int) Character_Control.C.RICHARD, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "characters\\richard_green.png", FileMode.Open, FileAccess.Read));
-      character_sprite[(int) Character_Control.C.RICHARD, (int) Object_Control.O.SHIRT_YELLOW] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "characters\\richard_yellow.png", FileMode.Open, FileAccess.Read));
-      character_sprite[(int) Character_Control.C.RICHARD, (int) Object_Control.O.SHIRT_RED] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "characters\\richard_red.png", FileMode.Open, FileAccess.Read));
-      character_sprite[(int) Character_Control.C.RICHARD, (int) Object_Control.O.SHIRT_WHITE] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "characters\\richard_white.png", FileMode.Open, FileAccess.Read));
-      character_sprite[(int) Character_Control.C.RICHARD, (int) Object_Control.O.SHIRT_BLUE] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "characters\\richard_teal.png", FileMode.Open, FileAccess.Read));
-      character_sprite[(int) Character_Control.C.RICHARD, (int) Object_Control.O.SHIRT_PURPLE] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "characters\\richard_fushia.png", FileMode.Open, FileAccess.Read));
-      character_sprite[(int) Character_Control.C.RICHARDS_DAD, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "characters\\richards_dad_test.png", FileMode.Open, FileAccess.Read));
-      character_sprite[(int) Character_Control.C.RETARD, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "characters\\retard_tall_test.png", FileMode.Open, FileAccess.Read));
-      character_sprite[(int) Character_Control.C.THROWING_RETARD, 0] = Texture2D.FromStream (GraphicsDevice, new FileStream (Brush_Control.Texture_Path + "characters\\hitler_new1.png", FileMode.Open, FileAccess.Read));
-
-      ConvertToPremultipliedAlpha (character_sprite[(int) Character_Control.C.RICHARD, 0], new Color (255, 0, 255, 255));
-      ConvertToPremultipliedAlpha (character_sprite[(int) Character_Control.C.RICHARD, (int) Object_Control.O.SHIRT_YELLOW], new Color (255, 0, 255, 255));
-      ConvertToPremultipliedAlpha (character_sprite[(int) Character_Control.C.RICHARD, (int) Object_Control.O.SHIRT_RED], new Color (255, 0, 255, 255));
-      ConvertToPremultipliedAlpha (character_sprite[(int) Character_Control.C.RICHARD, (int) Object_Control.O.SHIRT_WHITE], new Color (255, 0, 255, 255));
-      ConvertToPremultipliedAlpha (character_sprite[(int) Character_Control.C.RICHARD, (int) Object_Control.O.SHIRT_BLUE], new Color (255, 0, 255, 255));
-      ConvertToPremultipliedAlpha (character_sprite[(int) Character_Control.C.RICHARD, (int) Object_Control.O.SHIRT_PURPLE], new Color (0, 255, 0, 255));
-      ConvertToPremultipliedAlpha (character_sprite[(int) Character_Control.C.RICHARDS_DAD, 0], new Color (255, 0, 255, 255));
-      ConvertToPremultipliedAlpha (character_sprite[(int) Character_Control.C.RETARD, 0], new Color (64, 64, 64, 255));
-      ConvertToPremultipliedAlpha (character_sprite[(int) Character_Control.C.THROWING_RETARD, 0], new Color (255, 0, 255, 255));
-      }
-
-    ////////////////////////////////////////////////////////////////////////////////
-
+    // give sprite transparent background
     void ConvertToPremultipliedAlpha (Texture2D texture, Color? colorKey)
       {
       Color[] data = new Color[texture.Width * texture.Height];
@@ -94,12 +62,13 @@ namespace Boxland
 
     ////////////////////////////////////////////////////////////////////////////////
 
-    public void add (string name, int sprite, int x, int y, int z)
+    // create new character
+    public void add (Name type, int x, int y, int z)
       {
       Character c = new Character ();
 
-      c.name = name;
-      c.sprite = sprite;
+      c.type = type;
+      c.sprite = (int) type;
       c.dx = x;
       c.dy = y;
       c.dz = z;
@@ -110,22 +79,20 @@ namespace Boxland
 
     ////////////////////////////////////////////////////////////////////////////////
 
+    // are these characters within arm's length
     public bool reach_character (int c1, int c2, List<Brush> brush)
       {
       bool reach = false;
       double x_distance, y_distance, z_distance, h_distance;
       double arm_x, arm_y, arm_z;
 
-      double reach_distance2 = reach_distance;
-      if (c1 == PLAYER) reach_distance2 = reach_distance * 1.2;
-
-      x_distance = character[c1].dx - character[c2].dx;
-      y_distance = character[c1].dy - character[c2].dy;
+      x_distance = Math.Abs (character[c1].dx - character[c2].dx);
+      y_distance = Math.Abs (character[c1].dy - character[c2].dy);
       z_distance = Math.Abs (character[c1].dz - character[c2].dz);
       h_distance = Math.Sqrt ((x_distance * x_distance) + (y_distance * y_distance));
 
       // if he's close enough to hit him
-      if (h_distance < reach_distance2 && z_distance < reach_distance2 * 2)
+      if (h_distance <= reach_distance && z_distance <= reach_distance * 2)
         {
         reach = true;
 
@@ -149,10 +116,9 @@ namespace Boxland
 
     ////////////////////////////////////////////////////////////////////////////////
 
+    // can character 1 see character 2
     public bool sees_character (int c1, int c2, List<Brush> brush)
       {
-      // can character 1 see character 2?
-
       bool sees_character = true;
       double eye_x = character[c1].x;
       double eye_y = character[c1].y;
@@ -174,6 +140,7 @@ namespace Boxland
 
     ////////////////////////////////////////////////////////////////////////////////
 
+    // is this point colliding with a brush
     int point_in_brush (List<Brush> brush, int x, int y, int z, bool solid_only, bool invisible_counts)
       {
       int b = 0;
@@ -187,7 +154,7 @@ namespace Boxland
           {
           clip = b;
           if (solid_only == true && !brush[b].solid) clip = -1;
-          if (!invisible_counts && brush[b].top_texture_number == (int) Brush_Control.T.INVISIBLE_WALL) clip = -1;
+          if (!invisible_counts && brush[b].top_texture_number == (int) Texture_Type.invisible) clip = -1;
           break;  // stop looking
           }
         b += 1;
@@ -212,6 +179,7 @@ namespace Boxland
 
     ////////////////////////////////////////////////////////////////////////////////
 
+    // is this character facing toward this object
     public bool character_facing_object (Character c, Object o)
       {
       double radians_needed = get_direction (c.dx, c.dy, o.dx, o.dy);
@@ -247,8 +215,8 @@ namespace Boxland
       if (x_distance > 0 && y_distance >= 0) dir_radians = Math.Atan (y_distance / x_distance);
       else if (x_distance > 0 && y_distance < 0) dir_radians = Math.Atan (y_distance / x_distance) + (2 * Math.PI);
       else if (x_distance < 0) dir_radians = Math.Atan (y_distance / x_distance) + Math.PI;
-      else if (x_distance == 0 && y_distance > 0) dir_radians = MathHelper.ToRadians (90);//Math.PI / 2;
-      else if (x_distance == 0 && y_distance < 0) dir_radians = MathHelper.ToRadians (270);//-1 * Math.PI / 2;
+      else if (x_distance == 0 && y_distance > 0) dir_radians = MathHelper.ToRadians (90);
+      else if (x_distance == 0 && y_distance < 0) dir_radians = MathHelper.ToRadians (270);
       else dir_radians = 0;  // x_distance = 0, y_distance = 0
 
       return dir_radians;
@@ -258,7 +226,7 @@ namespace Boxland
 
     public bool active (int c)
       {
-      if (c > -1 && c < character.Count && character[c].action != "knocked out") return true;
+      if (c > -1 && c < character.Count && character[c].action != Action.knocked_out) return true;
       else return false;
       }
 
@@ -278,11 +246,12 @@ namespace Boxland
 
     ////////////////////////////////////////////////////////////////////////////////
 
+    // create an impact sprite effect for melee combat
     public void pow (int c, bool low, bool behind)
       {
       Random rnd = new Random ();
 
-      character[c].pow1.opacity = .75f;// 1f;
+      character[c].pow1.opacity = .75f;
       character[c].pow1.x = -1 * (pow_sprite_width / 2);
       character[c].pow1.y = 0 - character[c].sprite_height;
       character[c].pow1.behind = behind;
