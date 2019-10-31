@@ -1,0 +1,34 @@
+HOW THE WALLS WORK
+------------------
+The walls and floors are all 96 x 96 x 96 cubes.  The game pastes square sections from the files, which are larger sheets, to make variation.  The files can be as big or small as we want, but the width and height have to be multiples of 96 or we'll see a seam where the wall loops.  The fronts of walls are just the tops (flattened and darkened), but we can specify different top and front images, too (like with the doors).
+
+
+MAKE IT LOOK LIKE WHATEVER YOU WANT
+-----------------------------------
+Everything that's here is really just a temporary placeholder (except for maybe the Effects
+folder).  These are mostly windows paint doodles and 3ds max textures, so none of it has to look anything like it does now (color, style, or material).  My thinking is still that the first few areas should be office/warehouse/factory type environments and then get gradually funnier and weirder.
+
+
+BIG CHUNKS LOOK COOL
+--------------------
+We can have larger pieces, like the "big machine" and the signposts, for example.  At one time I thought a lot of the game might end up being made of big, non-tiling chunks of building and machinery, but didn't bother to draw temp versions of it.
+
+
+THE LAYOUTS ARE TEMPORARY
+-------------------------
+We'll probably redesign part or all of the areas here based on the graphics we end up with and the later levels could be completely designed around the textures.
+
+
+WE NEED A LOT OF STUFF
+----------------------
+The game is really only about halfway done and the world is not even a quarter of the way done.  Right now the characters all use Richard's body, which won't be true later on.  Also, there's a whole bunch of stuff that's not even in the game yet, like weapons, machines, and furniture.  Make anything you want.
+
+
+ANY IDEAS ARE GREAT
+-------------------
+We need ideas for bad guys, levels, puzzles, powerups, bonuses, gameplay, etc, so write down or draw anything you want to and we'll probably throw it in there.
+
+
+SOUNDS AND MUSIC
+----------------
+yeah, we need those too.
